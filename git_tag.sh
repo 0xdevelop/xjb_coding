@@ -2,8 +2,9 @@
 
 set -e
 
-VersionFile=./SKILL.md
-SyncFile=./.auto_coding/start_coding.md
+VersionFile=./plugins/yeah-coding/skills/yeah-coding/SKILL.md
+SyncFile=./plugins/yeah-coding/skills/yeah-coding/.auto_coding/start_coding.md
+PluginJsonFile=./plugins/yeah-coding/.claude-plugin/plugin.json
 
 # SKILL.md 顶部样式：
 #   > **SkillName**：`yeah_coding`
@@ -102,6 +103,8 @@ function git_handle_ready() {
     echo "Current Version With ${CURRENT_VERSION}"
     echo "Next Version    With ${NEXT_VERSION}"
 
+    local plain_version="${NEXT_VERSION#v}"
+
     # SKILL.md：`> **Version**：vX.X.X` （中文冒号，无引号）
     sed -i -e "s/^\(> \*\*Version\*\*：\)v[0-9.]*/\1${NEXT_VERSION}/" "$VersionFile"
 
@@ -110,8 +113,13 @@ function git_handle_ready() {
         sed -i -e "s/^\(> \*\*版本\*\*：\)v[0-9.]*\( 通用版\)/\1${NEXT_VERSION}\2/" "$SyncFile"
     fi
 
+    # plugin.json：`"version": "X.X.X"` —— Claude Code plugin 更新检测的字段（无 v 前缀）
+    if [ -f "$PluginJsonFile" ]; then
+        sed -i -e "s/\"version\": \"[0-9.]*\"/\"version\": \"${plain_version}\"/" "$PluginJsonFile"
+    fi
+
     if [[ $OS_TYPE == "Darwin" ]]; then
-        rm -f "${VersionFile}-e" "${SyncFile}-e" 2>/dev/null || true
+        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" 2>/dev/null || true
     fi
 }
 

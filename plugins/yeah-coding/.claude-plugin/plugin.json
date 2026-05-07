@@ -1,20 +1,6 @@
 {
   "name": "yeah-coding",
   "description": "AI 自驱编码作战手册 — 需求细化、任务分解、TDD 自驱编码、多智能体并发、断点续做",
-  "version": "0.0.4",
-  "author": {
-    "name": "0xYeah",
-    "email": "wmyeah017@gmail.com"
-  },
-  "license": "MIT",
-  "homepage": "https://github.com/0xYeah/yeah_coding",
-  "repository": "git@github.com:0xYeah/yeah_coding.git",
-  "keywords": [
-    "ai-coding",
-    "self-driving",
-    "tdd",
-    "multi-agent",
-    "skill",
-    "claude-code"
-  ]
+  "version": "0.0.5",
+  "author": "0xYeah"
 }

@@ -6,7 +6,7 @@ description: AI 自驱编码 Skill — 需求细化、任务分解、TDD 自驱�
 # yeah_coding — AI 自驱编码作战手册 (SKILL)
 
 > **SkillName**：`yeah_coding`
-> **Version**：v0.0.4
+> **Version**：v0.0.5
 > **适用工具**：Claude Code · Cursor · Trae · Windsurf · Copilot Chat · Cline · 任意支持系统提示词的 AI 编码助手
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 
@@ -130,15 +130,23 @@ INIT-8. 询问是否立即启动
 
 ## 二、安装 / 使用步骤
 
+### 方式 A：Claude Code Plugin（推荐）
+
+参见仓库 README 的 plugin 安装流程。安装后在 Claude Code 中发送触发词（见 §一），AI 自动执行本文件 §零 的 INIT 流程把 `.auto_coding/` 部署到目标项目。
+
+### 方式 B：其他 AI 工具（手动）
+
+1. clone 本仓库到本地
+2. 在 AI 工具中告知它读取 SKILL.md：路径 `plugins/yeah-coding/skills/yeah-coding/SKILL.md`
+3. 发送触发词（如 `使用 yeah_coding`），AI 执行 INIT 流程
+
+完全不通过 AI 触发的兜底：
+
 ```bash
-# Step 1：将 .auto_coding/ 文件夹复制到你的项目根目录
-cp -r .auto_coding/ /your/project/root/
-
-# Step 2：（可选）在 .auto_coding/start_coding.md 末尾"项目特定约定区"填写项目信息
-
-# Step 3：在任意 AI 编码工具中输入触发词
-# 读 .auto_coding/start_coding.md
+cp -r plugins/yeah-coding/skills/yeah-coding/.auto_coding/ /your/project/root/
 ```
+
+然后在目标项目按 §一 发送触发词进入编码流程。
 
 > `.auto_coding/start_coding.md` 是**唯一必须存在**的文件。
 > `requirements/` 目录及其内容完全可选——可以没有、可以只有一句话、也可以是完整文档，AI 都能处理。

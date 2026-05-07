@@ -18,21 +18,24 @@ yeah_coding/
 │       ├── .claude-plugin/
 │       │   └── plugin.json                             ← Plugin 清单（version 在此 bump）
 │       └── skills/
-│           └── yeah-coding/
+│           └── yeah-coding/                            ← 所有模板文件单一存放点
 │               ├── SKILL.md                            ← Skill 主入口（含 YAML frontmatter）
-│               ├── CLAUDE.md                           ← Claude Code 项目指令模板
+│               ├── CLAUDE.md                           ← Claude Code 项目指令模板（INIT-6）
+│               ├── cursor_rule.mdc                     ← Cursor Rules 模板
+│               ├── .windsurfrules                      ← Windsurf Cascade 模板
+│               ├── trae_agent_prompt.md                ← Trae Agent 系统提示词
+│               ├── universal_system_prompt.md          ← 通用系统提示词（任意 AI 工具）
+│               ├── gitignore_snippet.txt               ← .gitignore 追加片段
 │               └── .auto_coding/                       ← 工作目录模板（INIT-4 复制目标）
 │                   ├── start_coding.md                 ← 主引擎（核心规范）
 │                   ├── DISPATCH.md                     ← 多智能体并发调度锁
 │                   ├── requirements/0_template.md      ← 需求文件模板
 │                   └── tasks/TRACKER.md                ← 进度追踪
 ├── README.md                                           ← 本文件
-├── CLAUDE.md                                           ← 本仓库自身的开发指令（自用）
-├── cursor_rule.mdc                                     ← Cursor Rules（非 Claude Code 用户用）
-├── .windsurfrules                                      ← Windsurf Cascade 规则
-├── trae_agent_prompt.md                                ← Trae Agent 系统提示词
-├── universal_system_prompt.md                          ← 通用系统提示词（任意 AI 工具）
-└── gitignore_snippet.txt                               ← .gitignore 追加片段
+├── CLAUDE.md                                           ← 本仓库自身开发指令（自用）
+├── git_tag.sh                                          ← 发版脚本（bump 三处版本号 + tag + push）
+├── changelog/                                          ← 历史 changelog
+└── LICENSE
 ```
 
 ---
@@ -104,22 +107,7 @@ git clone git@github.com:0xYeah/yeah_coding.git
 初始化 yeah_coding /path/to/your/project
 ```
 
-AI 将**自动完成**所有安装操作，无需手动执行任何命令：
-
-| 自动步骤 | 内容 |
-|---------|------|
-| ✅ 复制工作目录 | `.auto_coding/` 自动复制到项目根目录 |
-| ✅ 配置 .gitignore | 自动追加 `.auto_coding/` 排除规则 |
-| ✅ 检测工具类型 | 自动识别 Claude Code / Cursor / Windsurf 并复制对应配置文件 |
-| ✅ 初始化完成摘要 | 输出完成状态，询问是否立即开始编码 |
-
-初始化完成后，输入以下触发词启动编码：
-
-```
-读 .auto_coding/start_coding.md
-```
-
-> **Trae 和其他未能自动检测的工具**：需参考 `trae_agent_prompt.md` 或 `universal_system_prompt.md` 手动配置系统提示词一次，之后正常使用触发词即可。
+INIT 流程会自动复制 `.auto_coding/`、配置 `.gitignore`、复制对应工具的配置文件。详见 `plugins/yeah-coding/skills/yeah-coding/SKILL.md` §零。
 
 ---
 
@@ -162,8 +150,3 @@ AI 将**自动完成**所有安装操作，无需手动执行任何命令：
 | Kotlin/Gradle | build.gradle | ./gradlew build | ./gradlew test |
 | C/C++ | CMakeLists.txt | cmake --build | ctest |
 | C# | *.csproj | dotnet build | dotnet test |
-
----
-
-> **版本**：v4.0 通用版
-> **作者**：基于 start_coding.md v4.0 封装为 yeah_coding Skill
