@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(./git_tag.sh *)"
-    ]
-  }
-}
