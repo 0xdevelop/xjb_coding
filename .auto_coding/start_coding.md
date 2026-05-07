@@ -452,7 +452,7 @@ LINT:    dotnet build -warnaserror (可选)
 2. `.auto_coding/tasks/TRACKER.md` — 现有进度与版本记录
 3. `.auto_coding/requirements/details/` — 细化后的需求（若存在，优先读此目录）
    `.auto_coding/requirements/` — 原始需求文件（按版本号从小到大读取）；支持多种格式，读取规则见下方；若存在 `backlog.md` 则标记为"待排期需求"
-4. `go.mod` / `package.json` / `Cargo.toml` — 模块名、版本
+4. `go.mod` / `package.json` / `Cargo.toml` — 模块名、版本；**对 Go 项目同时检查 `go` directive 是否符合项目铁律（如锁定 `1.24.0`）**。toolchain auto-bump 到更高版本必须在 commit 前手动改回，否则违项目特定约定区"语言版本锁定"条目。
 5. `README.md` — 项目定位
 6. 根目录直接子目录（`ls` 一层）— 理解整体结构
 
@@ -528,7 +528,10 @@ LINT:    dotnet build -warnaserror (可选)
 ① 读 TRACKER.md，找优先级最高的 🔲 任务（遵循依赖顺序）
    → 全部 ✅ 则进入阶段 3（验收报告）
 
-② 将该任务标记为 🔵，更新 TRACKER.md
+② 将该任务**同时**标 🔵 写入：
+   - 对应 task 文件的"状态"字段（🔲→🔵）
+   - TRACKER.md 详细状态表的状态列
+   两处都改完才能进入步骤 ③，否则 worker 模式领单与断点续做都会失真。
 
 ③ 阅读任务文件，明确验收标准
 
@@ -541,6 +544,8 @@ LINT:    dotnet build -warnaserror (可选)
    FMT_CHK  → 输出为空（否则先运行 FMT 再重检）
 
 ⑥ 精确提交（每任务一个 commit）：
+   若任务跨多个 submodule，**必须 cd 到对应 submodule 子目录**单独 git add + commit + push，
+   禁止在父仓 staging 混提交多仓源码。父仓只提 submodule 指针 bump。
    git add <仅涉及本任务的文件>   ← 禁止 git add -A / git add .
    git commit -m "<type>(TASK-XXX): <描述>"
    git push
@@ -809,6 +814,7 @@ AI 不能无限重试。出现以下情况时**必须停下来通知用户**，�
 | 发现**硬编码密钥/密码/token** | 立即停止，通知用户，不提交任何文件 |
 | 需求与现有代码**根本矛盾**无法调和 | 不擅自选择，汇报冲突点，等待决策 |
 | 架构调整影响超过 **3 个现有文件** | 超出补丁范畴，需要用户确认方向 |
+| **环境配置失败**（git config / module cache / 私仓 PAT / SSH key / DNS） | 重试 1 次仍失败必须停。**不擅自改用户全局 git config 或系统级 env**，仅提议精确改动等用户确认；module cache 子目录可在用户许可下定向 unset/重写 origin |
 
 通知格式：
 ```
@@ -946,11 +952,15 @@ push 失败**不阻塞执行**，按以下顺序处理：
 | 特殊构建前置步骤 | | 如 `protoc` `go generate` 等，BUILD 前先执行 |
 | 额外编码规范 | | 超出通用规范的项目特有约定 |
 | 测试依赖说明 | | 本机需要预先启动的服务（数据库端口等） |
+| 语言版本锁定 | | 例：`go directive = 1.24.0`；防 toolchain auto-bump 漂移；commit 前手动回锁 |
+| 依赖发版联动 | | 例：基础库 X 发 tag 后，依赖它的所有 submodule 都跑 `go get -u <X>@latest && go mod tidy`，禁手 sed 改版本号 |
+| submodule 互依规则 | | 例：`certa_ame ⊥ certa_cg`；共享代码归属公共仓（`certa_base`）；禁子项目互相 require |
+| 私仓认证策略 | | 例：SSH 走通即可，禁折腾用户 `~/.gitconfig` 全局 rewrite 或系统级 env |
 | 其他约束 | | 任何需要 AI 遵守的额外规则 |
 
 ---
 
-> **版本**：v4.0 通用版
+> **版本**：v4.1 通用版
 > **适用**：Go / Rust / TypeScript / JavaScript / Python / Java / Kotlin / C++ / C#
 > **使用方式**：将 `.auto_coding/` 文件夹复制到任何项目根目录，填写上方"项目特定约定区"，即可使用。
 > **禁止修改**：本文件主体内容（阶段 0-3、质量门禁、Git 规范），项目定制仅在"项目特定约定区"内进行。

@@ -1,7 +1,7 @@
-# yerik_coding — AI 自驱编码作战手册 (SKILL)
+# yeah_coding — AI 自驱编码作战手册 (SKILL)
 
-> **Skill 名称**：`yerik_coding`
-> **版本**：v4.0
+> **Skill 名称**：`yeah_coding`
+> **版本**：v4.1
 > **适用工具**：Claude Code · Cursor · Trae · Windsurf · Copilot Chat · Cline · 任意支持系统提示词的 AI 编码助手
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 
@@ -16,10 +16,10 @@
 
 用户发送以下任意消息时，AI 执行初始化：
 
-- `使用 yerik_coding`
-- `初始化 yerik_coding`
-- `setup yerik_coding`
-- `安装 yerik_coding`
+- `使用 yeah_coding`
+- `初始化 yeah_coding`
+- `setup yeah_coding`
+- `安装 yeah_coding`
 - 或：用户要求"用这个 skill 开始编码"、"启用自驱编码"等含义相近的表达
 
 ### 初始化执行步骤（AI 必须按序完成，不可跳过）
@@ -69,7 +69,7 @@ INIT-6. 检测当前 AI 工具并复制对应配置文件
 INIT-7. 输出初始化完成摘要
   → 格式：
     ---
-    🎉 yerik_coding 初始化完成
+    🎉 yeah_coding 初始化完成
     项目路径：$PROJECT_ROOT
     已完成：
       ✅ .auto_coding/ 工作目录已就绪
@@ -187,12 +187,12 @@ your-project/
 ```markdown
 ## AI 编码规范
 读 .auto_coding/start_coding.md 进入自驱编码模式。
-本项目使用 yerik_coding skill，触发词：读 .auto_coding/start_coding.md
+本项目使用 yeah_coding skill，触发词：读 .auto_coding/start_coding.md
 ```
 
 ### Cursor
 
-在 `.cursor/rules/` 目录创建 `yerik_coding.mdc`（见附件 `cursor_rule.mdc`）。
+在 `.cursor/rules/` 目录创建 `yeah_coding.mdc`（见附件 `cursor_rule.mdc`）。
 
 ### Trae
 

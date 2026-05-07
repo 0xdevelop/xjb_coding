@@ -1,4 +1,4 @@
-# yerik_coding — AI 自驱编码 Skill 包
+# yeah_coding — AI 自驱编码 Skill 包
 
 一套让任意 AI 编码助手（Claude Code / Cursor / Trae / Windsurf 等）变成**自主编码工程师**的 Skill，支持需求细化、任务分解、TDD 自驱编码、多智能体并发、断点续做。
 
@@ -7,7 +7,7 @@
 ## 📦 文件清单
 
 ```
-yerik_coding/
+yeah_coding/
 ├── SKILL.md                          ← Skill 说明文档（主入口）
 ├── README.md                         ← 本文件
 ├── CLAUDE.md                         ← Claude Code 项目指令（复制到项目根目录）
@@ -30,7 +30,7 @@ yerik_coding/
 
 ## 🚀 快速开始（2 步完成）
 
-### 步骤 1：把 yerik_coding Skill 加载到你的 AI 工具
+### 步骤 1：把 yeah_coding Skill 加载到你的 AI 工具
 
 将本 Skill 目录（或 `SKILL.md`）告知你的 AI 工具，让它读取 `SKILL.md`。
 
@@ -39,10 +39,10 @@ yerik_coding/
 在 AI 工具对话框中输入（以下任意一种）：
 
 ```
-使用 yerik_coding
+使用 yeah_coding
 ```
 ```
-初始化 yerik_coding /path/to/your/project
+初始化 yeah_coding /path/to/your/project
 ```
 
 AI 将**自动完成**所有安装操作，无需手动执行任何命令：
@@ -107,4 +107,4 @@ AI 将**自动完成**所有安装操作，无需手动执行任何命令：
 ---
 
 > **版本**：v4.0 通用版
-> **作者**：基于 start_coding.md v4.0 封装为 yerik_coding Skill
+> **作者**：基于 start_coding.md v4.0 封装为 yeah_coding Skill

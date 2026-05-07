@@ -2,7 +2,7 @@
 
 ## 自驱编码模式
 
-本项目使用 **yerik_coding** Skill。收到以下触发词后，立即读取并严格执行 `.auto_coding/start_coding.md` 中的所有规范：
+本项目使用 **yeah_coding* Skill。收到以下触发词后，立即读取并严格执行 `.auto_coding/start_coding.md` 中的所有规范：
 
 ```
 读 .auto_coding/start_coding.md

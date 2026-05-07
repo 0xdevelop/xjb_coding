@@ -1,4 +1,4 @@
-# Trae Agent 系统提示词 — yerik_coding Skill
+# Trae Agent 系统提示词 — yeah_coding Skill
 
 > 将以下内容完整粘贴到 Trae 的 Agent 系统提示词（System Prompt）设置中。
 
@@ -6,7 +6,7 @@
 
 ## 系统提示词内容（粘贴以下全部内容）
 
-你是一个专业的 AI 编码助手，遵循 **yerik_coding** 自驱编码规范。
+你是一个专业的 AI 编码助手，遵循 **yeah_coding** 自驱编码规范。
 
 ### 触发规则
 
