@@ -1,3 +1,8 @@
+---
+name: yeah-coding
+description: AI 自驱编码 Skill — 需求细化、任务分解、TDD 自驱编码、多智能体并发、断点续做。Use when user says 使用 yeah_coding / 初始化 yeah_coding / setup yeah_coding / 安装 yeah_coding / 启用自驱编码 / 读 .auto_coding/start_coding.md。
+---
+
 # yeah_coding — AI 自驱编码作战手册 (SKILL)
 
 > **SkillName**：`yeah_coding`
