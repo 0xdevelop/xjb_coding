@@ -1,0 +1,37 @@
+---
+description: yerik_coding — AI 自驱编码规范，触发词收到后自动读取并执行编码作战手册
+globs: ["**/*"]
+alwaysApply: false
+---
+
+# yerik_coding Skill — Cursor Rules
+
+## 触发说明
+
+当用户在 Chat 或 Composer 中输入 `读 .auto_coding/start_coding.md`（或含此短语的消息）时，**立即读取项目中的 `.auto_coding/start_coding.md` 文件并严格按照其中规范执行**，不要跳过任何步骤。
+
+## 模式参数
+
+触发词后可携带可选参数：
+
+- （无参数）→ 全自动：`--refine` + `--task_plan` + `--worker` 串联
+- `--refine` → 只细化需求，输出到 `requirements/details/`，停止
+- `--task_plan` → 只做任务分解，写 TRACKER，不写代码，停止
+- `--review` → 独立生成 16 份评审文档到 `review/`，停止
+- `--worker <agent-id>` → 多智能体并发：自动领取任务 → 分支编码 → 合并 → 循环
+
+## 强制约束（始终生效）
+
+1. `.auto_coding/` 目录下任何文件**禁止加入 git**（包括 `git add -f`）
+2. 禁止 `git add -A` 或 `git add .`，只能精确 add 本任务涉及的文件
+3. 禁止跳过自测（BUILD / TEST / FMT_CHK 全部通过才能标记任务 ✅）
+4. 禁止擅自修改架构，需先标注 ❌ 并说明原因后询问用户
+5. 禁止使用 Docker 进行任何测试或构建操作
+
+## 断点续做
+
+用户发送 `读 .auto_coding/start_coding.md，从断点续做` 时，执行阶段 0 自检后读取 TRACKER.md 断点续做指引，与 git 状态交叉验证后继续执行。
+
+## 多智能体并发说明
+
+使用 `--worker <agent-id>` 时，通过 `.auto_coding/DISPATCH.md` 文件锁协调多个 Cursor 窗口/IDE 并发执行。agent-id 建议使用 `cursor-1`、`cursor-2` 等加以区分。

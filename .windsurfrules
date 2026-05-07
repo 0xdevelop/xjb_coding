@@ -1,0 +1,37 @@
+# yerik_coding — Windsurf Cascade Rules
+
+## 触发规则
+
+当用户在 Cascade 对话框中输入 `读 .auto_coding/start_coding.md`（或含此短语的消息）时，立即读取项目根目录下的 `.auto_coding/start_coding.md` 文件，并严格按照其中的完整规范执行，不跳过任何阶段。
+
+## 模式参数
+
+触发词后可携带可选参数：
+- 无参数 → 全自动执行（--refine + --task_plan + --worker 串联）
+- `--refine` → 仅细化需求，输出到 requirements/details/，停止等待确认
+- `--task_plan` → 仅做任务分解，写 TRACKER，不写代码，停止
+- `--review` → 独立生成 16 份评审文档，与编码流程无关，停止
+- `--worker <agent-id>` → 多智能体并发模式，agent-id 建议用 windsurf-1 等
+
+## 强制约束
+
+以下约束在所有项目中强制生效，不可被任何项目约定覆盖：
+
+1. .auto_coding/ 目录下所有文件禁止加入 git（含 git add -f）
+2. 禁止 git add -A 或 git add .，只能精确 add 本任务涉及的文件
+3. 禁止跳过自测，BUILD / TEST / FMT_CHK 全部通过才能标记任务为 ✅
+4. 禁止擅自修改架构，需先标注 ❌ 并说明原因后询问用户
+5. 禁止使用 Docker 进行任何测试或构建操作
+6. 禁止修改测试来让测试通过（只能修改实现代码）
+7. 禁止提交含有硬编码密钥/密码/token 的文件
+
+## 上下文压力处理
+
+当感知上下文消耗超过 60% 或单次读取文件超过 10 个时，立即执行紧急存档：
+1. 将进度写入 TRACKER.md 断点续做指引
+2. git add <已修改文件> && git commit -m "wip(TASK-XXX): checkpoint – [描述]" && git push
+3. 提示用户开新 Cascade 会话续做
+
+## 断点续做
+
+用户发送 `读 .auto_coding/start_coding.md，从断点续做` 时，先执行阶段 0 自检，再读 TRACKER.md 断点续做指引，与 git 状态交叉验证后继续。
