@@ -2,41 +2,100 @@
 
 一套让任意 AI 编码助手（Claude Code / Cursor / Trae / Windsurf 等）变成**自主编码工程师**的 Skill，支持需求细化、任务分解、TDD 自驱编码、多智能体并发、断点续做。
 
+> **Claude Code 用户**：本仓库已封装为 [Claude Code Plugin](#-claude-code-plugin-推荐安装方式)，支持自动更新。
+> **其他 AI 工具用户**：参考下方[多工具通用安装](#-其他-ai-工具cursor--trae--windsurf--copilot)。
+
 ---
 
-## 📦 文件清单
+## 📦 仓库结构
 
 ```
 yeah_coding/
-├── SKILL.md                          ← Skill 说明文档（主入口）
-├── README.md                         ← 本文件
-├── CLAUDE.md                         ← Claude Code 项目指令（复制到项目根目录）
-├── cursor_rule.mdc                   ← Cursor Rules 配置（放到 .cursor/rules/）
-├── trae_agent_prompt.md              ← Trae Agent 系统提示词说明
-├── .windsurfrules                    ← Windsurf Cascade 规则（放到项目根目录）
-├── universal_system_prompt.md        ← 通用系统提示词（适用任意 AI 工具）
-├── gitignore_snippet.txt             ← 追加到项目 .gitignore 的内容
-└── .auto_coding/                     ← 复制到项目根目录的工作目录
-    ├── start_coding.md               ← 主引擎（核心规范，AI 读取并执行）
-    ├── DISPATCH.md                   ← 多智能体并发调度锁（本地专用）
-    ├── requirements/
-    │   └── 0_template.md            ← 需求文件模板（按需修改）
-    ├── review/                       ← --review 生成的评审文档（自动创建）
-    └── tasks/
-        └── TRACKER.md               ← 进度追踪（AI 自动维护）
+├── .claude-plugin/
+│   └── marketplace.json                                ← Claude Code marketplace 清单
+├── plugins/
+│   └── yeah-coding/
+│       ├── .claude-plugin/
+│       │   └── plugin.json                             ← Plugin 清单（version 在此 bump）
+│       └── skills/
+│           └── yeah-coding/
+│               ├── SKILL.md                            ← Skill 主入口（含 YAML frontmatter）
+│               ├── CLAUDE.md                           ← Claude Code 项目指令模板
+│               └── .auto_coding/                       ← 工作目录模板（INIT-4 复制目标）
+│                   ├── start_coding.md                 ← 主引擎（核心规范）
+│                   ├── DISPATCH.md                     ← 多智能体并发调度锁
+│                   ├── requirements/0_template.md      ← 需求文件模板
+│                   └── tasks/TRACKER.md                ← 进度追踪
+├── README.md                                           ← 本文件
+├── CLAUDE.md                                           ← 本仓库自身的开发指令（自用）
+├── cursor_rule.mdc                                     ← Cursor Rules（非 Claude Code 用户用）
+├── .windsurfrules                                      ← Windsurf Cascade 规则
+├── trae_agent_prompt.md                                ← Trae Agent 系统提示词
+├── universal_system_prompt.md                          ← 通用系统提示词（任意 AI 工具）
+└── gitignore_snippet.txt                               ← .gitignore 追加片段
 ```
 
 ---
 
-## 🚀 快速开始（2 步完成）
+## 🚀 Claude Code Plugin（推荐安装方式）
 
-### 步骤 1：把 yeah_coding Skill 加载到你的 AI 工具
+### 首次安装（私有仓库）
 
-将本 Skill 目录（或 `SKILL.md`）告知你的 AI 工具，让它读取 `SKILL.md`。
+> **前提**：你已被加入仓库 collaborator，本地 GitHub SSH key 已配好（`ssh -T git@github.com` 能成功）。
 
-### 步骤 2：发送初始化触发词
+在 Claude Code 中执行：
 
-在 AI 工具对话框中输入（以下任意一种）：
+```
+/plugin marketplace add git@github.com:0xYeah/yeah_coding.git
+/plugin install yeah-coding@yeah-coding-marketplace
+/reload-plugins
+```
+
+安装后直接发送触发词：
+
+```
+使用 yeah_coding
+```
+或
+```
+初始化 yeah_coding /path/to/your/project
+```
+
+### 更新到新版本
+
+作者 bump `plugin.json` 的 `version` 字段并 push 后，用户：
+
+```
+/plugin marketplace update yeah-coding-marketplace
+/reload-plugins
+```
+
+或在 Claude Code 启动时由自动检测提示更新。
+
+### 卸载
+
+```
+/plugin uninstall yeah-coding@yeah-coding-marketplace
+/plugin marketplace remove yeah-coding-marketplace
+```
+
+---
+
+## 🛠 其他 AI 工具（Cursor / Trae / Windsurf / Copilot）
+
+这些工具没有 Claude Code 的 plugin 机制，仍以 clone 仓库 + 复制文件方式使用。
+
+### 步骤 1：Clone 本仓库（私有，需 SSH 鉴权）
+
+```
+git clone git@github.com:0xYeah/yeah_coding.git
+```
+
+### 步骤 2：让 AI 读取 SKILL.md
+
+将 `plugins/yeah-coding/skills/yeah-coding/SKILL.md` 路径告知你的 AI 工具，让它读取并按其中的 INIT 流程初始化。
+
+### 步骤 3：发送初始化触发词
 
 ```
 使用 yeah_coding
