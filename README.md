@@ -15,7 +15,6 @@
 | 模糊需求 | `--refine` 模式：把"做个登录页"细化成可拆任务的需求（字段定义、状态机、错误码、边界条件） |
 | 任务规划 | `--task_plan` 模式：按依赖关系和优先级（P0~P3）拆任务，每任务 ≤5 文件、≤300 行，写进 `TRACKER.md` |
 | 全自动开发 | 默认无参数：需求 → 拆任务 → TDD 自驱编码（红→绿→重构）→ 自检 BUILD / TEST / FMT_CHK 全绿才标记完成 |
-| 评审备料 | `--review` 模式：一键生成 16 份评审文档（架构图、ER 图、权限矩阵、API 一览、安全审计点等） |
 | 多人并发 | `--worker <agent-id>`：多 IDE / 多会话靠文件锁瓜分任务，互不冲突 |
 | 上下文耗尽 | 消耗 >60% 自动存档；新会话发"从断点续做"无损恢复 |
 | 卡住升级 | 同一错误重试 3 次后自动停手通知人工介入，不会陷死循环 |
@@ -46,6 +45,12 @@
 /plugin install yeah-coding@yeah-coding-marketplace
 /reload-plugins
 ```
+
+> **多账号 / 私库 SSH host alias**：如果你机器上是多 GitHub 账号且为本仓库配了独立 alias（如 `~/.ssh/config` 里 `Host github-0xYeah`），把第一行换成：
+>
+> ```
+> /plugin marketplace add git@github-0xYeah:0xYeah/yeah_coding.git
+> ```
 
 ### 2. 验证安装成功
 
@@ -128,7 +133,6 @@ setup yeah_coding
 | 默认 | `读 .auto_coding/start_coding.md` | 细化需求 → 拆任务 → 编码，一气呵成 | 直接开干，需求清晰 |
 | `--refine` | `... --refine` | 只细化需求到 `requirements/details/`，**停**等确认 | 需求碎片化或术语混乱 |
 | `--task_plan` | `... --task_plan` | 接续已细化需求做任务分解，写 TRACKER，**停**不写代码 | 想人工确认任务列表再开干 |
-| `--review` | `... --review` | 独立生成 16 份评审文档到 `review/`，**停** | 评审会议备料，与开发无关 |
 | `--worker <id>` | `... --worker cursor-1` | 多智能体并发：领锁 → 独立分支编码 → 合并 → 循环 | 多 IDE / 多会话同时开发 |
 | 断点续做 | `读 .auto_coding/start_coding.md，从断点续做` | 读 TRACKER 找未完任务接着做 | 任意中断后 |
 

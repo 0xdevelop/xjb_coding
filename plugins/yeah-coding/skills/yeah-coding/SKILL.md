@@ -121,7 +121,6 @@ INIT-8. 询问是否立即启动
 | （无参数） | **全自动**：细化需求 → 拆任务 → 编码，一气呵成 | 直接开干 |
 | `--refine` | 只细化需求，输出到 `requirements/details/`，**停止** | 需求碎片化或术语混乱 |
 | `--task_plan` | 接续已细化需求做任务分解，写 TRACKER，**不写代码，停止** | 需要人工确认任务列表 |
-| `--review` | 独立生成 16 份评审文档到 `review/`，**停止** | 评审会议备料，与开发无关 |
 | `--worker <agent-id>` | 多智能体并行开发：领取任务 → 独立分支编码 → 合并 → 循环 | 多 IDE / 多会话并发 |
 
 **主流程递进**：`--refine` → `--task_plan` → `--worker`，无参数是三者完整串联。
@@ -165,10 +164,6 @@ your-project/
 │   │   ├── backlog.md               ← 草稿（AI 不自动拆任务）
 │   │   └── details/                 ← --refine 输出的细化需求（AI 优先读此处）
 │   │       └── <topic>_details.md
-│   ├── review/                      ← --review 生成的 16 份评审文档
-│   │   ├── 00_overview.md
-│   │   ├── 01_architecture.md
-│   │   └── ... (共 16 份)
 │   └── tasks/
 │       ├── TRACKER.md               ← 唯一进度真相源
 │       ├── DISPATCH.md              ← 多智能体并发锁（本地专用，不进 git）

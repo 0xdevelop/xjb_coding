@@ -8,10 +8,9 @@
 > | （无参数） | **全自动**：`--refine` + `--task_plan` + `--worker` 串联执行，一气呵成 | 直接开干 |
 > | `--refine` | 只细化需求：读原始需求 → 去歧义/对齐术语 → 输出到 requirements/details/，**停止** | 需求碎片化或术语混乱，先打磨 |
 > | `--task_plan` | 接续已细化需求做任务分解：读 details/ → 拆任务 → 写 TRACKER，**不写代码，停止** | 需要人工确认任务列表再开工 |
-> | `--review` | **独立**：读 requirements/ + details/ → 生成/刷新 review/ 下全部 16 份评审文档，**停止** | 随时出评审材料，与开发流程无关 |
 > | `--worker <agent-id>` | 接续已有 TRACKER：自动领取可用任务 → 独立分支编码 → 完成后循环领取下一个，直至无任务可做 | 单/多智能体并行开发 |
 >
-> **主流程递进**：`--refine` → `--task_plan` → `--worker`，无参数是三者的完整串联。`--review` 是独立旁支。
+> **主流程递进**：`--refine` → `--task_plan` → `--worker`，无参数是三者的完整串联。
 
 ---
 
@@ -31,7 +30,7 @@
 ⑤ 将细化结果**写入 requirements/details/<topic>_details.md**（不修改原始需求文件）
    - 文件名与原始文件主题对应，如 0_enterprise_saas.md → details/enterprise_saas_details.md
    - 已存在则覆盖更新，不追加
-⑥ 输出摘要："已细化 N 个主题，输出到 requirements/details/，共识别 X 个模糊点，Y 个待决策项，请确认后可执行 --review 或 --plan。"
+⑥ 输出摘要："已细化 N 个主题，输出到 requirements/details/，共识别 X 个模糊点，Y 个待决策项，请确认后可执行 --task_plan 或全自动模式。"
 ⑦ 停止，等待用户确认
 ```
 
@@ -44,20 +43,6 @@
 ④ 输出摘要："已完成任务分解，共 M 个任务，请确认后可执行 --worker 或全自动模式。"
 ⑤ 停止，等待用户确认
 ```
-
-### `--review` 模式（独立，与编码流程无关）
-
-```
-① 执行阶段 0 自检
-② 执行 --refine 流程（细化需求，写入 requirements/details/）
-③ 生成/覆盖 .auto_coding/review/ 下全部 16 份评审文档（见下方"评审文档规范"）
-   - review/ 不存在则创建；已有文档则覆盖
-   - 每份文档生成后验证 Mermaid 语法
-④ 输出摘要："已细化需求并生成评审文档 16 份，输出到 .auto_coding/review/。"
-⑤ 停止
-```
-
-> `--review` = 需求细化 → 评审文档，专为评审会议准备材料，不依赖 TRACKER，不触发任何编码动作。
 
 ### 无参数（全自动）模式
 
@@ -136,168 +121,6 @@ W11. 回到 W1，继续领取下一个任务
 | 任务分支悬空不合并 | W8 强制 merge-to-main + 删除分支，仓库始终只有 main 一条活跃线 |
 
 ---
-
-## 评审文档规范（`--plan` 模式自动生成）
-
-### 输出目录
-
-```
-.auto_coding/review/
-├── 00_overview.md          ← 总览：项目定位、范围、受众导读
-├── 01_architecture.md      ← 系统架构（架构组 / 技术负责人）
-├── 02_module_deps.md       ← 模块依赖关系（架构组）
-├── 03_data_flow.md         ← 请求链路数据流（架构组 / QA）
-├── 04_state_machines.md    ← 所有状态机（架构组 / QA）
-├── 05_memory_flow.md       ← 记忆体系流转（架构组）
-├── 06_er_diagram.md        ← 核心数据模型（架构组 / DBA）
-├── 07_api_contracts.md     ← 接口契约清单（对接方 / 前端 / 网关）
-├── 08_security_boundary.md ← 安全边界与数据分级（审计组 / 安全）
-├── 09_permission_matrix.md ← RBAC 权限矩阵（审计组 / 产品）
-├── 10_sequence_diagrams.md ← 核心场景序列图（产品组 / QA）
-├── 11_deployment_topology.md ← 部署拓扑与外部依赖（运维 / 架构）
-├── 12_config_reference.md  ← 配置项全清单（运维 / 实施）
-├── 13_feature_coverage.md  ← 功能覆盖与验收标准（产品组）
-├── 14_mindmap.md           ← 功能脑图总览（产品组 / 管理层）
-└── 15_task_breakdown.md    ← 任务拆解树（项目管理 / 开发）
-```
-
-### 各文档内容规范
-
-#### 00_overview.md
-- 项目一句话定位
-- 系统边界（做什么 / 不做什么）
-- 版本范围说明
-- 本文档包受众导读表（哪组看哪几份）
-
-#### 01_architecture.md（架构组 / 技术负责人）
-Mermaid `graph TD`，展示：
-- 系统分层（每层一个节点组）
-- 各层模块归属
-- 层间依赖方向（单向向下箭头）
-- 外部依赖标注（账号服务、私有模型推理服务）
-
-#### 02_module_deps.md（架构组）
-Mermaid `graph LR`，展示：
-- 所有内部模块节点
-- 调用关系箭头（A 调用 B 则 A→B）
-- 标注接口类型（gRPC / 内部调用 / 事件总线）
-- 禁止循环依赖，发现则标注 ❌
-
-#### 03_data_flow.md（架构组 / QA）
-Mermaid `sequenceDiagram`，覆盖以下场景各出一张：
-- 正常请求完整链路（入口 → 编排 → Fan-out → 策略 → 返回）
-- SubAgent 并行执行与结果折叠
-- 记忆压缩触发流程
-- 跨会话续接（Resume）流程
-
-#### 04_state_machines.md（架构组 / QA）
-Mermaid `stateDiagram-v2`，每个状态机独立一张：
-- Session 状态机（INIT/ACTIVE/SUSPENDED/RESUMED/TERMINATED）
-- 熔断器状态机（CLOSED/OPEN/HALF-OPEN + 触发条件 + 转换规则）
-- Agent 生命周期状态机（draft/active/paused/destroyed）
-- Task 状态机（pending/running/blocked/completed/failed）
-
-#### 05_memory_flow.md（架构组）
-Mermaid `flowchart TD`，展示：
-- L1/L2/L3 正常写入路径
-- 压缩触发条件与执行步骤
-- 熔断时 L1 快照流程
-- 续接恢复重建顺序（L3→L2→L1）
-- 降级四档决策树
-
-#### 06_er_diagram.md（架构组 / DBA）
-Mermaid `erDiagram`，覆盖核心实体：
-- Agent / AgentVersion / SubAgentRef
-- Session / Message / MemoryRecord
-- Tenant / User / Permission
-- ModelProvider / ModelCapability
-- MCPServer / MCPGrant
-- Task / TaskDependency
-- AuditLog
-
-#### 07_api_contracts.md（对接方 / 前端 / 网关）
-- gRPC 服务定义清单（服务名 / 方法 / 请求类型 / 响应类型 / 流式方向）
-- 主要 proto message 字段说明（伪代码形式，不必是真实 proto）
-- MCP 工具注册协议说明
-- JSON-RPC 方法清单
-- CLI 命令清单
-- 错误码规范（code / message 约定）
-
-#### 08_security_boundary.md（审计组 / 安全）
-Mermaid `graph TD`，展示：
-- 系统信任边界（内网边界 / 服务间边界）
-- 数据分级标注（公开 / 内部 / 敏感 / 机密）
-- 加密点标注（传输加密 / 静态加密，AES-256-GCM 位置）
-- 外部调用点（账号服务 / 私有模型 / 外部大模型 API）
-- 敏感数据流向（API Key 从入库到使用的完整路径）
-
-附表：
-- 敏感数据清单（字段名 / 分级 / 存储位置 / 加密方式）
-- 外部网络调用清单（目标 / 协议 / 是否出内网）
-
-#### 09_permission_matrix.md（审计组 / 产品）
-Markdown 表格，行 = 操作项，列 = 角色（owner/admin/operator/viewer）：
-- Agent CRUD
-- 模型配置管理
-- 会话查询 / 删除
-- 记忆读写 / 清除
-- 审计日志查看
-- 熔断器配置
-- MCP Server 管理
-- 租户管理
-
-#### 10_sequence_diagrams.md（产品组 / QA）
-Mermaid `sequenceDiagram`，面向产品视角（不暴露内部实现细节），覆盖：
-- 用户发送消息 → Agent 响应完整交互
-- Agent spawn SubAgent 并等待结果
-- 模型熔断后 fallback 到备用模型
-- 会话断开后用 session_id 续接
-- MCP 工具调用交互
-
-#### 11_deployment_topology.md（运维 / 架构）
-Mermaid `graph TD`，展示：
-- 进程/服务部署结构（主进程 / 缓存 / 数据库等）
-- 内网服务依赖（账号服务 / 推理服务 / 其他微服务）
-- 网关程序与本服务的通信链路
-- 多实例部署时的共享状态（缓存状态 / 数据库 Schema）
-
-附表：
-- 外部依赖服务清单（服务名 / 协议 / 端口 / 用途 / 是否必须）
-- 环境变量清单（变量名 / 说明 / 是否必填 / 默认值）
-
-#### 12_config_reference.md（运维 / 实施）
-完整配置项表格：
-- 配置项名称 / 所属模块 / 类型 / 默认值 / 说明 / 覆盖粒度（全局/租户/Agent）
-- 分组：[按项目实际模块拆分，如：数据库 / 缓存 / 模型适配 / 业务参数 / 熔断阈值 / 其他]
-
-#### 13_feature_coverage.md（产品组）
-- 功能模块列表（对应需求文件中每个模块）
-- 每个功能的验收标准 checklist（`- [ ]` 格式）
-- 明确标注"不在范围"的功能（防止误判遗漏）
-- 版本对应关系（哪个版本实现哪些功能）
-
-#### 14_mindmap.md（产品组 / 管理层）
-Mermaid `mindmap`，根节点 = 项目名，展开：
-- 按层级展开所有功能模块
-- 标注 v0.0.1（本版本）/ 后续版本
-- 适合快速向管理层或新成员介绍全貌
-
-#### 15_task_breakdown.md（项目管理 / 开发）
-Mermaid `mindmap` 或 `graph TD`，展示：
-- 所有任务节点（TASK-XXX）
-- 按层级分组（backend/api/infra 等）
-- 标注依赖关系
-- 标注优先级（P0/P1/P2/P3）
-
----
-
-### 生成质量要求
-
-- 每份文档顶部附"受众"和"用途"两行说明
-- Mermaid 图生成后**自行验证语法正确**（不输出语法错误的图）
-- 图节点命名用英文（防止 Mermaid 中文渲染问题），注释/标注用中文
-- 文档间交叉引用（如 08 安全边界图中的加密点，在 06 ER 图中有对应字段）
-- 所有图和表都从需求文件内容推导生成，不编造需求中没有的内容
 
 ## 全局硬约束（所有项目强制生效，不可被项目特定约定区覆盖）
 
@@ -606,7 +429,6 @@ LINT:    dotnet build -warnaserror (可选)
 │   ├── backlog.md          ← 草稿，AI 不自动拆任务
 │   └── details/            ← 细化后的需求（--refine 输出，AI 优先读此处）
 │       └── <topic>_details.md
-├── review/                 ← 评审文档包（--review / --plan 生成，可独立刷新）
 └── tasks/
     ├── TRACKER.md          ← 唯一进度真相源
     └── [层级]/             ← 各层任务文件，按项目实际模块命名
@@ -872,7 +694,6 @@ AI 不能无限重试。出现以下情况时**必须停下来通知用户**，�
 在以下任意情况出现时，**立即执行紧急存档**再继续：
 
 - 感知到上下文已消耗超过 60%
-- 单次对话回合内读取文件超过 10 个
 - 当前任务涉及文件数超过约束上限（5 个）
 - 用户提示 token 不足 / 会话即将结束
 
