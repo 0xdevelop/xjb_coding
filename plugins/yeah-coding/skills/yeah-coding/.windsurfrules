@@ -10,7 +10,6 @@
 - 无参数 → 全自动执行（--refine + --task_plan + --worker 串联）
 - `--refine` → 仅细化需求，输出到 requirements/details/，停止等待确认
 - `--task_plan` → 仅做任务分解，写 TRACKER，不写代码，停止
-- `--review` → 独立生成 16 份评审文档，与编码流程无关，停止
 - `--worker <agent-id>` → 多智能体并发模式，agent-id 建议用 windsurf-1 等
 
 ## 强制约束
@@ -27,7 +26,9 @@
 
 ## 上下文压力处理
 
-当感知上下文消耗超过 60% 或单次读取文件超过 10 个时，立即执行紧急存档：
+紧急存档**只在外部信号触发**：收到 Cascade 的 compaction / context warning，或用户说"快满了 / 换会话 / token 不足"，或当前任务读文件已超过 5 个。**不基于自我估算百分比触发**——LLM 自感知不准。
+
+存档步骤：
 1. 将进度写入 TRACKER.md 断点续做指引
 2. git add <已修改文件> && git commit -m "wip(TASK-XXX): checkpoint – [描述]" && git push
 3. 提示用户开新 Cascade 会话续做

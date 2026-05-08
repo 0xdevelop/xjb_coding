@@ -17,7 +17,6 @@ alwaysApply: false
 - （无参数）→ 全自动：`--refine` + `--task_plan` + `--worker` 串联
 - `--refine` → 只细化需求，输出到 `requirements/details/`，停止
 - `--task_plan` → 只做任务分解，写 TRACKER，不写代码，停止
-- `--review` → 独立生成 16 份评审文档到 `review/`，停止
 - `--worker <agent-id>` → 多智能体并发：自动领取任务 → 分支编码 → 合并 → 循环
 
 ## 强制约束（始终生效）
