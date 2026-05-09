@@ -71,7 +71,13 @@ INIT-6. 检测当前 AI 工具并复制对应配置文件
 
   → 输出："✅ 已复制 [工具名] 配置文件" 或 "⚠️ 未检测到工具类型，跳过配置文件复制"
 
-INIT-7. 输出初始化完成摘要
+INIT-7. 检测 yeah_code MCP daemon（推荐后端）
+  → 尝试调用 MCP 工具：task.next(agent_id="claude-init-check")
+  → 工具存在并响应（不论返回任务还是 null）→ 标记 MCP_AVAILABLE=true
+  → 工具不存在 / 调用失败 → 标记 MCP_AVAILABLE=false
+  → daemon 不是必需，但强烈推荐——MCP 模式下任务并发、断点续做、远程审批都更可靠
+
+INIT-8. 输出初始化完成摘要
   → 格式：
     ---
     🎉 yeah_coding 初始化完成
@@ -80,12 +86,19 @@ INIT-7. 输出初始化完成摘要
       ✅ .auto_coding/ 工作目录已就绪
       ✅ .gitignore 已配置
       ✅ [工具配置文件] 已复制（或 ⚠️ 未检测到工具，请参考 SKILL.md §五 手动配置）
-    
+    yeah_code MCP daemon：
+      （若 MCP_AVAILABLE）✅ 已连接 → 工作流由 daemon 驱动（强一致 / 多 agent / web UI）
+      （若不可用）⚠️ 未连接 → 当前回退到 markdown 模式（功能受限）。推荐安装：
+          git clone git@github.com:0xYeah/yeah_code.git
+          cd yeah_code && go build -o yeah_code . && ./yeah_code &
+          claude mcp add --transport http yeah-code http://localhost:12100/mcp
+        然后 /reload-plugins 后重发触发词即可切到 MCP 模式。
+
     下一步：在此工具中输入触发词开始编码：
       读 .auto_coding/start_coding.md
     ---
 
-INIT-8. 询问是否立即启动
+INIT-9. 询问是否立即启动
   → "是否现在立即开始？直接回复'开始'或发送触发词即可。"
   → 等待用户指令，不自动进入编码流程
 ```
@@ -158,20 +171,23 @@ cp -r plugins/yeah-coding/skills/yeah-coding/.auto_coding/ /your/project/root/
 your-project/
 ├── .auto_coding/                    ← Skill 本体（复制到项目根目录）
 │   ├── start_coding.md              ← 主引擎文件（不可修改主体）
-│   ├── requirements/                ← 需求文件目录（可选）
+│   ├── requirements/                ← 需求文件（可选；MCP 模式下用 requirement.* 工具，下面文件作起点输入）
 │   │   ├── 0_<主题>.<ext>           ← 原始需求（md/pdf/png/jpg 均可）
 │   │   ├── v<版本>_<主题>.<ext>     ← 版本迭代需求
 │   │   ├── backlog.md               ← 草稿（AI 不自动拆任务）
-│   │   └── details/                 ← --refine 输出的细化需求（AI 优先读此处）
+│   │   └── details/                 ← --refine 输出的细化需求
 │   │       └── <topic>_details.md
-│   └── tasks/
-│       ├── TRACKER.md               ← 唯一进度真相源
-│       ├── DISPATCH.md              ← 多智能体并发锁（本地专用，不进 git）
+│   └── tasks/                       ← 仅 markdown 回退模式使用；MCP 模式状态在 SQLite
+│       ├── TRACKER.md               ← markdown 回退：进度真相源
+│       ├── DISPATCH.md              ← markdown 回退：文件锁（已废，MCP 模式用 DB 行锁）
 │       └── [层级]/                  ← 各层任务文件
 │           └── TASK-XXX.md
 ├── .gitignore                       ← 需包含 .auto_coding/ 排除规则
 └── ... (项目源码)
 ```
+
+> **MCP 模式下**：上面 `tasks/` 目录基本不用——任务状态全部在 yeah_code daemon 的 SQLite 里，通过 `task.list` / `task.next` 等 MCP 工具访问。`requirements/` 目录的 md/pdf/png 文件仍可作为 AI 拆需求的起点输入。
+> **markdown 回退模式下**（daemon 不可用）：上面所有文件都启用，AI 手动维护 TRACKER.md。
 
 ---
 
@@ -221,12 +237,15 @@ your-project/
 本 Skill 赋予 AI 编码助手以下能力，详细规范见 `start_coding.md`：
 
 - **自动识别项目语言**（Go/Rust/TS/JS/Python/Java/Kotlin/C++/C#）并加载对应工具链命令
-- **需求管理**：支持 md/pdf/png/jpg 格式的原始需求，自动细化去歧义
-- **任务拆解**：按依赖关系和优先级（P0~P3）拆成细粒度任务（≤5 文件，≤300 行/任务）
-- **TDD 自驱编码**：红→绿→重构，质量门禁（BUILD/TEST/FMT_CHK）全部通过才标记完成
-- **多智能体并发**：通过 DISPATCH.md 文件锁实现无冲突并发，支持多 IDE 同时开发同一仓库
-- **上下文保护**：收到压缩信号或用户提示时自动存档，断点续做无损恢复
-- **卡住升级协议**：同一错误重试 3 次后自动通知人工介入
+- **需求管理**：MCP 工具 `requirement.add` / `refine` / `detect_drift`，markdown 模式支持 md/pdf/png/jpg 格式
+- **任务拆解**：按依赖（`task.assign`）和优先级（P0~P3）拆，每任务 ≤5 文件、≤300 行
+- **TDD 自驱编码**：红→绿→重构，质量门禁（BUILD/TEST/FMT_CHK）全绿才 `task.complete`
+- **多智能体并发**：MCP 模式用 DB 行级锁 `task.lock`（强一致），markdown 回退用 DISPATCH.md 文件锁
+- **上下文保护**：`session.checkpoint` 写 L3 memory，新会话 `session.restore` 续做
+- **卡住 / 决策点（happy 风格）**：`request.approval(prompt, options)` 阻塞等用户从 web/手机响应；同一错误 3 次失败自动触发
+- **Web 实时观测**：dashboard `:12101`（agents 在线、tasks 队列、approvals 等待响应、SSE 实时推送）
+
+> **驱动模型**：上述能力由 [yeah_code MCP daemon](https://github.com/0xYeah/yeah_code) 提供。安装见 README。daemon 不可用时自动回退到 markdown 模式（功能受限）。
 
 ---
 

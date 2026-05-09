@@ -1,10 +1,28 @@
-# yeah_coding — AI 自驱编码 Skill
+# yeah_coding — AI 自驱编码 Skill (MCP-driven)
 
-让任意 AI 编码助手（Claude Code / Cursor / Trae / Windsurf / Copilot 等）变成**自主编码工程师**：拿到需求自动细化 → 拆任务 → 跑 TDD → 补测试 → 卡住升级，多 IDE 还能并发开发同一仓库。
+让任意 AI 编码助手（Claude Code / Cursor / Trae / Windsurf / Copilot 等）变成**自主编码工程师**：拿到需求自动细化 → 拆任务 → 跑 TDD → 补测试 → 卡住远程审批，多 IDE 还能并发开发同一仓库。
 
-> **Claude Code 用户**：装 plugin → 发触发词，30 秒搞定。直接跳到 [Claude Code Plugin 安装](#claude-code-plugin-安装)。
+**架构（v0.0.10 起）**：本 skill 是 **plugin 前端**，提示词指导 AI 调用 [yeah_code MCP daemon](https://github.com/0xYeah/yeah_code) 提供的工具来执行工作流。daemon 不可用时自动回退到 markdown 自驱模式（功能受限）。
+
+```
+┌─────────────────┐  trigger word    ┌──────────────────┐  MCP tools     ┌────────────────┐
+│ Claude Code /   │ ───────────────▶ │ yeah_coding      │ ─────────────▶ │ yeah_code      │
+│ Cursor / etc.   │                  │ skill (this)     │  HTTP :12100   │ daemon         │
+│ (LLM)           │ ◀──────────────  │ (prompts)        │ ◀─────────────  │ (Go, SQLite)   │
+└─────────────────┘  decisions       └──────────────────┘  state          └────────────────┘
+                                                                                  │
+                                                                                  │ web :12101
+                                                                                  ▼
+                                                                          ┌─────────────┐
+                                                                          │ Dashboard   │
+                                                                          │ (你 / 团队  │
+                                                                          │  / 手机)    │
+                                                                          └─────────────┘
+```
+
+> **Claude Code 用户**：装 plugin + 装 daemon → 发触发词，2 分钟搞定。跳到 [Claude Code 完整安装](#claude-code-plugin-安装)。
 >
-> **其他 AI 工具用户**（Cursor / Trae / Windsurf / Copilot 等）：clone 仓库 → 让 AI 读 `SKILL.md` → 发触发词。跳到 [其他 AI 工具](#其他-ai-工具cursor--trae--windsurf--copilot-等)。
+> **其他 AI 工具用户**（Cursor / Trae / Windsurf / Copilot 等）：clone 仓库 → 让 AI 读 `SKILL.md` → 配 MCP daemon → 发触发词。跳到 [其他 AI 工具](#其他-ai-工具cursor--trae--windsurf--copilot-等)。
 
 ---
 
@@ -12,12 +30,13 @@
 
 | 场景 | yeah_coding 怎么帮你 |
 |------|----------------------|
-| 模糊需求 | `--refine` 模式：把"做个登录页"细化成可拆任务的需求（字段定义、状态机、错误码、边界条件） |
-| 任务规划 | `--task_plan` 模式：按依赖关系和优先级（P0~P3）拆任务，每任务 ≤5 文件、≤300 行，写进 `TRACKER.md` |
-| 全自动开发 | 默认无参数：需求 → 拆任务 → TDD 自驱编码（红→绿→重构）→ 自检 BUILD / TEST / FMT_CHK 全绿才标记完成 |
-| 多人并发 | `--worker <agent-id>`：多 IDE / 多会话靠文件锁瓜分任务，互不冲突 |
-| 上下文耗尽 | 收到 Claude Code 压缩信号或用户提示时自动存档；新会话发"从断点续做"无损恢复 |
-| 卡住升级 | 同一错误重试 3 次后自动停手通知人工介入，不会陷死循环 |
+| 模糊需求 | `--refine` 模式：调 `requirement.add` + `requirement.refine` 把"做个登录页"细化成可拆任务的需求 |
+| 任务规划 | `--task_plan` 模式：按依赖（`task.assign`）和优先级（P0~P3）多次 `task.add`，每任务 ≤5 文件 / ≤300 行 |
+| 全自动开发 | 无参数：需求 → 任务 → worker 循环（`task.next` + `task.lock`）→ TDD → BUILD/TEST/FMT_CHK 全绿才 `task.complete` |
+| 多 IDE 并发 | `--worker <agent-id>`：DB 行级锁 (`task.lock`) 替代文件锁，强一致；多 IDE / 多机器同 daemon 共享状态 |
+| 上下文耗尽 | `session.checkpoint(snapshot)` 写 L3 memory；新会话 `session.restore` 续做 |
+| 卡住远程审批 | `request.approval(prompt, options)` 阻塞，用户在 web/手机 dashboard 点选 → AI 解阻塞（happy 风格） |
+| 实时观测 | dashboard `:12101`：agents 在线、任务队列、approvals 等待响应、SSE 实时推送 |
 
 支持语言：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 
@@ -27,10 +46,47 @@
 
 | 工具 | 前提 |
 |------|------|
-| Claude Code | Claude Code 已装（`claude --version` 能跑）+ GitHub SSH key 已配好（`ssh -T git@github.com` 能成功）+ 已加入本仓库 collaborator |
+| Claude Code | Claude Code 已装（`claude --version` 能跑）+ GitHub SSH key 已配好（`ssh -T git@github.com` 能成功）+ 已加入本仓库和 yeah_code 仓库 collaborator |
+| Go | ≥ 1.25.0（编译 yeah_code daemon 用） |
 | 其他 AI 工具 | 上面 GitHub 鉴权 + 目标 AI 工具自身已就绪 |
 
 > 本仓库是**私有仓库**，安装走 SSH URL 形式（`git@github.com:...`）。如果你机器上是多 GitHub 账号，请用对应的 host alias（例如 `git@github.com-personal:...`）。
+
+---
+
+## yeah_code daemon 安装（**推荐**，所有部署形态首选）
+
+不装 daemon 也能用——skill 会自动回退到 markdown 模式，但功能受限（单 agent / 无 web UI / 无远程审批）。强烈推荐装 daemon 拿到完整能力。
+
+### 本机最小安装（一次配好）
+
+```bash
+# 1. clone + build + 启动 daemon
+git clone git@github.com:0xYeah/yeah_code.git
+cd yeah_code
+go build -o yeah_code .
+./yeah_code &                           # 监听 :12095(JSON-RPC) :12100(MCP) :12101(Web)
+
+# 2. 告诉 Claude Code 去连这个 MCP server
+claude mcp add --transport http yeah-code http://localhost:12100/mcp
+
+# 3. 浏览器看 dashboard
+open http://localhost:12101/
+```
+
+`./yeah_code` 默认在前台运行；要装成开机自启的 systemd / brew service 看 yeah_code 仓库 README。
+
+### 局域网 / 云部署
+
+参见 [yeah_code README](https://github.com/0xYeah/yeah_code#部署模式) — 推荐 daemon 自身只跑 plain HTTP，前面挂 nginx/Caddy 卸载 TLS + Bearer token 鉴权。
+
+### 验证 daemon 工作
+
+```bash
+# 列已注册 MCP 工具（应看到 29 个，含 task.next / task.lock / request.approval / 等）
+curl -s http://localhost:12100/mcp -X POST -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | head -c 500
+```
 
 ---
 
