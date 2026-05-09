@@ -37,6 +37,7 @@
 | 上下文耗尽 | `session.checkpoint(snapshot)` 写 L3 memory；新会话 `session.restore` 续做 |
 | 卡住远程审批 | `request.approval(prompt, options)` 阻塞，用户在 web/手机 dashboard 点选 → AI 解阻塞（happy 风格） |
 | 实时观测 | dashboard `:12101`：agents 在线、任务队列、approvals 等待响应、SSE 实时推送 |
+| 离开电脑也能批 | yeah_code v0.0.2 起内嵌 WeChat iLink bot：approval 推到你 WeChat，回 `1` / `2` / `3` 即解阻塞 |
 
 支持语言：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 
@@ -56,7 +57,7 @@
 
 ## yeah_code daemon 安装（**推荐**，所有部署形态首选）
 
-不装 daemon 也能用——skill 会自动回退到 markdown 模式，但功能受限（单 agent / 无 web UI / 无远程审批）。强烈推荐装 daemon 拿到完整能力。
+不装 daemon 也能用——skill 会自动回退到 markdown 模式，但功能受限（单 agent / 无 web UI / 无远程审批 / 无 WeChat 控制面）。强烈推荐装 daemon（当前推荐版本 **v0.0.2**，含 Phase A→E 全特性）拿到完整能力。
 
 ### 本机最小安装（一次配好）
 
