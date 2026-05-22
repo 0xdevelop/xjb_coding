@@ -20,7 +20,9 @@
                                                                           └─────────────┘
 ```
 
-> **Claude Code 用户**：装 plugin + 装 daemon → 发触发词，2 分钟搞定。跳到 [Claude Code 完整安装](#claude-code-plugin-安装)。
+> **Claude Code 用户**：装 plugin + 装 daemon → 发触发词，2 分钟搞定。跳到 [Claude Code Plugin 安装](#claude-code-plugin-安装)。
+>
+> **Codex 用户**：装 Codex plugin + 装 daemon → 让 Codex 做 controller，worker 做小范围实现。跳到 [Codex Plugin 安装](#codex-plugin-安装)。
 >
 > **其他 AI 工具用户**（Cursor / Trae / Windsurf / Copilot 等）：clone 仓库 → 让 AI 读 `SKILL.md` → 配 MCP daemon → 发触发词。跳到 [其他 AI 工具](#其他-ai-工具cursor--trae--windsurf--copilot-等)。
 
@@ -48,6 +50,7 @@
 | 工具 | 前提 |
 |------|------|
 | Claude Code | Claude Code 已装（`claude --version` 能跑）+ GitHub SSH key 已配好（`ssh -T git@github.com` 能成功）+ 已加入本仓库和 yeah_code 仓库 collaborator |
+| Codex | Codex CLI 已装（`codex --version` 能跑）+ GitHub SSH key 已配好（`ssh -T git@github.com` 能成功）+ 已加入本仓库和 yeah_code 仓库 collaborator |
 | Go | ≥ 1.25.0（编译 yeah_code daemon 用） |
 | 其他 AI 工具 | 上面 GitHub 鉴权 + 目标 AI 工具自身已就绪 |
 
@@ -93,7 +96,7 @@ curl -s http://localhost:12100/mcp -X POST -H "Content-Type: application/json" \
 
 ## Claude Code Plugin 安装
 
-### 1. 添加 marketplace 并安装 plugin
+### 1. 从 GitHub 添加 marketplace 并安装 plugin
 
 在任意 Claude Code 会话里执行三条命令：
 
@@ -143,12 +146,27 @@ AI 回复类似下面就是装好了：
 
 Codex 使用独立 manifest：`plugins/yeah-coding/.codex-plugin/plugin.json`，复用同一套 skill 模板，并额外提供 controller / worker 协作入口。
 
-本仓库提供 repo-local marketplace：
+### 1. 从 GitHub 添加 marketplace 并安装 plugin
 
 ```bash
-codex plugin marketplace add /Users/wmyeah/workSpace/projects/github.com/0xYeah/yeah_coding
+codex plugin marketplace add git@github.com:0xYeah/yeah_coding.git --ref latest
 codex plugin add yeah-coding@yeah-coding-codex-marketplace
 ```
+
+> **多账号 / 私库 SSH host alias**：如果本仓库使用独立 host alias，把第一行换成：
+>
+> ```bash
+> codex plugin marketplace add git@github-0xYeah:0xYeah/yeah_coding.git --ref latest
+> ```
+
+### 2. 验证安装成功
+
+```bash
+codex plugin marketplace list
+codex plugin list
+```
+
+应看到 `yeah-coding-codex-marketplace`，且 `yeah-coding@yeah-coding-codex-marketplace` 为 installed / enabled。
 
 安装后新开 Codex 会话，发送：
 
@@ -157,6 +175,15 @@ codex plugin add yeah-coding@yeah-coding-codex-marketplace
 ```
 
 Codex 适配入口会优先使用 `yeah-coding-codex` skill，把 Codex 作为架构 controller，worker 只做小范围实现。
+
+### 3. 本地开发调试安装
+
+仅开发本仓库本身时使用本地路径，正式使用优先走上面的 GitHub 安装：
+
+```bash
+codex plugin marketplace add /path/to/yeah_coding
+codex plugin add yeah-coding@yeah-coding-codex-marketplace
+```
 
 ---
 
@@ -220,15 +247,21 @@ setup yeah_coding
 
 ## Plugin 更新
 
-仓库作者 bump 版本并 push 后，用户两种方式拿到新版：
+仓库作者 bump 版本并 push 后，按宿主工具更新：
 
-**手动**：
+**Claude Code 手动更新**：
 ```
 /plugin marketplace update yeah-coding-marketplace
 /reload-plugins
 ```
 
-**自动**：Claude Code 启动时会检测 marketplace 更新并提示（取决于你的 plugin 自动更新设置）。
+**Codex 手动更新**：
+```bash
+codex plugin marketplace upgrade yeah-coding-codex-marketplace
+codex plugin add yeah-coding@yeah-coding-codex-marketplace
+```
+
+**自动**：Claude Code / Codex 启动时是否提示更新取决于各自 plugin 自动更新策略。
 
 > 已经在用的项目里 `.auto_coding/` **不会被自动覆盖**——它是你项目的本地工作产物。要升级模板，在该项目重发 `初始化 yeah_coding`，AI 会问"已有 .auto_coding/，是否覆盖？(y/n)"。
 
@@ -236,9 +269,16 @@ setup yeah_coding
 
 ## 卸载
 
+**Claude Code**：
 ```
 /plugin uninstall yeah-coding@yeah-coding-marketplace
 /plugin marketplace remove yeah-coding-marketplace
+```
+
+**Codex**：
+```bash
+codex plugin remove yeah-coding@yeah-coding-codex-marketplace
+codex plugin marketplace remove yeah-coding-codex-marketplace
 ```
 
 `.auto_coding/` 工作目录留在你项目里（本地工作产物，与 plugin 解耦）。要彻底清理：`rm -rf .auto_coding/` 并把 `.gitignore` 里的 `.auto_coding/` 行删掉。
@@ -247,7 +287,7 @@ setup yeah_coding
 
 ## 其他 AI 工具（Cursor / Trae / Windsurf / Copilot 等）
 
-这些工具没有 Claude Code 的 plugin 机制，clone + 让 AI 读 SKILL.md 即可：
+这些工具没有 Claude Code / Codex 的 plugin 机制，clone + 让 AI 读 SKILL.md 即可：
 
 ```bash
 git clone git@github.com:0xYeah/yeah_coding.git
@@ -305,7 +345,7 @@ AI 自动检测项目语言并加载对应的 BUILD / TEST 命令：
 ## FAQ
 
 **Q：plugin 更新后我之前项目里的 `.auto_coding/` 会被覆盖吗？**
-A：不会。plugin 更新只动 plugin 安装目录（`~/.claude/plugins/...`）。每个项目里的 `.auto_coding/` 是当时 INIT-4 复制过去的本地副本，已属于该项目工作产物，与 plugin 解耦。
+A：不会。plugin 更新只动宿主工具的 plugin 安装目录（如 `~/.claude/plugins/...` 或 `~/.codex/plugins/cache/...`）。每个项目里的 `.auto_coding/` 是当时 INIT-4 复制过去的本地副本，已属于该项目工作产物，与 plugin 解耦。
 
 **Q：怎么把某个项目的 `.auto_coding/` 升级到新模板？**
 A：在该项目里重发 `初始化 yeah_coding`，AI 会问"已有 .auto_coding/，是否覆盖？(y/n)"。回 y 即升级。注意：`requirements/`、`tasks/TRACKER.md` 等本地工作产物会被覆盖，谨慎。
