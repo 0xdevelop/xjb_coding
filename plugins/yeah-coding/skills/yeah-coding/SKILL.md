@@ -6,7 +6,7 @@ description: AI 自驱编码 Skill — 需求细化、任务分解、TDD 自驱�
 # yeah_coding — AI 自驱编码作战手册 (SKILL)
 
 > **SkillName**：`yeah_coding`
-> **Version**：v0.0.10
+> **Version**：v0.0.11
 > **适用工具**：Claude Code · Cursor · Trae · Windsurf · Copilot Chat · Cline · 任意支持系统提示词的 AI 编码助手
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 
