@@ -1,0 +1,20 @@
+{
+  "name": "yeah-coding-codex-marketplace",
+  "interface": {
+    "displayName": "yeah_coding Codex"
+  },
+  "plugins": [
+    {
+      "name": "yeah-coding",
+      "source": {
+        "source": "local",
+        "path": "./plugins/yeah-coding"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

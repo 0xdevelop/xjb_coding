@@ -1,0 +1,33 @@
+{
+  "name": "yeah-coding",
+  "version": "0.0.10",
+  "description": "AI self-driven coding workflow with Codex controller/worker guardrails, task recovery, and optional yeah_code MCP backend.",
+  "author": {
+    "name": "0xYeah"
+  },
+  "repository": "https://github.com/0xYeah/yeah_coding",
+  "keywords": [
+    "coding-agent",
+    "workflow",
+    "mcp",
+    "multi-agent"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "yeah_coding",
+    "shortDescription": "Controlled AI coding workflow for Codex.",
+    "longDescription": "Adds Codex-specific controller and worker guardrails for yeah_coding, including restart recovery, architecture review gates, and optional yeah_code MCP daemon integration.",
+    "developerName": "0xYeah",
+    "category": "Productivity",
+    "capabilities": [
+      "Coding",
+      "Review",
+      "Workflow"
+    ],
+    "defaultPrompt": [
+      "使用 yeah_coding 初始化当前项目",
+      "读 .auto_coding/start_coding.md",
+      "以架构 controller 模式审查当前改动"
+    ]
+  }
+}

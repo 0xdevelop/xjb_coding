@@ -10,6 +10,8 @@ description: AI 自驱编码 Skill — 需求细化、任务分解、TDD 自驱�
 > **适用工具**：Claude Code · Cursor · Trae · Windsurf · Copilot Chat · Cline · 任意支持系统提示词的 AI 编码助手
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 
+> **Codex 适配**：在 Codex 中优先读取 `../yeah-coding-codex/SKILL.md`；本文件仍是通用模板真相源。
+
 ---
 
 ## 零、自动初始化指令（AI 读取本文件后立即执行）

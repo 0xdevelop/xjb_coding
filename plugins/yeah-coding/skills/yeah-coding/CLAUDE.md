@@ -4,6 +4,8 @@
 
 本项目使用 **yeah_coding** Skill（MCP-driven）。工作流由 [yeah_code MCP daemon](https://github.com/0xYeah/yeah_code) 驱动；daemon 不可用时自动回退到 markdown 模式。
 
+多 agent 协作或断点恢复时，先读 `.auto_coding/AGENT_COLLABORATION.md`，再执行 `.auto_coding/start_coding.md`。
+
 收到以下触发词后，立即读取并严格执行 `.auto_coding/start_coding.md` 中的所有规范：
 
 ```

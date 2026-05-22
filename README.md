@@ -139,6 +139,27 @@ AI 回复类似下面就是装好了：
 
 ---
 
+## Codex Plugin 安装
+
+Codex 使用独立 manifest：`plugins/yeah-coding/.codex-plugin/plugin.json`，复用同一套 skill 模板，并额外提供 controller / worker 协作入口。
+
+本仓库提供 repo-local marketplace：
+
+```bash
+codex plugin marketplace add /Users/wmyeah/workSpace/projects/github.com/0xYeah/yeah_coding/.agents/plugins
+codex plugin add yeah-coding@yeah-coding-codex-marketplace
+```
+
+安装后新开 Codex 会话，发送：
+
+```
+使用 yeah_coding
+```
+
+Codex 适配入口会优先使用 `yeah-coding-codex` skill，把 Codex 作为架构 controller，worker 只做小范围实现。
+
+---
+
 ## 第一次使用走一遍
 
 假设你想在 `~/Code/myapp/` 加一个 JWT 登录接口：
@@ -312,11 +333,17 @@ A：能。`cp -r plugins/yeah-coding/skills/yeah-coding/.auto_coding/ /your/proj
 yeah_coding/
 ├── .claude-plugin/
 │   └── marketplace.json                              ← Claude Code marketplace 清单
+├── .agents/plugins/
+│   └── marketplace.json                              ← Codex marketplace 清单
 ├── plugins/
 │   └── yeah-coding/
 │       ├── .claude-plugin/
 │       │   └── plugin.json                           ← Plugin 清单（version 在此 bump）
+│       ├── .codex-plugin/
+│       │   └── plugin.json                           ← Codex Plugin 清单（version 在此 bump）
 │       └── skills/
+│           ├── yeah-coding-codex/                    ← Codex controller/worker 适配入口
+│           │   └── SKILL.md
 │           └── yeah-coding/                          ← 所有模板文件单一存放点
 │               ├── SKILL.md                          ← Skill 主入口（含 YAML frontmatter）
 │               ├── CLAUDE.md                         ← Claude Code 项目指令模板（INIT-6）
@@ -327,6 +354,7 @@ yeah_coding/
 │               ├── gitignore_snippet.txt             ← .gitignore 追加片段
 │               └── .auto_coding/                     ← 工作目录模板（INIT-4 复制目标）
 │                   ├── start_coding.md               ← 主引擎（核心规范）
+│                   ├── AGENT_COLLABORATION.md        ← 多 agent 协同边界与恢复协议
 │                   ├── DISPATCH.md                   ← 多智能体并发调度锁
 │                   ├── requirements/0_template.md    ← 需求文件模板
 │                   └── tasks/TRACKER.md              ← 进度追踪
