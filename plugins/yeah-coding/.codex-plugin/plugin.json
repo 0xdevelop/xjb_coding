@@ -1,6 +1,6 @@
 {
   "name": "yeah-coding",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "AI self-driven coding workflow with Codex controller/worker guardrails, task recovery, and optional yeah_code MCP backend.",
   "author": {
     "name": "0xYeah"
