@@ -146,7 +146,7 @@ Codex 使用独立 manifest：`plugins/yeah-coding/.codex-plugin/plugin.json`，
 本仓库提供 repo-local marketplace：
 
 ```bash
-codex plugin marketplace add /Users/wmyeah/workSpace/projects/github.com/0xYeah/yeah_coding/.agents/plugins
+codex plugin marketplace add /Users/wmyeah/workSpace/projects/github.com/0xYeah/yeah_coding
 codex plugin add yeah-coding@yeah-coding-codex-marketplace
 ```
 
