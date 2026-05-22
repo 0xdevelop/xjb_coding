@@ -65,6 +65,28 @@ Workers must stop and report instead of acting when a task touches:
 - sub-agent or external-agent control flow direction
 - tests changed only to hide an implementation failure
 
+## Environment And Installation Stop Rules
+
+Workers must stop and ask before:
+
+- editing shell profiles or global config: `~/.zshrc`, `~/.bashrc`,
+  `~/.profile`, `~/.gitconfig`, `~/.ssh/config`
+- editing project env files: `.env*`, IDE launch configs, CI secrets/config
+- setting persistent environment variables
+- running package/system installers: `brew install`, `brew upgrade`, `apt`,
+  `pip install`, `npm install`, `pnpm install`, `bun install`
+- running dependency mutation commands: `go get`, `go mod tidy`, `cargo add`,
+  lockfile rewrites
+- downloading binaries or modifying `PATH`
+- changing system services, launch agents, systemd units, login items
+
+Allowed without approval:
+
+- temporary env vars scoped to one displayed command
+- running existing project scripts that do not mutate dependencies or global
+  config
+- reading config files
+
 ## Review Gate
 
 Every worker result must be reviewed by the controller before the user treats it
