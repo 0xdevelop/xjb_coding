@@ -27,7 +27,7 @@
 
 - **禁止** `.auto_coding/` 下任何文件进入 git（包括 `git add -f`）
 - **禁止** `git add -A` 或 `git add .`（只精确 add 本任务相关文件）
-- **禁止** 跳过 BUILD / TEST / FMT_CHK 质量门禁
+- **禁止** 跳过四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 专项，见 start_coding.md §3；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集）
 - **禁止** 擅自修改架构（先标注 ❌ 说明原因后询问用户）
 - **禁止** 使用 Docker 进行测试或构建
 - **禁止** 修改测试来让测试通过（只能修改实现）

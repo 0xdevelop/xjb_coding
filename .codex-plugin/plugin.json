@@ -6,12 +6,6 @@
     "name": "0xYeah"
   },
   "repository": "https://github.com/0xYeah/yeah_coding",
-  "keywords": [
-    "coding-agent",
-    "workflow",
-    "mcp",
-    "multi-agent"
-  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "yeah_coding",

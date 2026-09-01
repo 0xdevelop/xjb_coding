@@ -1,8 +1,13 @@
 {
   "name": "yeah-coding-marketplace",
-  "owner": { "name": "0xYeah" },
+  "owner": {
+    "name": "0xYeah"
+  },
   "description": "0xYeah's Claude Code skills marketplace",
   "plugins": [
-    { "name": "yeah-coding", "source": "./plugins/yeah-coding" }
+    {
+      "name": "yeah-coding",
+      "source": "./"
+    }
   ]
 }

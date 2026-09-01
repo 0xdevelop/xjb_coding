@@ -2,10 +2,10 @@
 
 set -e
 
-VersionFile=./plugins/yeah-coding/skills/yeah-coding/SKILL.md
-SyncFile=./plugins/yeah-coding/skills/yeah-coding/.auto_coding/start_coding.md
-PluginJsonFile=./plugins/yeah-coding/.claude-plugin/plugin.json
-CodexPluginJsonFile=./plugins/yeah-coding/.codex-plugin/plugin.json
+VersionFile=./skills/yeah-coding/SKILL.md
+SyncFile=./skills/yeah-coding/.auto_coding/start_coding.md
+PluginJsonFile=./.claude-plugin/plugin.json
+CodexPluginJsonFile=./.codex-plugin/plugin.json
 
 # SKILL.md 顶部样式：
 #   > **SkillName**：`yeah_coding`
@@ -109,9 +109,16 @@ function git_handle_ready() {
     # SKILL.md：`> **Version**：vX.X.X` （中文冒号，无引号）
     sed -i -e "s/^\(> \*\*Version\*\*：\)v[0-9.]*/\1${NEXT_VERSION}/" "$VersionFile"
 
-    # start_coding.md：`> **版本**：vX.X.X 通用版`
+    # SKILL.md YAML frontmatter：`version: X.X.X`（hermes skills 必需字段，两个 skill 都同步）
+    sed -i -e "s/^version: [0-9.]*/version: ${plain_version}/" "$VersionFile"
+    if [ -f "./skills/yeah-coding-codex/SKILL.md" ]; then
+        sed -i -e "s/^version: [0-9.]*/version: ${plain_version}/" "./skills/yeah-coding-codex/SKILL.md"
+    fi
+
+    # start_coding.md：`> **版本**：vX.X.X <任意后缀>`（后缀无关，只替换版本号本身；
+    # 旧模式硬编码「 通用版」后缀，footer 改文案后 sed 静默不匹配，曾致版本停在 v0.0.10）
     if [ -f "$SyncFile" ]; then
-        sed -i -e "s/^\(> \*\*版本\*\*：\)v[0-9.]*\( 通用版\)/\1${NEXT_VERSION}\2/" "$SyncFile"
+        sed -i -e "s/^\(> \*\*版本\*\*：\)v[0-9.]*/\1${NEXT_VERSION}/" "$SyncFile"
     fi
 
     # plugin.json：`"version": "X.X.X"` —— Claude Code / Codex plugin 更新检测的字段（无 v 前缀）

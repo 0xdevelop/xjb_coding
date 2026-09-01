@@ -1,14 +1,24 @@
 ---
 name: yeah-coding-codex
 description: Codex adapter for yeah_coding. Use when the user asks to use yeah_coding in Codex, initialize yeah_coding, run controller/worker collaboration, review a worker diff, or recover a yeah_coding session.
+version: 0.0.14
 ---
 
 # yeah_coding for Codex
 
-This skill adapts the Claude-oriented `yeah_coding` workflow to Codex.
+This skill adapts the host-neutral `yeah_coding` workflow to Codex.
 
 Use the original skill at `../yeah-coding/SKILL.md` as the canonical template
 source, but follow this Codex adapter first whenever the user is using Codex.
+
+`yeah_coding` and `yeah_code` are independent projects. `yeah_coding` works by
+Skills fallback by default; `yeah_code` is an optional user-owned MCP
+Streamable HTTP backend. If MCP is configured and connected, use it. If not,
+continue with local Skills / markdown state.
+
+Do not add telemetry, upload repository data, or configure external services
+implicitly. User code, diffs, prompts, task state, requirements, and approvals
+belong to the user's local or private deployment.
 
 ## Operating Model
 
@@ -92,11 +102,11 @@ Workers must stop and report instead of acting when a task touches:
 - cross-repo writes
 - version constants or release changelogs
 - dependency or toolchain changes
-- `.proto` semantic changes
+- wire-contract semantic changes (`.proto`, API schema, event payloads)
 - generated code direct edits
-- Redis namespace ownership changes
-- new Redis key patterns without the project key builder
-- identity semantics such as `conversation_id` vs `session_id`
+- storage namespace ownership changes (DB / cache key prefixes, topics, buckets)
+- new storage key patterns bypassing the project's established key builder
+- semantics of long-lived identity fields (user/session/entity ID meaning)
 - control-flow direction for sub-agents or external agents
 - tests changed only to hide an implementation failure
 
@@ -114,6 +124,14 @@ Use these labels:
 Review the actual diff and relevant code, not just the worker summary.
 
 ## Validation
+
+Acceptance follows the four-layer gate model in `start_coding.md` §3 — each
+layer inherits the previous one; an all-green toolchain run only satisfies L1:
+
+- L1 engineering: build / test / format / lint, no hardcoded secrets
+- L2 architecture: scope respected, no contract or naming drift, no scaffolding
+- L3 business: acceptance criteria checked item by item, failure paths handled
+- L4 project extension: checks declared in `start_coding.md` §9, if any
 
 Prefer the target project's declared validation commands. If unavailable:
 
@@ -137,6 +155,29 @@ If `yeah_code` MCP tools are available, prefer daemon-backed task state:
 
 If those tools are unavailable in Codex, use Codex sub-agents plus
 `.auto_coding/tasks/TRACKER.md` as markdown fallback.
+
+For private or team deployments, pass `project_id` when the target project space is
+known. The daemon defaults to `default` and keeps project-scoped task,
+requirement, approval, and session queries isolated.
+
+## Claude Worker Bridge
+
+When the user explicitly wants Codex to drive Claude Code as an external worker, use the repository/plugin bridge script instead of improvising a terminal workflow.
+
+Preferred entry from this repository checkout:
+
+```bash
+scripts/claude_worker_bridge.sh --cwd <project-root> --task <task.md> --mode print
+scripts/claude_worker_bridge.sh --cwd <project-root> --task <task.md> --mode tmux --session <name>
+```
+
+Rules:
+
+- Default to `--mode print` for first use.
+- Use `--mode tmux` for long Claude Code worker tasks only after the user approves running Claude.
+- Always write a bounded task file first: goal, owned files, out-of-scope files, red lines, validation commands, final report format.
+- Treat the bridge as process orchestration only, not a security sandbox. Review `git status`, `git diff`, and logs before accepting work.
+- Claude worker must not commit, tag, push, install dependencies, or change environment unless the task explicitly allows it.
 
 ## Codex-Specific Notes
 

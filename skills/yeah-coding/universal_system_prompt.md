@@ -20,7 +20,7 @@
 **全局硬约束**（不可违反）：
 - .auto_coding/ 目录永远不进入 git
 - 禁止 git add -A 或 git add .（只精确 add 本任务文件）
-- 禁止跳过 BUILD/TEST/FMT_CHK 质量门禁
+- 禁止跳过四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 专项，见 start_coding.md §3；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集）
 - 禁止擅自修改架构
 - 禁止使用 Docker 测试/构建
 - 禁止修改测试让测试通过（只改实现）

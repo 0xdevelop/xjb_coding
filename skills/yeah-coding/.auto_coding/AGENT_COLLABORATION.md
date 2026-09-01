@@ -57,11 +57,11 @@ Workers must stop and report instead of acting when a task touches:
 - cross-repo writes outside the assigned repository
 - version constants or release changelogs
 - dependency or toolchain changes
-- `.proto` semantic changes
+- wire-contract semantic changes (`.proto`, API schema, event payloads)
 - generated code direct edits
-- Redis namespace ownership changes
-- new Redis key patterns not represented in the project key builder
-- persistent identity semantics such as `conversation_id` vs `session_id`
+- storage namespace ownership changes (DB / cache key prefixes, topics, buckets)
+- new storage key patterns not represented in the project's key builder
+- semantics of long-lived identity fields (user / session / entity ID meaning)
 - sub-agent or external-agent control flow direction
 - tests changed only to hide an implementation failure
 
@@ -92,14 +92,20 @@ Allowed without approval:
 Every worker result must be reviewed by the controller before the user treats it
 as accepted.
 
+Review runs against the four-layer gate model in `start_coding.md` §3
+(L1 engineering / L2 architecture / L3 business / L4 project extension).
+An all-green toolchain run only satisfies L1 and never means "accepted".
+
 Review result labels:
 
-- `OK`: safe to proceed.
-- `MUST FIX`: correctness, build, security, ownership, or contract issue.
+- `OK`: all applicable gate layers pass; safe to proceed.
+- `MUST FIX`: L1/L2 failure — correctness, build, security, ownership, or contract issue.
 - `RISK`: requires user architecture decision.
 - `STOP`: worker crossed a hard boundary; pause implementation.
 
 The controller reviews the actual working tree, not only the worker summary.
+Negative claims in worker reports ("missing", "not migrated", "dead code")
+must be re-verified against real files before being repeated to the user.
 
 ## Validation Policy
 

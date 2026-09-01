@@ -23,7 +23,7 @@ alwaysApply: false
 
 1. `.auto_coding/` 目录下任何文件**禁止加入 git**（包括 `git add -f`）
 2. 禁止 `git add -A` 或 `git add .`，只能精确 add 本任务涉及的文件
-3. 禁止跳过自测（BUILD / TEST / FMT_CHK 全部通过才能标记任务 ✅）
+3. 禁止跳过四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 专项全过才能标记任务 ✅，见 start_coding.md §3）
 4. 禁止擅自修改架构，需先标注 ❌ 并说明原因后询问用户
 5. 禁止使用 Docker 进行任何测试或构建操作
 

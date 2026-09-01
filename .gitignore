@@ -8,3 +8,6 @@ build/
 
 # Claude Code 本地配置（用户级 / 项目级 settings、权限缓存等，不进 git）
 .claude/
+
+# 会话临时产物
+tmp/

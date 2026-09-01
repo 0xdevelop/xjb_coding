@@ -8,7 +8,7 @@
       "name": "yeah-coding",
       "source": {
         "source": "local",
-        "path": "./plugins/yeah-coding"
+        "path": "./"
       },
       "policy": {
         "installation": "AVAILABLE",
