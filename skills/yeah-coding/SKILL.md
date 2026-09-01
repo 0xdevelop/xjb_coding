@@ -136,6 +136,7 @@ INIT-9. 询问是否立即启动
 | **Windsurf (Cascade)** | 在 Cascade 对话框中输入：`读 .auto_coding/start_coding.md` |
 | **Copilot Chat** | 在 Chat 中输入：`读 .auto_coding/start_coding.md` |
 | **Cline / Roo** | 在 Task 框中输入：`读 .auto_coding/start_coding.md` |
+| **hermes-agents / OpenClaw** | AgentSkills 规范安装后，对话发：`使用 yeah_coding` |
 | **通用** | 任意 AI 助手，在对话开头发送：`读 .auto_coding/start_coding.md` |
 
 > 触发词后可追加可选参数，详见下方"模式参数"。

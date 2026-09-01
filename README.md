@@ -1,6 +1,6 @@
 # yeah_coding — AI 自驱编码 Skill (Skills-first, MCP-enhanced)
 
-让任意 AI 编码助手（Claude Code / Codex / Cursor / Trae / Windsurf / Copilot 等）变成**自主编码工程师**：拿到需求自动细化 → 拆任务 → 跑 TDD → 补测试 → 卡住远程审批，多 IDE 还能并发开发同一仓库。
+让任意 AI 编码助手（Claude Code / Codex / hermes-agents / OpenClaw / Cursor / Trae / Windsurf 等）变成**自主编码工程师**：拿到需求自动细化 → 拆任务 → 跑 TDD → 补测试 → 卡住远程审批，多 IDE 还能并发开发同一仓库。
 
 **架构原则**：本仓库是宿主中立的 **workflow/plugin 前端**。默认通过 Skills / markdown 模板工作；如果用户显式部署并连接了 [yeah_code](https://github.com/0xYeah/yeah_code)，就自动优先走 MCP Streamable HTTP 后端。两个项目独立存在，配合使用效果更佳。
 
@@ -248,6 +248,23 @@ cp -r yeah_coding/skills/yeah-coding ~/.hermes/skills/
 ```
 
 装好后在 Hermes 会话发触发词 `使用 yeah_coding` 即进入 INIT 流程；`yeah_code` daemon 检测与 MCP 增强逻辑与其他宿主一致。
+
+---
+
+## OpenClaw 安装
+
+OpenClaw 遵循 [AgentSkills](https://agentskills.io) 规范（与 hermes 同标准），本仓 skill 目录结构与 frontmatter 天然兼容（`skills/yeah-coding/` 根即 SKILL.md）：
+
+```bash
+# clone 后从本地目录安装（装到当前 workspace 的 skills/）
+git clone git@github.com:0xYeah/yeah_coding.git
+openclaw skills install ./yeah_coding/skills/yeah-coding
+
+# 或装成全局（~/.openclaw/skills，所有本机 agent 可见）
+openclaw skills install ./yeah_coding/skills/yeah-coding --global
+```
+
+装好后发触发词 `使用 yeah_coding` 即进入 INIT 流程；MCP 客户端能力随 OpenClaw 自身配置，未连 daemon 时照常走 markdown 回退。
 
 ---
 
