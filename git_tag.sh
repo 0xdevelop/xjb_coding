@@ -130,7 +130,7 @@ function git_handle_ready() {
     fi
 
     if [[ $OS_TYPE == "Darwin" ]]; then
-        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" "${CodexPluginJsonFile}-e" 2>/dev/null || true
+        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" "${CodexPluginJsonFile}-e" "./skills/yeah-coding-codex/SKILL.md-e" 2>/dev/null || true
     fi
 }
 
