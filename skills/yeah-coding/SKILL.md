@@ -101,8 +101,10 @@ INIT-8. 输出初始化完成摘要
       （若不可用）⚠️ 未连接 → 当前回退到 markdown 模式（功能受限）。推荐安装：
           git clone git@github.com:0xYeah/yeah_code.git
           cd yeah_code && go build -o yeah_code . && ./yeah_code &
-          claude mcp add --transport http yeah-code http://localhost:12100/
+          # Claude Code plugin（v0.0.16+）已自动注册本机 MCP，起好 daemon 即连；
+          # Codex / 非本机部署手动：
           codex mcp add yeah-code --url http://localhost:12100/
+          claude mcp add --transport http yeah-code http://<host>:12100/
         然后重载宿主 MCP / plugin 后重发触发词即可切到 MCP 模式。
 
     下一步：在此工具中输入触发词开始编码：

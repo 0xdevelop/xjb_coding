@@ -83,8 +83,9 @@ cd yeah_code
 go build -o yeah_code .
 ./yeah_code &                           # 监听 :12095(JSON-RPC) :12100(MCP) :12102(WS) :12103(gRPC)
 
-# 2a. Claude Code 连接 MCP server
-claude mcp add --transport http yeah-code http://localhost:12100/
+# 2a. Claude Code：装了 plugin（v0.0.16+）自动注册本机地址，无需此步；
+#     非本机部署才手动：
+claude mcp add --transport http yeah-code http://<host>:12100/
 
 # 2b. Codex 连接 MCP server
 codex mcp add yeah-code --url http://localhost:12100/
@@ -142,9 +143,19 @@ Claude Code 是一个宿主前端。安装 plugin 后先使用 Skills 模式；�
 > /plugin marketplace add git@github-0xYeah:0xYeah/yeah_coding.git
 > ```
 
-### 2. 验证安装成功
+### 2. MCP 自动注册（v0.0.16 起）
 
-输入 `/plugin` 打开管理器，切到 **Installed** 标签页应看到 `yeah-coding`，状态为已加载。或直接发触发词：
+plugin 自带 `.mcp.json`：安装后自动注册 `yeah-code` MCP 服务（`http://localhost:12100/`），`/plugin` 管理器里可直接看到该服务的连接状态——本机跑着 daemon 就是零配置直连，没跑 daemon 则显示未连接（无害，skill 自动走 markdown 回退）。
+
+**非本机部署**（局域网 / 云 / 改端口）才需要手动覆盖：
+
+```
+claude mcp add --transport http yeah-code http://<host>:12100/
+```
+
+### 3. 验证安装成功
+
+输入 `/plugin` 打开管理器，切到 **Installed** 标签页应看到 `yeah-coding`，状态为已加载；MCP 服务列表应有 `yeah-code`。或直接发触发词：
 
 ```
 使用 yeah_coding
@@ -161,7 +172,7 @@ AI 回复类似下面就是装好了：
   ✅ Claude Code 配置文件已复制
 ```
 
-### 3. 常见错误排查
+### 4. 常见错误排查
 
 | 现象 | 排查方向 |
 |------|---------|
