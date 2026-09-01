@@ -1,7 +1,7 @@
 ---
 name: yeah-coding-codex
 description: Codex adapter for yeah_coding. Use when the user asks to use yeah_coding in Codex, initialize yeah_coding, run controller/worker collaboration, review a worker diff, or recover a yeah_coding session.
-version: 0.0.15
+version: 0.0.14
 ---
 
 # yeah_coding for Codex
