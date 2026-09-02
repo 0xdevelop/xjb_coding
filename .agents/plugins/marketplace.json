@@ -1,11 +1,11 @@
 {
-  "name": "yeah-coding-codex-marketplace",
+  "name": "xjb-coding-codex-marketplace",
   "interface": {
-    "displayName": "yeah_coding Codex"
+    "displayName": "xjb_coding Codex"
   },
   "plugins": [
     {
-      "name": "yeah-coding",
+      "name": "xjb-coding",
       "source": {
         "source": "local",
         "path": "./"

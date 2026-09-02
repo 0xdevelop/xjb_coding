@@ -2,7 +2,7 @@
 
 ## 自驱编码模式
 
-本项目使用 **yeah_coding** Skill（Skills-first, MCP-enhanced）。默认通过本地 Skills / markdown 工作；如用户已部署并连接 [yeah_code MCP daemon](https://github.com/0xYeah/yeah_code)，则优先使用 MCP 工具。daemon 不可用时自动回退到 markdown 模式。
+本项目使用 **xjb_coding** Skill（Skills-first, MCP-enhanced）。默认通过本地 Skills / markdown 工作；如用户已部署并连接 [xjb_code MCP daemon](https://github.com/0xdevelop/xjb_code)，则优先使用 MCP 工具。daemon 不可用时自动回退到 markdown 模式。
 
 多 agent 协作或断点恢复时，先读 `.auto_coding/AGENT_COLLABORATION.md`，再执行 `.auto_coding/start_coding.md`。
 

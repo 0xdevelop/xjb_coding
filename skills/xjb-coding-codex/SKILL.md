@@ -1,18 +1,18 @@
 ---
-name: yeah-coding-codex
-description: Codex adapter for yeah_coding. Use when the user asks to use yeah_coding in Codex, initialize yeah_coding, run controller/worker collaboration, review a worker diff, or recover a yeah_coding session.
+name: xjb-coding-codex
+description: Codex adapter for xjb_coding. Use when the user asks to use xjb_coding in Codex, initialize xjb_coding, run controller/worker collaboration, review a worker diff, or recover a xjb_coding session.
 version: 0.0.16
 ---
 
-# yeah_coding for Codex
+# xjb_coding for Codex
 
-This skill adapts the host-neutral `yeah_coding` workflow to Codex.
+This skill adapts the host-neutral `xjb_coding` workflow to Codex.
 
-Use the original skill at `../yeah-coding/SKILL.md` as the canonical template
+Use the original skill at `../xjb-coding/SKILL.md` as the canonical template
 source, but follow this Codex adapter first whenever the user is using Codex.
 
-`yeah_coding` and `yeah_code` are independent projects. `yeah_coding` works by
-Skills fallback by default; `yeah_code` is an optional user-owned MCP
+`xjb_coding` and `xjb_code` are independent projects. `xjb_coding` works by
+Skills fallback by default; `xjb_code` is an optional user-owned MCP
 Streamable HTTP backend. If MCP is configured and connected, use it. If not,
 continue with local Skills / markdown state.
 
@@ -36,10 +36,10 @@ The implementation worker is not an architecture owner.
 
 Use this skill when the user says any of:
 
-- `使用 yeah_coding`
-- `初始化 yeah_coding`
-- `setup yeah_coding`
-- `安装 yeah_coding`
+- `使用 xjb_coding`
+- `初始化 xjb_coding`
+- `setup xjb_coding`
+- `安装 xjb_coding`
 - `读 .auto_coding/start_coding.md`
 - `从断点续做`
 - `架构 controller`
@@ -50,7 +50,7 @@ Use this skill when the user says any of:
 When initializing a target project:
 
 1. Locate the project root from the user path or current working directory.
-2. Locate the source template directory at `../yeah-coding/.auto_coding/`.
+2. Locate the source template directory at `../xjb-coding/.auto_coding/`.
 3. If `<project>/.auto_coding/` exists, ask before overwriting it.
 4. Copy `.auto_coding/` into the project root only when approved or absent.
 5. Ensure project `.gitignore` contains `.auto_coding/`.
@@ -144,7 +144,7 @@ failure until proven otherwise.
 
 ## MCP Backend
 
-If `yeah_code` MCP tools are available, prefer daemon-backed task state:
+If `xjb_code` MCP tools are available, prefer daemon-backed task state:
 
 - `task.next`
 - `task.lock`

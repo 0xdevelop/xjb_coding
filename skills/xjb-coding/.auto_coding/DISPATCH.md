@@ -2,7 +2,7 @@
 
 > ⚠️ 本文件为**本地专用**，永远不进入 git（已在 .gitignore 排除）。
 > 仅在 markdown 回退模式使用：单机多会话软锁兜底，弱一致，不建议长期多人并发。
-> MCP 模式（yeah_code daemon 在线）不用本文件——任务锁由 DB 行级 CAS 承载。
+> MCP 模式（xjb_code daemon 在线）不用本文件——任务锁由 DB 行级 CAS 承载。
 
 ---
 

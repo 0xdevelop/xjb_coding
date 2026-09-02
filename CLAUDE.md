@@ -1,10 +1,10 @@
 # CLAUDE.md — AI 编码规范
 
-> 本文件是 yeah_coding 仓库自身的 Claude Code 开发指令。给目标项目用的模板见 `skills/yeah-coding/CLAUDE.md`。
+> 本文件是 xjb_coding 仓库自身的 Claude Code 开发指令。给目标项目用的模板见 `skills/xjb-coding/CLAUDE.md`。
 
 ## 自驱编码模式
 
-本项目使用 **yeah_coding** Skill。收到以下触发词后，立即读取并严格执行 `.auto_coding/start_coding.md` 中的所有规范：
+本项目使用 **xjb_coding** Skill。收到以下触发词后，立即读取并严格执行 `.auto_coding/start_coding.md` 中的所有规范：
 
 ```
 读 .auto_coding/start_coding.md

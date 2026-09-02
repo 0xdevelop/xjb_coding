@@ -4,7 +4,7 @@
 > long sessions, and worker-agent context drift.
 >
 > Status source: this file is the collaboration contract. Task state still lives
-> in `.auto_coding/tasks/TRACKER.md` or the yeah_code daemon when available.
+> in `.auto_coding/tasks/TRACKER.md` or the xjb_code daemon when available.
 
 ## Roles
 

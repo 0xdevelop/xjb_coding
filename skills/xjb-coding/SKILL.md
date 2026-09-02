@@ -1,22 +1,22 @@
 ---
-name: yeah-coding
-description: AI 自驱编码 Skill — 需求细化、任务分解、TDD 自驱编码、多智能体并发、断点续做。Use when user says 使用 yeah_coding / 初始化 yeah_coding / setup yeah_coding / 安装 yeah_coding / 启用自驱编码 / 读 .auto_coding/start_coding.md。
+name: xjb-coding
+description: AI 自驱编码 Skill — 需求细化、任务分解、TDD 自驱编码、多智能体并发、断点续做。Use when user says 使用 xjb_coding / 初始化 xjb_coding / setup xjb_coding / 安装 xjb_coding / 启用自驱编码 / 读 .auto_coding/start_coding.md。
 version: 0.0.16
 ---
 
-# yeah_coding — AI 自驱编码作战手册 (SKILL)
+# xjb_coding — AI 自驱编码作战手册 (SKILL)
 
-> **SkillName**：`yeah_coding`
+> **SkillName**：`xjb_coding`
 > **Version**：v0.0.16
 > **适用工具**：Claude Code · Codex · Cursor · Trae · Windsurf · Copilot Chat · Cline · 任意支持系统提示词或 MCP 的 AI 编码助手
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 
-> **宿主中立**：本 skill 默认可独立运行；`yeah_code` MCP 后端是可选增强。Claude Code / Codex / Cursor 等只是不同宿主前端。
+> **宿主中立**：本 skill 默认可独立运行；`xjb_code` MCP 后端是可选增强。Claude Code / Codex / Cursor 等只是不同宿主前端。
 
 ## 数据与隐私边界
 
 - 本 skill 不做 telemetry，不上传仓库、diff、prompt、任务状态。
-- `yeah_code` 是用户自部署的通用 MCP Streamable HTTP 后端，不接 LLM；它与本 skill 独立存在，配合使用效果更佳。
+- `xjb_code` 是用户自部署的通用 MCP Streamable HTTP 后端，不接 LLM；它与本 skill 独立存在，配合使用效果更佳。
 - 没有连通 MCP 时，必须回退到本地 Skills / markdown 模式，不得阻塞初始化。
 - 个人 / 团队 / 企业私有部署可使用 `project_id`做轻量隔离；默认项目空间为 `default`。
 
@@ -31,10 +31,10 @@ version: 0.0.16
 
 用户发送以下任意消息时，AI 执行初始化：
 
-- `使用 yeah_coding`
-- `初始化 yeah_coding`
-- `setup yeah_coding`
-- `安装 yeah_coding`
+- `使用 xjb_coding`
+- `初始化 xjb_coding`
+- `setup xjb_coding`
+- `安装 xjb_coding`
 - 或：用户要求"用这个 skill 开始编码"、"启用自驱编码"等含义相近的表达
 
 ### 初始化执行步骤（AI 必须按序完成，不可跳过）
@@ -81,8 +81,8 @@ INIT-6. 检测当前 AI 工具并复制对应配置文件
 
   → 输出："✅ 已复制 [工具名] 配置文件" 或 "⚠️ 未检测到工具类型，跳过配置文件复制"
 
-INIT-7. 检测 yeah_code MCP daemon（可选增强后端）
-  → 尝试调用 MCP 工具：task.next(agent_id="yeah-init-check", project_id="default")
+INIT-7. 检测 xjb_code MCP daemon（可选增强后端）
+  → 尝试调用 MCP 工具：task.next(agent_id="xjb-init-check", project_id="default")
   → 工具存在并响应（不论返回任务还是 null）→ 标记 MCP_AVAILABLE=true
   → 工具不存在 / 调用失败 → 标记 MCP_AVAILABLE=false
   → daemon 不是必需；MCP 模式下任务并发、断点续做、远程审批更可靠
@@ -90,21 +90,21 @@ INIT-7. 检测 yeah_code MCP daemon（可选增强后端）
 INIT-8. 输出初始化完成摘要
   → 格式：
     ---
-    🎉 yeah_coding 初始化完成
+    🎉 xjb_coding 初始化完成
     项目路径：$PROJECT_ROOT
     已完成：
       ✅ .auto_coding/ 工作目录已就绪
       ✅ .gitignore 已配置
       ✅ [工具配置文件] 已复制（或 ⚠️ 未检测到工具，请参考 SKILL.md §五 手动配置）
-    yeah_code MCP daemon：
+    xjb_code MCP daemon：
       （若 MCP_AVAILABLE）✅ 已连接 → 工作流由 daemon 驱动（强一致 / 多 agent / web UI）
       （若不可用）⚠️ 未连接 → 当前回退到 markdown 模式（功能受限）。推荐安装：
-          git clone git@github.com:0xYeah/yeah_code.git
-          cd yeah_code && go build -o yeah_code . && ./yeah_code &
+          git clone git@github.com:0xdevelop/xjb_code.git
+          cd xjb_code && go build -o xjb_code . && ./xjb_code &
           # Claude Code plugin（v0.0.16+）已自动注册本机 MCP，起好 daemon 即连；
           # Codex / 非本机部署手动：
-          codex mcp add yeah-code --url http://localhost:12100/
-          claude mcp add --transport http yeah-code http://<host>:12100/
+          codex mcp add xjb-code --url http://localhost:12100/
+          claude mcp add --transport http xjb-code http://<host>:12100/
         然后重载宿主 MCP / plugin 后重发触发词即可切到 MCP 模式。
 
     下一步：在此工具中输入触发词开始编码：
@@ -136,7 +136,7 @@ INIT-9. 询问是否立即启动
 | **Windsurf (Cascade)** | 在 Cascade 对话框中输入：`读 .auto_coding/start_coding.md` |
 | **Copilot Chat** | 在 Chat 中输入：`读 .auto_coding/start_coding.md` |
 | **Cline / Roo** | 在 Task 框中输入：`读 .auto_coding/start_coding.md` |
-| **hermes-agents / OpenClaw** | AgentSkills 规范安装后，对话发：`使用 yeah_coding` |
+| **hermes-agents / OpenClaw** | AgentSkills 规范安装后，对话发：`使用 xjb_coding` |
 | **通用** | 任意 AI 助手，在对话开头发送：`读 .auto_coding/start_coding.md` |
 
 > 触发词后可追加可选参数，详见下方"模式参数"。
@@ -175,13 +175,13 @@ scripts/claude_worker_bridge.sh --cwd <project-root> --task <task.md> --mode tmu
 ### 方式 B：其他 AI 工具（手动）
 
 1. clone 本仓库到本地
-2. 在 AI 工具中告知它读取 SKILL.md：路径 `skills/yeah-coding/SKILL.md`
-3. 发送触发词（如 `使用 yeah_coding`），AI 执行 INIT 流程
+2. 在 AI 工具中告知它读取 SKILL.md：路径 `skills/xjb-coding/SKILL.md`
+3. 发送触发词（如 `使用 xjb_coding`），AI 执行 INIT 流程
 
 完全不通过 AI 触发的兜底：
 
 ```bash
-cp -r skills/yeah-coding/.auto_coding/ /your/project/root/
+cp -r skills/xjb-coding/.auto_coding/ /your/project/root/
 ```
 
 然后在目标项目按 §一 发送触发词进入编码流程。
@@ -212,7 +212,7 @@ your-project/
 └── ... (项目源码)
 ```
 
-> **MCP 模式下**：上面 `tasks/` 目录基本不用——任务状态全部在 yeah_code daemon 的 SQLite 里，通过 `task.list` / `task.next` 等 MCP 工具访问。`requirements/` 目录的 md/pdf/png 文件仍可作为 AI 拆需求的起点输入。
+> **MCP 模式下**：上面 `tasks/` 目录基本不用——任务状态全部在 xjb_code daemon 的 SQLite 里，通过 `task.list` / `task.next` 等 MCP 工具访问。`requirements/` 目录的 md/pdf/png 文件仍可作为 AI 拆需求的起点输入。
 > **markdown 回退模式下**（daemon 不可用）：上面所有文件都启用，AI 手动维护 TRACKER.md。
 
 ---
@@ -237,12 +237,12 @@ your-project/
 ```markdown
 ## AI 编码规范
 读 .auto_coding/start_coding.md 进入自驱编码模式。
-本项目使用 yeah_coding skill，触发词：读 .auto_coding/start_coding.md
+本项目使用 xjb_coding skill，触发词：读 .auto_coding/start_coding.md
 ```
 
 ### Cursor
 
-在 `.cursor/rules/` 目录创建 `yeah_coding.mdc`（见附件 `cursor_rule.mdc`）。
+在 `.cursor/rules/` 目录创建 `xjb_coding.mdc`（见附件 `cursor_rule.mdc`）。
 
 ### Trae
 
@@ -274,9 +274,9 @@ your-project/
 - **动态 skills 路由**：daemon 侧 `skills.route(role, tags, project_id)` 按适配度返回 DB 化规则单元供注入系统提示词；`skills.feedback` 计分优胜劣汰（§0 状态后端契约的规则集方向落地）
 - **零预装接入**：daemon 声明 MCP prompts capability，`workflow_guide` prompt 返回接入引导 + 动态路由规则（与 skills.route 同源）；默认引导 skills 由 daemon 启动种子写入（insert-if-missing，用户改动永不被覆盖）
 
-> **状态后端契约**：需求 / 任务 / 锁 / 审批 / 会话是同一套操作语义，markdown 文件与 yeah_code DB 只是两个后端实现；后端切换不改变工作流规则。**自驱动力来自宿主执行循环，不依赖 MCP**——MCP 换来的是强一致锁、跨机状态、远程审批与观测。
+> **状态后端契约**：需求 / 任务 / 锁 / 审批 / 会话是同一套操作语义，markdown 文件与 xjb_code DB 只是两个后端实现；后端切换不改变工作流规则。**自驱动力来自宿主执行循环，不依赖 MCP**——MCP 换来的是强一致锁、跨机状态、远程审批与观测。
 
-> **驱动模型**：上述增强能力可由 [yeah_code MCP daemon](https://github.com/0xYeah/yeah_code) 提供。`yeah_code` 可单独作为 MCP Streamable HTTP 后端使用；与本 skill 配合时，AI 会按工作流自动调用工具。daemon 不可用时必须自动回退到 markdown 模式（功能受限）。
+> **驱动模型**：上述增强能力可由 [xjb_code MCP daemon](https://github.com/0xdevelop/xjb_code) 提供。`xjb_code` 可单独作为 MCP Streamable HTTP 后端使用；与本 skill 配合时，AI 会按工作流自动调用工具。daemon 不可用时必须自动回退到 markdown 模式（功能受限）。
 
 ---
 

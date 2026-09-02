@@ -2,34 +2,34 @@
 
 ## Goal
 
-Make `yeah_coding` and `yeah_code` work as independent, host-neutral projects that are better together:
+Make `xjb_coding` and `xjb_code` work as independent, host-neutral projects that are better together:
 
-- `yeah_coding` is the workflow/plugin front end for Claude Code, Codex, Cursor, Trae, Windsurf, and other AI coding hosts.
-- `yeah_code` is a standalone user-owned workflow backend. It can be used by `yeah_coding`, or directly by any MCP client that speaks Streamable HTTP.
+- `xjb_coding` is the workflow/plugin front end for Claude Code, Codex, Cursor, Trae, Windsurf, and other AI coding hosts.
+- `xjb_code` is a standalone user-owned workflow backend. It can be used by `xjb_coding`, or directly by any MCP client that speaks Streamable HTTP.
 
 ## Product Boundary
 
-`yeah_coding` must not imply Claude Code or Codex is the primary host. Host-specific docs only explain installation and configuration. Runtime semantics stay the same everywhere:
+`xjb_coding` must not imply Claude Code or Codex is the primary host. Host-specific docs only explain installation and configuration. Runtime semantics stay the same everywhere:
 
 1. Skills mode is the default and fallback.
-2. MCP mode is used only when the user has configured and connected `yeah_code`.
+2. MCP mode is used only when the user has configured and connected `xjb_code`.
 3. If MCP tools are unavailable, work continues in local skills/markdown fallback mode.
 
-`yeah_code` must be described in the reverse direction: it is not just a backend for `yeah_coding`. It is a general MCP Streamable HTTP daemon for workflow state, task locking, approval, requirements, sessions, and dashboard control. Used together with `yeah_coding`, the experience is stronger because the skill prompts know how to use its tools.
+`xjb_code` must be described in the reverse direction: it is not just a backend for `xjb_coding`. It is a general MCP Streamable HTTP daemon for workflow state, task locking, approval, requirements, sessions, and dashboard control. Used together with `xjb_coding`, the experience is stronger because the skill prompts know how to use its tools.
 
 ## Privacy And Data Ownership
 
-The projects do not add telemetry. `yeah_code` does not call an LLM provider, upload source code, or forward prompts. Data stays in the user's deployed daemon and SQLite database unless the user explicitly exposes that daemon to their own network, team, or enterprise environment.
+The projects do not add telemetry. `xjb_code` does not call an LLM provider, upload source code, or forward prompts. Data stays in the user's deployed daemon and SQLite database unless the user explicitly exposes that daemon to their own network, team, or enterprise environment.
 
 The docs must state this explicitly:
 
 - User code, diffs, tasks, approvals, and requirements belong to the user.
-- `yeah_code` can be deployed locally, on a LAN, or privately in a company environment.
+- `xjb_code` can be deployed locally, on a LAN, or privately in a company environment.
 - Cloud or team deployments should use reverse proxy TLS and Bearer tokens.
 
 ## Tenant Isolation
 
-`yeah_code` should provide simple tenant isolation without becoming a complex identity system.
+`xjb_code` should provide simple tenant isolation without becoming a complex identity system.
 
 Minimal implementation:
 
@@ -57,5 +57,5 @@ This makes Codex behavior match Claude Code behavior: install the plugin for ski
 Before handoff:
 
 - Validate Codex plugin manifest with the local validator or equivalent schema check.
-- Run `go test ./...` and `go build ./...` in `yeah_code`.
+- Run `go test ./...` and `go build ./...` in `xjb_code`.
 - Run a focused MCP tenant-scope test that proves tenant A cannot see tenant B tasks through `task.next`.

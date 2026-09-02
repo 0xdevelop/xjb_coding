@@ -1,10 +1,10 @@
 ---
-description: yeah_coding — AI 自驱编码规范，触发词收到后自动读取并执行编码作战手册
+description: xjb_coding — AI 自驱编码规范，触发词收到后自动读取并执行编码作战手册
 globs: ["**/*"]
 alwaysApply: false
 ---
 
-# yeah_coding Skill — Cursor Rules
+# xjb_coding Skill — Cursor Rules
 
 ## 触发说明
 

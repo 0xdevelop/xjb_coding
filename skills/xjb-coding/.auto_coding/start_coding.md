@@ -2,9 +2,9 @@
 
 > **触发词**：收到"读 .auto_coding/start_coding.md"（或含此短语的任意消息）后立即进入本规范。
 >
-> **驱动模型**：默认可通过本地 Skills / markdown 模式工作；如果 [yeah_code](https://github.com/0xYeah/yeah_code) MCP daemon 已由用户显式部署并连通，则优先使用它提供的工具。`yeah_code` 是独立的通用 MCP Streamable HTTP 后端，配合本 skill 使用效果更佳。
+> **驱动模型**：默认可通过本地 Skills / markdown 模式工作；如果 [xjb_code](https://github.com/0xdevelop/xjb_code) MCP daemon 已由用户显式部署并连通，则优先使用它提供的工具。`xjb_code` 是独立的通用 MCP Streamable HTTP 后端，配合本 skill 使用效果更佳。
 >
-> **数据边界**：本 workflow 不做 telemetry，不上传仓库、diff、prompt、任务状态。MCP 模式下数据写入用户自部署的 `yeah_code` SQLite；多项目空间部署可传 `project_id`（默认 `default`）。
+> **数据边界**：本 workflow 不做 telemetry，不上传仓库、diff、prompt、任务状态。MCP 模式下数据写入用户自部署的 `xjb_code` SQLite；多项目空间部署可传 `project_id`（默认 `default`）。
 >
 > 触发词后可携带可选参数：
 >
@@ -18,7 +18,7 @@
 
 ---
 
-## 0. 前提：检测 yeah_code daemon（可选增强）
+## 0. 前提：检测 xjb_code daemon（可选增强）
 
 **第一步**：尝试调用 MCP 工具 `task.next(agent_id="<your-id>", project_id="default")`。
 
@@ -29,19 +29,19 @@
 
 **安装提示模板**：
 ```
-⚠️ yeah_code MCP daemon 未连接（task.next 工具不可用）。
+⚠️ xjb_code MCP daemon 未连接（task.next 工具不可用）。
 推荐安装：
-  git clone git@github.com:0xYeah/yeah_code.git
-  cd yeah_code && go build -o yeah_code . && ./yeah_code &
-  claude mcp add --transport http yeah-code http://localhost:12100/
-  codex mcp add yeah-code --url http://localhost:12100/
+  git clone git@github.com:0xdevelop/xjb_code.git
+  cd xjb_code && go build -o xjb_code . && ./xjb_code &
+  claude mcp add --transport http xjb-code http://localhost:12100/
+  codex mcp add xjb-code --url http://localhost:12100/
 然后重载当前宿主 MCP / plugin 后重新发触发词。
 当前回退到 markdown 模式（功能受限，见附录）。
 ```
 
-**状态后端契约（一套语义，两个实现）**：需求 / 任务 / 锁 / 审批 / 会话这五类工作流状态是**同一套操作语义**；`yeah_code` DB 与本地 markdown 是它的两个后端实现，后端切换**不得改变工作流规则**（门禁、行为准则、任务边界全部同源生效）。**自驱动力来自宿主执行循环**（会话内主循环、宿主定时循环、cron、headless CLI、外部编排器），不依赖 MCP —— MCP 后端换来的只是下面这些能力差异：
+**状态后端契约（一套语义，两个实现）**：需求 / 任务 / 锁 / 审批 / 会话这五类工作流状态是**同一套操作语义**；`xjb_code` DB 与本地 markdown 是它的两个后端实现，后端切换**不得改变工作流规则**（门禁、行为准则、任务边界全部同源生效）。**自驱动力来自宿主执行循环**（会话内主循环、宿主定时循环、cron、headless CLI、外部编排器），不依赖 MCP —— MCP 后端换来的只是下面这些能力差异：
 
-| 能力 | markdown 后端 | yeah_code DB 后端 |
+| 能力 | markdown 后端 | xjb_code DB 后端 |
 |------|--------------|-------------------|
 | 任务锁 | DISPATCH.md 软锁（弱一致，单机兜底） | DB 行级 CAS（强一致） |
 | 状态持久 | TRACKER.md（单仓单机） | SQLite（跨机器跨会话） |
@@ -418,9 +418,9 @@ MCP 模式不使用 `DISPATCH.md` 文件锁；它仅在 markdown 回退模式作
 
 ---
 
-## 附录：Markdown 回退（yeah_code daemon 不可用时）
+## 附录：Markdown 回退（xjb_code daemon 不可用时）
 
-如果 `task.next` 工具调用失败、并且用户拒绝安装 yeah_code daemon，回退到下方简化的 markdown 流程。**功能受限**：
+如果 `task.next` 工具调用失败、并且用户拒绝安装 xjb_code daemon，回退到下方简化的 markdown 流程。**功能受限**：
 
 - 默认单 agent 模式（多 agent 仅可用 DISPATCH.md 软锁作单机兜底，弱一致，不建议长期并发）
 - 任务追踪手动写 `.auto_coding/tasks/TRACKER.md`
@@ -432,7 +432,7 @@ MCP 模式不使用 `DISPATCH.md` 文件锁；它仅在 markdown 回退模式作
 
 ```bash
 # v0.0.9 tag 内仍是旧目录布局（plugins/...），此路径写法只对该历史 tag 有效
-git -C ~/.claude/plugins/repos/yeah-coding-marketplace show v0.0.9:plugins/yeah-coding/skills/yeah-coding/.auto_coding/start_coding.md > tmp/legacy_start_coding.md
+git -C ~/.claude/plugins/repos/xjb-coding-marketplace show v0.0.9:plugins/xjb-coding/skills/xjb-coding/.auto_coding/start_coding.md > tmp/legacy_start_coding.md
 ```
 
 回退基本流程：
@@ -451,6 +451,6 @@ git -C ~/.claude/plugins/repos/yeah-coding-marketplace show v0.0.9:plugins/yeah-
 
 > **版本**：v0.0.16 (Skills-first, MCP-enhanced)
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
-> **架构**：Skills / markdown 默认可用；[yeah_code MCP daemon](https://github.com/0xYeah/yeah_code) 可作为可选增强后端；Claude Code / Codex / Cursor / 其他 MCP 客户端作为前端
-> **使用方式**：将 `.auto_coding/` 复制到项目根目录 → 填写 §9 约定区 → 发触发词；如已安装并配置 yeah_code，则自动增强
+> **架构**：Skills / markdown 默认可用；[xjb_code MCP daemon](https://github.com/0xdevelop/xjb_code) 可作为可选增强后端；Claude Code / Codex / Cursor / 其他 MCP 客户端作为前端
+> **使用方式**：将 `.auto_coding/` 复制到项目根目录 → 填写 §9 约定区 → 发触发词；如已安装并配置 xjb_code，则自动增强
 > **禁止修改**：本文件主体内容（§0-§8），项目定制仅在 §9 约定区

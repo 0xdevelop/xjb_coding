@@ -1,12 +1,12 @@
 {
-  "name": "yeah-coding-marketplace",
+  "name": "xjb-coding-marketplace",
   "owner": {
-    "name": "0xYeah"
+    "name": "0xdevelop"
   },
-  "description": "0xYeah's Claude Code skills marketplace",
+  "description": "0xdevelop's Claude Code skills marketplace",
   "plugins": [
     {
-      "name": "yeah-coding",
+      "name": "xjb-coding",
       "source": "./"
     }
   ]

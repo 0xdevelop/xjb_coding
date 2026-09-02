@@ -2,13 +2,13 @@
 
 set -e
 
-VersionFile=./skills/yeah-coding/SKILL.md
-SyncFile=./skills/yeah-coding/.auto_coding/start_coding.md
+VersionFile=./skills/xjb-coding/SKILL.md
+SyncFile=./skills/xjb-coding/.auto_coding/start_coding.md
 PluginJsonFile=./.claude-plugin/plugin.json
 CodexPluginJsonFile=./.codex-plugin/plugin.json
 
 # SKILL.md 顶部样式：
-#   > **SkillName**：`yeah_coding`
+#   > **SkillName**：`xjb_coding`
 #   > **Version**：v0.0.1
 # 中文冒号「：」 + backtick 包裹 SkillName + 裸 vX.X.X 包裹 Version。
 ProductName=$(grep -E '^> \*\*SkillName\*\*：' "$VersionFile" | head -1 | sed -E 's/.*`([^`]+)`.*/\1/')
@@ -111,8 +111,8 @@ function git_handle_ready() {
 
     # SKILL.md YAML frontmatter：`version: X.X.X`（hermes skills 必需字段，两个 skill 都同步）
     sed -i -e "s/^version: [0-9.]*/version: ${plain_version}/" "$VersionFile"
-    if [ -f "./skills/yeah-coding-codex/SKILL.md" ]; then
-        sed -i -e "s/^version: [0-9.]*/version: ${plain_version}/" "./skills/yeah-coding-codex/SKILL.md"
+    if [ -f "./skills/xjb-coding-codex/SKILL.md" ]; then
+        sed -i -e "s/^version: [0-9.]*/version: ${plain_version}/" "./skills/xjb-coding-codex/SKILL.md"
     fi
 
     # start_coding.md：`> **版本**：vX.X.X <任意后缀>`（后缀无关，只替换版本号本身；
@@ -130,7 +130,7 @@ function git_handle_ready() {
     fi
 
     if [[ $OS_TYPE == "Darwin" ]]; then
-        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" "${CodexPluginJsonFile}-e" "./skills/yeah-coding-codex/SKILL.md-e" 2>/dev/null || true
+        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" "${CodexPluginJsonFile}-e" "./skills/xjb-coding-codex/SKILL.md-e" 2>/dev/null || true
     fi
 }
 
