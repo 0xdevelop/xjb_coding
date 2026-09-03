@@ -1,6 +1,6 @@
 {
   "name": "xjb-coding",
   "description": "AI 自驱编码 Skill — 需求细化、任务分解、TDD、多智能体并发、断点续做。Trigger: 使用/初始化/setup/安装 xjb_coding，或：读 .auto_coding/start_coding.md",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "author": { "name": "0xdevelop" }
 }

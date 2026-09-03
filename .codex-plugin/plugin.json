@@ -1,6 +1,6 @@
 {
   "name": "xjb-coding",
-  "version": "0.0.17+codex.20260903033555",
+  "version": "0.0.18",
   "description": "AI self-driven coding workflow with Codex controller/worker guardrails, task recovery, and optional xjb_code MCP backend.",
   "author": {
     "name": "0xdevelop"

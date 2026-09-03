@@ -1,7 +1,7 @@
 ---
 name: xjb-coding-codex
 description: Codex adapter for xjb_coding. Use when the user asks to use xjb_coding in Codex, initialize xjb_coding, run controller/worker collaboration, review a worker diff, or recover a xjb_coding session.
-version: 0.0.17
+version: 0.0.18
 ---
 
 # xjb_coding for Codex
