@@ -1,0 +1,65 @@
+schema_version: "1.0"
+name: sketch-to-prototype
+source_repository: https://github.com/0xdevelop/xjb_coding
+default_language: en
+phases:
+  - id: understand
+    title: Understand source fragments
+    description: Inventory every sketch and note, separate confirmed facts from assumptions, and define success criteria.
+    translations:
+      zh:
+        title: 理解碎片化输入
+        description: 盘点每份草图和说明，区分已确认事实、推断与建议，并定义成功标准。
+    depends_on: []
+    required_artifacts:
+      - source-manifest
+  - id: product-model
+    title: Build product model
+    description: Define roles, entities, information architecture, screens, states, actions, transitions, and user flows.
+    translations:
+      zh:
+        title: 建立产品模型
+        description: 定义角色、实体、信息架构、页面、状态、动作、跳转和用户流程。
+    depends_on: [understand]
+    required_artifacts:
+      - product-model
+  - id: ux-design
+    title: Resolve UX interactions
+    description: Specify navigation, feedback, forms, dialogs, loading, empty, error, success, recovery, and accessibility behavior.
+    translations:
+      zh:
+        title: 完善 UX 交互
+        description: 明确导航、反馈、表单、对话框、加载、空状态、错误、成功、恢复和无障碍行为。
+    depends_on: [product-model]
+    required_artifacts:
+      - ux-decisions
+  - id: prototype
+    title: Build clickable prototype
+    description: Implement a locally runnable interactive prototype whose screens and actions map back to stable product-model IDs.
+    translations:
+      zh:
+        title: 构建可点击原型
+        description: 实现可在本地运行的交互原型，并让页面与操作对应稳定的产品模型 ID。
+    depends_on: [ux-design]
+    required_artifacts:
+      - prototype
+  - id: ux-review
+    title: Review real user flows
+    description: Walk the primary flows in a browser, fix interaction defects, and record evidence.
+    translations:
+      zh:
+        title: 验证真实用户流程
+        description: 在浏览器中走通主要流程，修复交互缺陷并记录验证证据。
+    depends_on: [prototype]
+    required_artifacts:
+      - ux-review
+  - id: handoff
+    title: Prepare coding handoff
+    description: Reconcile model, prototype, and review evidence, then emit implementation-ready tasks and run instructions.
+    translations:
+      zh:
+        title: 准备编码交接
+        description: 对齐产品模型、原型和审核证据，输出可直接实施的编码任务与运行说明。
+    depends_on: [ux-review]
+    required_artifacts:
+      - coding-handoff

@@ -126,7 +126,7 @@ function git_handle_ready() {
         sed -i -e "s/\"version\": \"[0-9.]*\"/\"version\": \"${plain_version}\"/" "$PluginJsonFile"
     fi
     if [ -f "$CodexPluginJsonFile" ]; then
-        sed -i -e "s/\"version\": \"[0-9.]*\"/\"version\": \"${plain_version}\"/" "$CodexPluginJsonFile"
+        sed -i -E -e "s/(\"version\": \")[^\"]+(\")/\1${plain_version}\2/" "$CodexPluginJsonFile"
     fi
 
     if [[ $OS_TYPE == "Darwin" ]]; then

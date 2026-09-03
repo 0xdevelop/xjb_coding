@@ -1,6 +1,6 @@
 {
   "name": "xjb-coding",
-  "version": "0.0.17",
+  "version": "0.0.17+codex.20260903033555",
   "description": "AI self-driven coding workflow with Codex controller/worker guardrails, task recovery, and optional xjb_code MCP backend.",
   "author": {
     "name": "0xdevelop"
@@ -19,9 +19,9 @@
       "Workflow"
     ],
     "defaultPrompt": [
-      "使用 xjb_coding 初始化当前项目",
-      "读 .auto_coding/start_coding.md",
-      "以架构 controller 模式审查当前改动"
+      "\u4f7f\u7528 xjb_coding \u521d\u59cb\u5316\u5f53\u524d\u9879\u76ee",
+      "\u8bfb .auto_coding/start_coding.md",
+      "\u4ee5\u67b6\u6784 controller \u6a21\u5f0f\u5ba1\u67e5\u5f53\u524d\u6539\u52a8"
     ]
   }
 }

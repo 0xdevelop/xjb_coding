@@ -1,0 +1,26 @@
+project:
+  name: My Product
+input:
+  paths:
+    - sketches/
+target:
+  platform: web
+  fidelity: high
+prototype:
+  framework: react
+  mock_data: true
+  backend: false
+ux:
+  optimize_user_flow: true
+  include_loading_states: true
+  include_empty_states: true
+  include_error_states: true
+  accessibility: true
+design:
+  style: auto
+  responsive: true
+output:
+  product_model: product/PRODUCT.yaml
+  ux_decisions: product/UX_DECISIONS.md
+  prototype: prototype/
+  review: review/UX_REPORT.md
