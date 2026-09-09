@@ -1,7 +1,7 @@
 {
   "name": "xjb-coding",
   "version": "0.0.18",
-  "description": "AI self-driven coding workflow with Codex controller/worker guardrails, task recovery, and optional xjb_code MCP backend.",
+  "description": "Skills for self-driven coding, Codex collaboration, sketch-to-prototype workflows, and Blender + Three.js asset integration.",
   "author": {
     "name": "0xdevelop"
   },
@@ -9,8 +9,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "xjb_coding",
-    "shortDescription": "Controlled AI coding workflow for Codex.",
-    "longDescription": "Adds Codex-specific controller and worker guardrails for xjb_coding, including restart recovery, architecture review gates, and optional xjb_code MCP daemon integration.",
+    "shortDescription": "Coding, Web prototypes, and Blender + Three.js workflows.",
+    "longDescription": "Includes self-driven coding with Codex controller/worker guardrails, sketch-to-prototype workflows, and Blender + Three.js asset integration with bundled official API references. The xjb_code MCP backend is optional.",
     "developerName": "0xdevelop",
     "category": "Productivity",
     "capabilities": [

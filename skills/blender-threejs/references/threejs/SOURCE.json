@@ -1,0 +1,35 @@
+{
+  "repository": "https://github.com/mrdoob/three.js",
+  "commit": "2431a09f46f34c560bc8e44b33be0e567723d5b9",
+  "version": "0.185.1",
+  "files": {
+    "GLTFLoader.html.md": {
+      "path": "docs/pages/GLTFLoader.html.md",
+      "sha256": "28e109fb1fee4fed04f9b454126fd39acc92ff811c88d503359184da9ad1c26a"
+    },
+    "AnimationMixer.html.md": {
+      "path": "docs/pages/AnimationMixer.html.md",
+      "sha256": "599e28c12a98e65501d5f3b23039aacd61a1f284a477387777588570aff6b8d9"
+    },
+    "AnimationAction.html.md": {
+      "path": "docs/pages/AnimationAction.html.md",
+      "sha256": "e99311d0c2bc5fd96faf048c89e957dc80361579bfd8b4a038501a0b9bfaa20c"
+    },
+    "Timer.html.md": {
+      "path": "docs/pages/Timer.html.md",
+      "sha256": "6a86f5a58fc5d51dbcf7aac7dce7a07f533af0e611ad64d6357413e896e3468d"
+    },
+    "Texture.html.md": {
+      "path": "docs/pages/Texture.html.md",
+      "sha256": "191117fc594bce0349218a5d27af96707053c5186b6fe8e3a53af60399444c5e"
+    },
+    "OrbitControls.html.md": {
+      "path": "docs/pages/OrbitControls.html.md",
+      "sha256": "d1221c4c0778a882a810ebb0a2b0a4315a15048b005c3ae2bc860ceefd64bedc"
+    },
+    "LICENSE": {
+      "path": "LICENSE",
+      "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc"
+    }
+  }
+}

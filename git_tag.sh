@@ -101,6 +101,8 @@ function get_pre_del_version_no {
 }
 
 function git_handle_ready() {
+    python3 scripts/sync_threejs_docs.py --check
+
     echo "Current Version With ${CURRENT_VERSION}"
     echo "Next Version    With ${NEXT_VERSION}"
 
