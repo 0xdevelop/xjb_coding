@@ -1,6 +1,6 @@
 {
   "name": "xjb-coding",
   "description": "自驱编码、Codex 协作适配、草图生成 Web 原型，以及 Blender + Three.js 资产接入与验证的工作流 Skills。",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "author": { "name": "0xdevelop" }
 }
