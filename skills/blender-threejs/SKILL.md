@@ -1,8 +1,8 @@
 ---
 name: blender-threejs
-description: Create or edit Blender assets and integrate exported glTF/GLB models into Three.js, including materials, animation, interaction, and browser verification. Use for Blender to Three.js tasks or GLB integration problems; ordinary 2D Web work does not need this skill.
+description: Create Blender assets and Three.js scenes with GLB loading, materials, animation, particles, depth effects, camera zoom, and particle reassembly. Use for Blender to Three.js tasks, GLB integration, or interactive 3D particle scenes; ordinary 2D Web work does not need this skill.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Blender + Three.js
@@ -23,8 +23,10 @@ metadata:
 | 帧时间、后台标签页恢复 | [Timer](references/threejs/Timer.html.md) |
 | 色彩空间、UV、纹理释放 | [Texture](references/threejs/Texture.html.md) |
 | 旋转、缩放、相机控制 | [OrbitControls](references/threejs/OrbitControls.html.md) |
+| 粒子绘制、形态重组、粒子景深 | [Points](references/threejs/Points.html.md)、[BufferGeometry](references/threejs/BufferGeometry.html.md)、[ShaderMaterial](references/threejs/ShaderMaterial.html.md) |
+| GLB 静态网格表面采样 | [MeshSurfaceSampler](references/threejs/MeshSurfaceSampler.html.md) |
 
-这些文档的 `.html` 相对链接指向 Three.js 在线 API 页面，不是本地文件；未收录页面通过 `https://threejs.org/docs/pages/<页面>.html` 查阅，并核对版本。
+遇到 `.html` 相对链接时，先查 [SOURCE.json](references/threejs/SOURCE.json) 的 `references`：`bundled` 条目的 `local` 指向同 commit 的本地 `.html.md` 文件，按需读取。原文链接不被重写；`depth_limit`、`outside_scope` 或 `external` 条目没有离线收录，再按实际需要查询官方来源并核对版本。不要把附带的次级引用当作完整 Three.js 知识库。
 
 ## 执行
 
@@ -46,3 +48,22 @@ blender --factory-startup --background /absolute/path/asset.blend --python-exit-
 ```
 
 仅当用户允许重新生成该输出时，先移走旧输出或改用新路径。不要自动删除旧文件来绕过脚本的覆盖保护。
+
+## 粒子场景
+
+用户要求粒子、景深、缩放或重组时，可从 [assets/particles/](assets/particles/) 的可运行示例开始，再按目标场景修改。它只依赖固定版本 Three.js，包含球体、环形、散开、GLB 静态网格采样、连续重组、拖动旋转、平滑滚轮缩放、景深调节及播放/暂停。无需 Blender 即可运行内置形态。
+
+将完整示例复制到目标项目的合适目录，首次安装依赖后启动本地服务：
+
+```bash
+npm ci --ignore-scripts
+python3 -m http.server 8080 --bind 127.0.0.1
+```
+
+依赖缓存放目标项目 `tmp/`；验证后关闭服务。示例可独立使用，也可以把对应粒子代码接入已有页面，不要求替换项目框架。
+
+- 重组保留同一批粒子，用当前位置作为下一次过渡起点，避免连续点击时跳变；缓动覆盖起止速度。
+- 示例景深是按粒子相机空间深度改变点精灵的模糊半径和透明度，不是整个场景的光学后处理。若需要模型、遮挡和背景共同参与景深，应按任务改用合适的后处理，并实际检查性能。
+- 保留暂停和 reduced-motion 行为；缩放使用平滑相机移动，不通过突然切换粒子数量模拟镜头。
+- GLB 采样仅支持内嵌资源的普通静态 mesh，按世界空间表面积采样并归一化显示尺度；不保留贴图、骨架、实例或形变动画。这不改变源文件。复杂资产先在 Blender 中整理后再导出。
+- 验收至少覆盖景深调节、滚轮/滑杆缩放、拖动旋转、连续重组、暂停恢复、无效 GLB 后重试、重复导入与资源释放。

@@ -1,0 +1,257 @@
+file	AnimationAction.html.md	e99311d0c2bc5fd96faf048c89e957dc80361579bfd8b4a038501a0b9bfaa20c	docs/pages/AnimationAction.html.md
+file	AnimationClip.html.md	f9d06e78dbe70487769fcec5b2a31f104c36cb45e109bb8b50313d4c07fea383	docs/pages/AnimationClip.html.md
+file	AnimationMixer.html.md	599e28c12a98e65501d5f3b23039aacd61a1f284a477387777588570aff6b8d9	docs/pages/AnimationMixer.html.md
+file	BufferGeometry.html.md	64a19aee3e274530389a2861b8d7bb8cff7c14cd0281d04b6ef4e3be22332062	docs/pages/BufferGeometry.html.md
+file	Camera.html.md	63bb957c0500cda0ed6c4442e8361f6332e28ec067b336958159a5f6f5c554c8	docs/pages/Camera.html.md
+file	Clock.html.md	395ac68837d3410eddb71ec983c735d4755ba06d8d022a767a4c9ddaff7b1da6	docs/pages/Clock.html.md
+file	Color.html.md	9d79680c1557560dc4bd6dc4c9467dc6ef689bb445ebf0dda574a123587e3b33	docs/pages/Color.html.md
+file	Controls.html.md	88b0988ea581f988e38ec6249e862d43ec6fc305d32ec4e66f6ae5623fa0e9d3	docs/pages/Controls.html.md
+file	GLTFLoader.html.md	fd2503afec7202ce3015a66057c7ff0f1a859bf0f1f94784f76e39e80eed3dc5	docs/pages/GLTFLoader.html.md
+file	Group.html.md	be6fb569fe69034e2bc2f97f7411a82e8ebac21674d7087176c9e1b49e431b66	docs/pages/Group.html.md
+file	LICENSE	8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc	LICENSE
+file	Loader.html.md	c2f52cf100d2dfde8605c54b8c05c512f7ad575400ee068ba7c1a6a4ca8834fc	docs/pages/Loader.html.md
+file	Material.html.md	aa33071516d50e501cb72105395cc32da94a5e1ea2b5a0b3219ee98c3833290c	docs/pages/Material.html.md
+file	MeshSurfaceSampler.html.md	3447fecb8ce9550c5e73942538ab550a5ff57bba5ad2a789f5690d0f4338fdc2	docs/pages/MeshSurfaceSampler.html.md
+file	Object3D.html.md	d46f731faf4b6fdb5a7dbb9bf65e5ef5ad1f2f5d06b4ac685117e8be7ade125d	docs/pages/Object3D.html.md
+file	ObjectLoader.html.md	8afbc5d350d73d09c57a8baf723aead8b76be0f6fb7e62ba5c47ca21564f8563	docs/pages/ObjectLoader.html.md
+file	OrbitControls.html.md	2c0cbe2e5663180c5b48b7bf5832f71b29f76cdbafc879f63f1c2b2bc1b336eb	docs/pages/OrbitControls.html.md
+file	Points.html.md	5a6be4567a776ec34ee0d199d9611c83076600008af499202deacfaaf171da22	docs/pages/Points.html.md
+file	RawShaderMaterial.html.md	46972a799a9da5a16dc7f48b976751da6f2899cce95cd70e7fbf14aa8e5f844c	docs/pages/RawShaderMaterial.html.md
+file	ShaderMaterial.html.md	56c501fe1acae3f44f4fe2ecf9a19a84031bec515bcdb270691c84be7ab25b6d	docs/pages/ShaderMaterial.html.md
+file	TSL.html.md	9270a7baad3dc825028173f63762e13f6664971fd036756233c7f33ea4b09770	docs/pages/TSL.html.md
+file	Texture.html.md	238831ea010518802425344acea1cbd96add2212acb69ee01b763c99e8e77fb1	docs/pages/Texture.html.md
+file	Timer.html.md	6a86f5a58fc5d51dbcf7aac7dce7a07f533af0e611ad64d6357413e896e3468d	docs/pages/Timer.html.md
+file	TrackballControls.html.md	5af66d5c117bfbe3e74b999624ef828f07423d71c83d968f472ec102caa5625a	docs/pages/TrackballControls.html.md
+file	Uniform.html.md	992a5253197aeff745b9d726aae038be3eb27146ecda44215954b0c3072f0b65	docs/pages/Uniform.html.md
+file	WebGLRenderer.html.md	661a8bc44ddea70021e7fae200bdea9e3546923c57acecef937c062c955caaaf	docs/pages/WebGLRenderer.html.md
+file	WebGPURenderer.html.md	26ce32e7c6d628d661097096114ead680bf18e6aaf5c53078a1480e809935dd2	docs/pages/WebGPURenderer.html.md
+meta	commit	148ef33ecb6d2502ff796d4554abd1549c95d519
+meta	reference_depth	1
+meta	repository	https://github.com/mrdoob/three.js
+meta	revision	186
+ref	docs/pages/AnimationAction.html.md	AnimationAction.html#enabled	docs/pages/AnimationAction.html.md	bundled	AnimationAction.html.md
+ref	docs/pages/AnimationAction.html.md	AnimationAction.html#loop	docs/pages/AnimationAction.html.md	bundled	AnimationAction.html.md
+ref	docs/pages/AnimationAction.html.md	AnimationAction.html#play	docs/pages/AnimationAction.html.md	bundled	AnimationAction.html.md
+ref	docs/pages/AnimationAction.html.md	AnimationAction.html#setLoop	docs/pages/AnimationAction.html.md	bundled	AnimationAction.html.md
+ref	docs/pages/AnimationAction.html.md	AnimationAction.html#time	docs/pages/AnimationAction.html.md	bundled	AnimationAction.html.md
+ref	docs/pages/AnimationAction.html.md	AnimationAction.html#timeScale	docs/pages/AnimationAction.html.md	bundled	AnimationAction.html.md
+ref	docs/pages/AnimationAction.html.md	AnimationClip.html	docs/pages/AnimationClip.html.md	bundled	AnimationClip.html.md
+ref	docs/pages/AnimationAction.html.md	https://github.com/mrdoob/three.js/blob/master/src/animation/AnimationAction.js	-	external	-
+ref	docs/pages/AnimationClip.html.md	AnimationAction.html#setDuration	docs/pages/AnimationAction.html.md	bundled	AnimationAction.html.md
+ref	docs/pages/AnimationClip.html.md	MD2Loader.html#parse	docs/pages/MD2Loader.html.md	depth_limit	-
+ref	docs/pages/AnimationClip.html.md	https://github.com/mrdoob/three.js/blob/master/src/animation/AnimationClip.js	-	external	-
+ref	docs/pages/AnimationMixer.html.md	AnimationAction.html	docs/pages/AnimationAction.html.md	bundled	AnimationAction.html.md
+ref	docs/pages/AnimationMixer.html.md	AnimationAction.html#stop	docs/pages/AnimationAction.html.md	bundled	AnimationAction.html.md
+ref	docs/pages/AnimationMixer.html.md	AnimationMixer.html#stopAllAction	docs/pages/AnimationMixer.html.md	bundled	AnimationMixer.html.md
+ref	docs/pages/AnimationMixer.html.md	AnimationMixer.html#timeScale	docs/pages/AnimationMixer.html.md	bundled	AnimationMixer.html.md
+ref	docs/pages/AnimationMixer.html.md	Clock.html	docs/pages/Clock.html.md	bundled	Clock.html.md
+ref	docs/pages/AnimationMixer.html.md	Timer.html	docs/pages/Timer.html.md	bundled	Timer.html.md
+ref	docs/pages/AnimationMixer.html.md	https://github.com/mrdoob/three.js/blob/master/src/animation/AnimationMixer.js	-	external	-
+ref	docs/pages/BufferGeometry.html.md	Object3D.html#lookAt	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/BufferGeometry.html.md	Object3D.html#position	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/BufferGeometry.html.md	Object3D.html#rotation	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/BufferGeometry.html.md	Object3D.html#scale	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/BufferGeometry.html.md	WebGPURenderer.html	docs/pages/WebGPURenderer.html.md	bundled	WebGPURenderer.html.md
+ref	docs/pages/BufferGeometry.html.md	https://github.com/mrdoob/three.js/blob/master/src/core/BufferGeometry.js	-	external	-
+ref	docs/pages/Camera.html.md	Object3D.html#getWorldDirection	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Camera.html.md	https://github.com/mrdoob/three.js/blob/master/src/cameras/Camera.js	-	external	-
+ref	docs/pages/Clock.html.md	https://github.com/mrdoob/three.js/blob/master/src/core/Clock.js	-	external	-
+ref	docs/pages/Color.html.md	Color.html#lerp	docs/pages/Color.html.md	bundled	Color.html.md
+ref	docs/pages/Color.html.md	Color.html#setStyle	docs/pages/Color.html.md	bundled	Color.html.md
+ref	docs/pages/Color.html.md	https://en.wikipedia.org/wiki/X11_color_names#Color_name_chart	-	external	-
+ref	docs/pages/Color.html.md	https://github.com/mrdoob/three.js/blob/master/src/math/Color.js	-	external	-
+ref	docs/pages/Controls.html.md	https://github.com/mrdoob/three.js/blob/master/src/extras/Controls.js	-	external	-
+ref	docs/pages/GLTFLoader.html.md	AnimationClip.html	docs/pages/AnimationClip.html.md	bundled	AnimationClip.html.md
+ref	docs/pages/GLTFLoader.html.md	Camera.html	docs/pages/Camera.html.md	bundled	Camera.html.md
+ref	docs/pages/GLTFLoader.html.md	GLTFLoader.html#parse	docs/pages/GLTFLoader.html.md	bundled	GLTFLoader.html.md
+ref	docs/pages/GLTFLoader.html.md	Group.html	docs/pages/Group.html.md	bundled	Group.html.md
+ref	docs/pages/GLTFLoader.html.md	Loader.html#load	docs/pages/Loader.html.md	bundled	Loader.html.md
+ref	docs/pages/GLTFLoader.html.md	Loader.html#parse	docs/pages/Loader.html.md	bundled	Loader.html.md
+ref	docs/pages/GLTFLoader.html.md	https://github.com/KhronosGroup/glTF/tree/main/specification/2.0\	-	external	-
+ref	docs/pages/GLTFLoader.html.md	https://github.com/mrdoob/three.js/blob/master/examples/jsm/loaders/GLTFLoader.js	-	external	-
+ref	docs/pages/GLTFLoader.html.md	https://github.com/needle-tools/gltf-progressive	-	external	-
+ref	docs/pages/GLTFLoader.html.md	https://github.com/needle-tools/three-animation-pointer	-	external	-
+ref	docs/pages/GLTFLoader.html.md	https://github.com/takahirox/three-gltf-extensions	-	external	-
+ref	docs/pages/GLTFLoader.html.md	https://threejs.org/manual/#installation#addons	-	external	-
+ref	docs/pages/GLTFLoader.html.md	https://www.khronos.org/gltf/	-	external	-
+ref	docs/pages/Group.html.md	Object3D.html	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Group.html.md	https://github.com/mrdoob/three.js/blob/master/src/objects/Group.js	-	external	-
+ref	docs/pages/Loader.html.md	Loader.html#load	docs/pages/Loader.html.md	bundled	Loader.html.md
+ref	docs/pages/Loader.html.md	https://developer.mozilla.org/en-US/docs/Glossary/Request_header	-	external	-
+ref	docs/pages/Loader.html.md	https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/withCredentials	-	external	-
+ref	docs/pages/Loader.html.md	https://github.com/mrdoob/three.js/blob/master/src/loaders/Loader.js	-	external	-
+ref	docs/pages/Material.html.md	Material.html#alphaTest	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	Material.html#blendDst	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	Material.html#blendEquation	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	Material.html#blendSrc	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	Material.html#event:dispose	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	Material.html#needsUpdate	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	Material.html#onBeforeCompile	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	Material.html#opacity	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	Material.html#side	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	Material.html#transparent	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/Material.html.md	ObjectLoader.html#parse	docs/pages/ObjectLoader.html.md	bundled	ObjectLoader.html.md
+ref	docs/pages/Material.html.md	Scene.html#overrideMaterial	docs/pages/Scene.html.md	depth_limit	-
+ref	docs/pages/Material.html.md	WebGLRenderer.html	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/Material.html.md	WebGLRenderer.html#localClippingEnabled	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/Material.html.md	https://github.com/mrdoob/three.js/blob/master/src/materials/Material.js	-	external	-
+ref	docs/pages/Material.html.md	https://github.com/mrdoob/three.js/wiki/Three.js-Shading-Language	-	external	-
+ref	docs/pages/MeshSurfaceSampler.html.md	http://www.joesfer.com/?p=84	-	external	-
+ref	docs/pages/MeshSurfaceSampler.html.md	http://www.joesfer.com/?p=84](http://www.joesfer.com/?p=84	-	external	-
+ref	docs/pages/MeshSurfaceSampler.html.md	https://github.com/mrdoob/three.js/blob/master/examples/jsm/math/MeshSurfaceSampler.js	-	external	-
+ref	docs/pages/MeshSurfaceSampler.html.md	https://stackoverflow.com/a/4322940/1314762	-	external	-
+ref	docs/pages/MeshSurfaceSampler.html.md	https://stackoverflow.com/a/4322940/1314762](https://stackoverflow.com/a/4322940/1314762	-	external	-
+ref	docs/pages/MeshSurfaceSampler.html.md	https://threejs.org/manual/#installation#addons	-	external	-
+ref	docs/pages/Object3D.html.md	DirectionalLight.html	docs/pages/DirectionalLight.html.md	depth_limit	-
+ref	docs/pages/Object3D.html.md	Group.html	docs/pages/Group.html.md	bundled	Group.html.md
+ref	docs/pages/Object3D.html.md	HemisphereLight.html	docs/pages/HemisphereLight.html.md	depth_limit	-
+ref	docs/pages/Object3D.html.md	Line.html	docs/pages/Line.html.md	depth_limit	-
+ref	docs/pages/Object3D.html.md	Mesh.html	docs/pages/Mesh.html.md	depth_limit	-
+ref	docs/pages/Object3D.html.md	Object3D.html#customDepthMaterial	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#event:added	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#event:childadded	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#event:childremoved	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#event:dispose	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#event:removed	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#lookAt	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#matrixAutoUpdate	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#matrixWorldAutoUpdate	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#matrixWorldNeedsUpdate	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#traverse	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	Object3D.html#updateMatrixWorld	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Object3D.html.md	ObjectLoader.html#parse	docs/pages/ObjectLoader.html.md	bundled	ObjectLoader.html.md
+ref	docs/pages/Object3D.html.md	PointLight.html	docs/pages/PointLight.html.md	depth_limit	-
+ref	docs/pages/Object3D.html.md	Points.html	docs/pages/Points.html.md	bundled	Points.html.md
+ref	docs/pages/Object3D.html.md	Raycaster.html	docs/pages/Raycaster.html.md	depth_limit	-
+ref	docs/pages/Object3D.html.md	SpotLight.html	docs/pages/SpotLight.html.md	depth_limit	-
+ref	docs/pages/Object3D.html.md	WebGLRenderer.html	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/Object3D.html.md	WebGPURenderer.html	docs/pages/WebGPURenderer.html.md	bundled	WebGPURenderer.html.md
+ref	docs/pages/Object3D.html.md	https://github.com/mrdoob/three.js/blob/master/src/core/Object3D.js	-	external	-
+ref	docs/pages/ObjectLoader.html.md	FileLoader.html	docs/pages/FileLoader.html.md	depth_limit	-
+ref	docs/pages/ObjectLoader.html.md	Loader.html#load	docs/pages/Loader.html.md	bundled	Loader.html.md
+ref	docs/pages/ObjectLoader.html.md	Loader.html#loadAsync	docs/pages/Loader.html.md	bundled	Loader.html.md
+ref	docs/pages/ObjectLoader.html.md	Loader.html#parse	docs/pages/Loader.html.md	bundled	Loader.html.md
+ref	docs/pages/ObjectLoader.html.md	ObjectLoader.html#load	docs/pages/ObjectLoader.html.md	bundled	ObjectLoader.html.md
+ref	docs/pages/ObjectLoader.html.md	ObjectLoader.html#parse	docs/pages/ObjectLoader.html.md	bundled	ObjectLoader.html.md
+ref	docs/pages/ObjectLoader.html.md	https://github.com/mrdoob/three.js/blob/master/src/loaders/ObjectLoader.js	-	external	-
+ref	docs/pages/ObjectLoader.html.md	https://github.com/mrdoob/three.js/wiki/JSON-Object-Scene-format-4	-	external	-
+ref	docs/pages/OrbitControls.html.md	Controls.html#keys	docs/pages/Controls.html.md	bundled	Controls.html.md
+ref	docs/pages/OrbitControls.html.md	Controls.html#mouseButtons	docs/pages/Controls.html.md	bundled	Controls.html.md
+ref	docs/pages/OrbitControls.html.md	Controls.html#touches	docs/pages/Controls.html.md	bundled	Controls.html.md
+ref	docs/pages/OrbitControls.html.md	TrackballControls.html	docs/pages/TrackballControls.html.md	bundled	TrackballControls.html.md
+ref	docs/pages/OrbitControls.html.md	https://github.com/mrdoob/three.js/blob/master/examples/jsm/controls/OrbitControls.js	-	external	-
+ref	docs/pages/OrbitControls.html.md	https://threejs.org/manual/#installation#addons	-	external	-
+ref	docs/pages/Points.html.md	Object3D.html#intersectsFrustum	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Points.html.md	Object3D.html#raycast	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/Points.html.md	Points.html#morphTargetDictionary	docs/pages/Points.html.md	bundled	Points.html.md
+ref	docs/pages/Points.html.md	Points.html#morphTargetInfluences	docs/pages/Points.html.md	bundled	Points.html.md
+ref	docs/pages/Points.html.md	https://github.com/mrdoob/three.js/blob/master/src/objects/Points.js	-	external	-
+ref	docs/pages/RawShaderMaterial.html.md	Color.html#set	docs/pages/Color.html.md	bundled	Color.html.md
+ref	docs/pages/RawShaderMaterial.html.md	ShaderMaterial.html	docs/pages/ShaderMaterial.html.md	bundled	ShaderMaterial.html.md
+ref	docs/pages/RawShaderMaterial.html.md	WebGLRenderer.html	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/RawShaderMaterial.html.md	https://github.com/mrdoob/three.js/blob/master/src/materials/RawShaderMaterial.js	-	external	-
+ref	docs/pages/ShaderMaterial.html.md	Color.html#set	docs/pages/Color.html.md	bundled	Color.html.md
+ref	docs/pages/ShaderMaterial.html.md	Material.html#forceSinglePass	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/ShaderMaterial.html.md	Material.html#fromJSON	docs/pages/Material.html.md	bundled	Material.html.md
+ref	docs/pages/ShaderMaterial.html.md	Object3D.html#onBeforeRender	docs/pages/Object3D.html.md	bundled	Object3D.html.md
+ref	docs/pages/ShaderMaterial.html.md	RawShaderMaterial.html	docs/pages/RawShaderMaterial.html.md	bundled	RawShaderMaterial.html.md
+ref	docs/pages/ShaderMaterial.html.md	TSL.html#any	docs/pages/TSL.html.md	bundled	TSL.html.md
+ref	docs/pages/ShaderMaterial.html.md	Uniform.html	docs/pages/Uniform.html.md	bundled	Uniform.html.md
+ref	docs/pages/ShaderMaterial.html.md	WebGLRenderer.html	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/ShaderMaterial.html.md	https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindAttribLocation	-	external	-
+ref	docs/pages/ShaderMaterial.html.md	https://en.wikipedia.org/wiki/Normalized_loop	-	external	-
+ref	docs/pages/ShaderMaterial.html.md	https://github.com/mrdoob/three.js/blob/master/src/materials/ShaderMaterial.js	-	external	-
+ref	docs/pages/TSL.html.md	Camera.html	docs/pages/Camera.html.md	bundled	Camera.html.md
+ref	docs/pages/TSL.html.md	MeshMatcapNodeMaterial.html	docs/pages/MeshMatcapNodeMaterial.html.md	depth_limit	-
+ref	docs/pages/TSL.html.md	Node.html	docs/pages/Node.html.md	depth_limit	-
+ref	docs/pages/TSL.html.md	Node.html#traverse	docs/pages/Node.html.md	depth_limit	-
+ref	docs/pages/TSL.html.md	Renderer.html#setRenderObjectFunction	docs/pages/Renderer.html.md	depth_limit	-
+ref	docs/pages/TSL.html.md	TSL.html#collectNeighborhood	docs/pages/TSL.html.md	bundled	TSL.html.md
+ref	docs/pages/TSL.html.md	TSL.html#negateOnBackSide	docs/pages/TSL.html.md	bundled	TSL.html.md
+ref	docs/pages/TSL.html.md	TSL.html#packNormalToRGB	docs/pages/TSL.html.md	bundled	TSL.html.md
+ref	docs/pages/TSL.html.md	TSL.html#positionGeometry	docs/pages/TSL.html.md	bundled	TSL.html.md
+ref	docs/pages/TSL.html.md	TSL.html#storageTexture	docs/pages/TSL.html.md	bundled	TSL.html.md
+ref	docs/pages/TSL.html.md	TSL.html#unpackRGBToNormal	docs/pages/TSL.html.md	bundled	TSL.html.md
+ref	docs/pages/TSL.html.md	TemporalReprojectNode.html#setHistoryTexture	docs/pages/TemporalReprojectNode.html.md	depth_limit	-
+ref	docs/pages/TSL.html.md	Texture.html	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/TSL.html.md	VelocityNode.html	docs/pages/VelocityNode.html.md	depth_limit	-
+ref	docs/pages/TSL.html.md	WebGPURenderer.html	docs/pages/WebGPURenderer.html.md	bundled	WebGPURenderer.html.md
+ref	docs/pages/TSL.html.md	global.html#DenoiseMode	docs/pages/global.html.md	depth_limit	-
+ref	docs/pages/TSL.html.md	global.html#TemporalReprojectMode	docs/pages/global.html.md	depth_limit	-
+ref	docs/pages/TSL.html.md	http://filmicworlds.com/blog/filmic-tonemapping-operators/	-	external	-
+ref	docs/pages/TSL.html.md	http://filmicworlds.com/blog/filmic-tonemapping-operators/](http://filmicworlds.com/blog/filmic-tonemapping-operators/	-	external	-
+ref	docs/pages/TSL.html.md	http://www.thetenthplanet.de/archives/1180	-	external	-
+ref	docs/pages/TSL.html.md	https://blender.stackexchange.com/a/55239/43930	-	external	-
+ref	docs/pages/TSL.html.md	https://blender.stackexchange.com/a/55239/43930](https://blender.stackexchange.com/a/55239/43930	-	external	-
+ref	docs/pages/TSL.html.md	https://blog.demofox.org/2022/01/01/interleaved-gradient-noise-a-different-kind-of-low-discrepancy-sequence/	-	external	-
+ref	docs/pages/TSL.html.md	https://blog.demofox.org/2022/01/01/interleaved-gradient-noise-a-different-kind-of-low-discrepancy-sequence/](https://blog.demofox.org/2022/01/01/interleaved-gradient-noise-a-different-kind-of-low-discrepancy-sequence/	-	external	-
+ref	docs/pages/TSL.html.md	https://devlog-martinsh.blogspot.com/2011/09/box-projected-cube-environment-mapping.html	-	external	-
+ref	docs/pages/TSL.html.md	https://devlog-martinsh.blogspot.com/2011/09/box-projected-cube-environment-mapping.html](https://devlog-martinsh.blogspot.com/2011/09/box-projected-cube-environment-mapping.html	-	external	-
+ref	docs/pages/TSL.html.md	https://docs.acescentral.com/specifications/acescc/	-	external	-
+ref	docs/pages/TSL.html.md	https://docs.acescentral.com/specifications/acescc/](https://docs.acescentral.com/specifications/acescc/	-	external	-
+ref	docs/pages/TSL.html.md	https://github.com/lettier/3d-game-shaders-for-beginners/blob/master/demonstration/shaders/fragment/box-blur.frag	-	external	-
+ref	docs/pages/TSL.html.md	https://github.com/lettier/3d-game-shaders-for-beginners/blob/master/demonstration/shaders/fragment/box-blur.frag](https://github.com/lettier/3d-game-shaders-for-beginners/blob/master/demonstration/shaders/fragment/box-blur.frag	-	external	-
+ref	docs/pages/TSL.html.md	https://github.com/playdeadgames/temporal	-	external	-
+ref	docs/pages/TSL.html.md	https://github.com/selfshadow/ltc\_code/blob/master/webgl/shaders/ltc/ltc\_blit.fs](https://github.com/selfshadow/ltc_code/blob/master/webgl/shaders/ltc/ltc_blit.fs	-	external	-
+ref	docs/pages/TSL.html.md	https://github.com/selfshadow/ltc_code/blob/master/webgl/shaders/ltc/ltc_blit.fs	-	external	-
+ref	docs/pages/TSL.html.md	https://iquilezles.org/articles/functions/	-	external	-
+ref	docs/pages/TSL.html.md	https://iquilezles.org/articles/functions/](https://iquilezles.org/articles/functions/	-	external	-
+ref	docs/pages/TSL.html.md	https://modelviewer.dev/examples/tone-mapping	-	external	-
+ref	docs/pages/TSL.html.md	https://modelviewer.dev/examples/tone-mapping](https://modelviewer.dev/examples/tone-mapping	-	external	-
+ref	docs/pages/TSL.html.md	https://twitter.com/gonnavis/status/1377183786949959682}	-	external	-
+ref	docs/pages/TSL.html.md	https://www.cs.utah.edu/docs/techreports/2002/pdf/UUCS-02-001.pdf	-	external	-
+ref	docs/pages/TSL.html.md	https://www.cs.utah.edu/docs/techreports/2002/pdf/UUCS-02-001.pdf](https://www.cs.utah.edu/docs/techreports/2002/pdf/UUCS-02-001.pdf	-	external	-
+ref	docs/pages/TSL.html.md	https://www.iryoku.com/next-generation-post-processing-in-call-of-duty-advanced-warfare/	-	external	-
+ref	docs/pages/TSL.html.md	https://www.iryoku.com/next-generation-post-processing-in-call-of-duty-advanced-warfare/](https://www.iryoku.com/next-generation-post-processing-in-call-of-duty-advanced-warfare/	-	external	-
+ref	docs/pages/TSL.html.md	https://www.shadertoy.com/view/4lXXWn	-	external	-
+ref	docs/pages/TSL.html.md	https://www.shadertoy.com/view/4lXXWn](https://www.shadertoy.com/view/4lXXWn	-	external	-
+ref	docs/pages/Texture.html.md	ObjectLoader.html#parse	docs/pages/ObjectLoader.html.md	bundled	ObjectLoader.html.md
+ref	docs/pages/Texture.html.md	Texture.html#center	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	Texture.html#dispose	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	Texture.html#event:dispose	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	Texture.html#format	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	Texture.html#matrix	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	Texture.html#needsUpdate	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	Texture.html#offset	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	Texture.html#repeat	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	Texture.html#rotation	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	Texture.html#type	docs/pages/Texture.html.md	bundled	Texture.html.md
+ref	docs/pages/Texture.html.md	https://github.com/mrdoob/three.js/blob/master/src/textures/Texture.js	-	external	-
+ref	docs/pages/Timer.html.md	Clock.html	docs/pages/Clock.html.md	bundled	Clock.html.md
+ref	docs/pages/Timer.html.md	https://github.com/mrdoob/three.js/blob/master/src/core/Timer.js	-	external	-
+ref	docs/pages/TrackballControls.html.md	Controls.html#keys	docs/pages/Controls.html.md	bundled	Controls.html.md
+ref	docs/pages/TrackballControls.html.md	Controls.html#mouseButtons	docs/pages/Controls.html.md	bundled	Controls.html.md
+ref	docs/pages/TrackballControls.html.md	OrbitControls.html	docs/pages/OrbitControls.html.md	bundled	OrbitControls.html.md
+ref	docs/pages/TrackballControls.html.md	https://github.com/mrdoob/three.js/blob/master/examples/jsm/controls/TrackballControls.js	-	external	-
+ref	docs/pages/TrackballControls.html.md	https://threejs.org/manual/#installation#addons	-	external	-
+ref	docs/pages/Uniform.html.md	ShaderMaterial.html	docs/pages/ShaderMaterial.html.md	bundled	ShaderMaterial.html.md
+ref	docs/pages/Uniform.html.md	UniformsGroup.html	docs/pages/UniformsGroup.html.md	depth_limit	-
+ref	docs/pages/Uniform.html.md	WebGLRenderer.html	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/Uniform.html.md	https://github.com/mrdoob/three.js/blob/master/src/core/Uniform.js	-	external	-
+ref	docs/pages/WebGLRenderer.html.md	MeshPhysicalMaterial.html#transmission	docs/pages/MeshPhysicalMaterial.html.md	depth_limit	-
+ref	docs/pages/WebGLRenderer.html.md	WebGLRenderer.html#autoClear	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/WebGLRenderer.html.md	WebGLRenderer.html#clear	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/WebGLRenderer.html.md	WebGLRenderer.html#compile	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/WebGLRenderer.html.md	WebGLRenderer.html#copyTextureToTexture	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/WebGLRenderer.html.md	WebGLRenderer.html#initRenderTarget	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/WebGLRenderer.html.md	WebGLRenderer.html#readRenderTargetPixels	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/WebGLRenderer.html.md	WebGLRenderer.html#setRenderTarget	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/WebGLRenderer.html.md	WebGLRenderer.html#~InfoMemory	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/WebGLRenderer.html.md	WebGLRenderer.html#~InfoRender	docs/pages/WebGLRenderer.html.md	bundled	WebGLRenderer.html.md
+ref	docs/pages/WebGLRenderer.html.md	global.html#BasicShadowMap	docs/pages/global.html.md	depth_limit	-
+ref	docs/pages/WebGLRenderer.html.md	global.html#PCFShadowMap	docs/pages/global.html.md	depth_limit	-
+ref	docs/pages/WebGLRenderer.html.md	global.html#VSMShadowMap	docs/pages/global.html.md	depth_limit	-
+ref	docs/pages/WebGLRenderer.html.md	https://github.com/mrdoob/three.js/blob/master/src/renderers/WebGLRenderer.js	-	external	-
+ref	docs/pages/WebGPURenderer.html.md	Renderer.html#library	docs/pages/Renderer.html.md	depth_limit	-
+ref	docs/pages/WebGPURenderer.html.md	https://github.com/mrdoob/three.js/blob/master/src/renderers/webgpu/WebGPURenderer.js	-	external	-
+root	LICENSE
+root	docs/pages/AnimationAction.html.md
+root	docs/pages/AnimationMixer.html.md
+root	docs/pages/BufferGeometry.html.md
+root	docs/pages/GLTFLoader.html.md
+root	docs/pages/MeshSurfaceSampler.html.md
+root	docs/pages/OrbitControls.html.md
+root	docs/pages/Points.html.md
+root	docs/pages/ShaderMaterial.html.md
+root	docs/pages/Texture.html.md
+root	docs/pages/Timer.html.md

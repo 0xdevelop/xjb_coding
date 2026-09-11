@@ -1,0 +1,24 @@
+name: Check official sources
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+      - name: Verify pinned original files and references
+        run: bash scripts/update_upstreams.sh --check
+      - name: Verify local edit protection and text processing
+        run: bash scripts/tests/test_upstreams.sh

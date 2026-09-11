@@ -1,7 +1,7 @@
 {
   "name": "xjb-coding",
   "version": "0.0.19",
-  "description": "Skills for self-driven coding, Codex collaboration, sketch-to-prototype workflows, and Blender + Three.js asset integration.",
+  "description": "Skills for coding, Web prototypes, Blender + Three.js assets, and editable local ComfyUI workflows.",
   "author": {
     "name": "0xdevelop"
   },
@@ -9,8 +9,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "xjb_coding",
-    "shortDescription": "Coding, Web prototypes, and Blender + Three.js workflows.",
-    "longDescription": "Includes self-driven coding with Codex controller/worker guardrails, sketch-to-prototype workflows, and Blender + Three.js asset integration with bundled official API references. The xjb_code MCP backend is optional.",
+    "shortDescription": "Coding, Web, Blender + Three.js, and local ComfyUI workflows.",
+    "longDescription": "Includes coding collaboration, Web prototypes, Blender + Three.js assets, and editable local ComfyUI workflows with official references and local extensions. Comfy CLI/MCP are external tools; missing tools produce setup instructions. The xjb_code MCP backend is optional.",
     "developerName": "0xdevelop",
     "category": "Productivity",
     "capabilities": [

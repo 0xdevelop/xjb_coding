@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d14">
+  <title>粒子场景 · Blender + Three.js</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js","three/addons/":"./node_modules/three/examples/jsm/"}}</script>
+</head>
+<body>
+  <main>
+    <div id="stage" aria-label="可旋转缩放的三维粒子场景"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <header>
+      <a class="brand" href="./" aria-label="粒子场景首页"><span class="brand-mark" aria-hidden="true">✳</span>粒子场景<span class="edition">01 — 交互实验</span></a>
+      <button id="upload" class="quiet-button">载入 GLB <span aria-hidden="true">↗</span></button>
+      <input type="file" id="file" accept=".glb" hidden>
+    </header>
+    <section class="intro" aria-labelledby="title">
+      <div class="eyebrow"><span></span> 光 · 深度 · 运动</div>
+      <h1 id="title">形态之间，<br><em>自由流动。</em></h1>
+      <p>拉近镜头，看见光的层次。<br>让同一片粒子，重新成为另一种形状。</p>
+    </section>
+    <div class="scene-label" aria-hidden="true"><span id="shape-number">01 / 03</span><span id="shape-name">球体</span><span class="label-line"></span></div>
+    <div class="scene-caption"><span class="signal"></span><span id="status" role="status" aria-live="polite">正在生成粒子</span></div>
+    <section class="controls" aria-label="场景控制">
+      <div class="shape-controls" role="group" aria-label="粒子形态">
+        <button data-shape="sphere" aria-pressed="true"><span>01</span>球体</button>
+        <button data-shape="ring" aria-pressed="false"><span>02</span>环形</button>
+        <button data-shape="scatter" aria-pressed="false"><span>03</span>散开</button>
+        <button data-shape="model" aria-pressed="false" hidden><span>04</span>模型</button>
+      </div>
+      <div class="lens-controls">
+        <label for="depth">景深 <output id="depth-value">55%</output><input id="depth" type="range" min="0" max="100" value="55"></label>
+        <label for="distance">镜头距离 <output id="distance-value">9.0</output><input id="distance" type="range" min="5" max="16" step="0.1" value="9"></label>
+      </div>
+      <div class="play-controls"><button id="reform" class="reform">重组 <span aria-hidden="true">↗</span></button><button id="pause" class="pause" aria-label="暂停动画" title="暂停动画">Ⅱ</button></div>
+    </section>
+    <footer><span>拖动旋转<span class="dot">·</span>滚轮推进<span class="dot">·</span>点击场景重组</span><span id="count">18,000 个粒子</span></footer>
+  </main>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

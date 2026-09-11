@@ -1,0 +1,6 @@
+# Keep shell entrypoints executable by Git Bash and upstream hashes byte-stable.
+*.sh text eol=lf
+*.awk text eol=lf
+# Upstream Markdown uses trailing spaces for hard line breaks; preserve originals.
+skills/blender-threejs/references/threejs/** -text whitespace=-blank-at-eol
+skills/comfyui-workflow/references/upstream/** -text whitespace=-blank-at-eol

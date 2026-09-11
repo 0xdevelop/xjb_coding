@@ -1,8 +1,10 @@
 # xjb_coding
 
-面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库，支持自驱编码、草图生成 Web 原型，以及 Blender + Three.js 资产接入。
+面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库，支持自驱编码、草图生成 Web 原型、Blender + Three.js 资产接入，以及本机 ComfyUI 工作流设计。
 
 安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，可连接独立的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端。
+
+兼容目标是当前 Codex、Claude Code、Hermes Agent；按各宿主的官方入口加载完整 Skill 目录，不依赖宿主专有继承机制。人工保存的工作流始终可以重新打开并作为下一轮输入，更新插件或切换宿主不会迁移、覆盖这些业务文件。每次发版区分入口校验、宿主实测和生成结果验收，不承诺未经验证的未来版本。
 
 ## 支持的 Skills 与领域
 
@@ -11,7 +13,8 @@
 | [xjb-coding](skills/xjb-coding/SKILL.md) | 软件开发 | 项目初始化、需求细化、任务分解、编码、四层质量门禁、断点续做 |
 | [xjb-coding-codex](skills/xjb-coding-codex/SKILL.md) | Codex 宿主适配 | 为自驱编码提供 controller / worker 协作、改动审查与恢复规则 |
 | [sketch-to-prototype](skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
-| [blender-threejs](skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、贴图、动画、交互并在浏览器验收 |
+| [blender-threejs](skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
+| [comfyui-workflow](skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
 
 自驱编码流程不绑定单一编程语言。原型与 3D 页面默认面向桌面 Web，用户指定其他平台时按实际需求处理。普通 2D Web 任务不需要加载 Blender + Three.js Skill。
 
@@ -62,14 +65,25 @@ codex plugin list
 hermes skills install 0xdevelop/xjb_coding/skills/xjb-coding
 hermes skills install 0xdevelop/xjb_coding/skills/sketch-to-prototype
 hermes skills install 0xdevelop/xjb_coding/skills/blender-threejs
+hermes skills install 0xdevelop/xjb_coding/skills/comfyui-workflow
 ```
 
 单独分发 Skill 时保留其完整目录，包括 `references/` 和 `scripts/`。没有 Skills 加载机制的宿主，可直接读取对应 `SKILL.md`。
 
+已有本地 checkout（包括私有仓库）时，也可在 Hermes 的 `~/.hermes/config.yaml` 合并以下配置，路径替换为实际目录：
+
+```yaml
+skills:
+  external_dirs:
+    - /absolute/path/to/xjb_coding/skills
+```
+
+用 `hermes skills list` 确认发现结果。外部目录若可写，Hermes 也可能修改其中的 Skill；业务工作流仍保存在目标项目，官方快照的改动会在维护校验时拒绝覆盖。入口依据见 [Hermes 官方 Skills 文档](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills#external-skill-directories)。
+
 ### 工具与参考资料
 
-- 安装 plugin 即包含上述四个 Skills；直接描述相关任务即可由宿主匹配，也可以点名 Skill。
-- Blender + Three.js Skill 附带六份固定版本的 Three.js 官方 API 文档，覆盖 GLB 加载、动画、计时、纹理和相机控制。资料按问题读取，不要求用户下载官方源码或初始化 submodule。
+- 安装 plugin 即包含上述五个 Skills；直接描述相关任务即可由宿主匹配，也可以点名 Skill。
+- Blender + Three.js Skill 以十份 Three.js 官方 API 文档为入口，并附带固定版本的同仓库次级引用，覆盖 GLB 加载、动画、计时、纹理、相机控制、粒子与网格采样。资料按问题读取，不要求用户下载官方源码或初始化 submodule。
 - 未收录内容或与目标项目版本不同的 API，再核对相应版本的官方资料。附带文档不等于完整离线知识库。
 - Blender 本体需在本机安装，Blender MCP 可选；Three.js 是目标项目依赖，使用该项目的包管理器与 lockfile。安装 plugin 不会自动安装这些运行工具。
 
@@ -140,6 +154,28 @@ review/
 
 流程为：检查或制作资产 → 指定集合导出 GLB → Three.js 加载与交互 → 浏览器验收。保留可编辑 `.blend`，导出脚本拒绝覆盖已有 GLB；通过主流程后交付源资产、GLB 和接入代码。
 
+需要粒子场景时：
+
+```text
+使用 blender-threejs，做一个有前后景深的粒子场景，支持平滑缩放和球体、环形之间的连续重组。
+```
+
+内置 [粒子示例](skills/blender-threejs/assets/particles/) 可直接运行，支持拖动、滚轮、景深滑杆、暂停和静态 GLB 采样；具体启动方法与支持边界见 Skill。
+
+### 本机 ComfyUI 工作流
+
+```text
+使用 comfyui-workflow，连接本机 ComfyUI。
+基于我最后保存的 workflows/restore/v1/workflow.json 优化照片修复流程。
+优先已有模型，保留画布布局和备注，只设计并检查，另存为 v2，交给我在 ComfyUI 里调整。
+```
+
+`comfyui-workflow` 入口明确加载 `extend/local.md`，再按任务参考随包附带的官方 `Comfy-Org/comfy-skills` 原文。`extend/` 是本项目的目录约定，不依赖宿主提供继承机制。官方原版当前面向 Comfy Cloud，保留为参考文件；插件只暴露本机入口，不注册官方云端命令或 MCP。
+
+优先使用用户独立安装的官方 `comfy-mcp` / `comfy-cli`。运行 Skill 内 `scripts/check_tools.sh` 检查工具；缺失时按 [安装与关联说明](skills/comfyui-workflow/references/local-api.md#官方工具安装与关联) 提示 Agent/用户，不自动安装。可选 Python 标准库辅助脚本支持本机查询、UI 基本检查与按字节保存。没有接入官方工具时不能宣称已关联；基本检查通过不等于实际生成成功。
+
+可编辑画布保存在目标项目 `workflows/<用途>/<版本>/workflow.json`，人工调整后保存为下一轮输入。需要程序运行时，再从同版 ComfyUI 画布导出 `workflow.api.json`；环境与实际验证信息记入 `environment.json`。缓存放目标项目 `tmp/comfyui/`。关闭 Agent 后仍可在 ComfyUI 独立反复运行。
+
 ## 连接 xjb_code（可选）
 
 `xjb_coding` 定义工作步骤、约束和验收规则；`xjb_code` 管理确定性的任务、运行和产物状态。两者独立，未连接 MCP 时仍可使用项目本地文件完成工作。
@@ -168,20 +204,36 @@ claude mcp add --transport http xjb-code http://localhost:12100/
 
 ## 上游引用与维护
 
-Three.js 官方源码由 `vendor/three.js` submodule 固定 commit。选定文档原样同步到 `skills/blender-threejs/references/threejs/`，随 plugin 分发，保留 MIT LICENSE 和记录版本、commit、文件哈希的 `SOURCE.json`。
-
-这是维护仓库时的步骤，普通 plugin 用户无需执行：
+维护本仓库时，一条命令更新已接入的官方来源：
 
 ```bash
-git submodule update --init vendor/three.js
-# 在 vendor/three.js 中 fetch 并选择已审核的发布 commit；不自动追随 latest/main。
-git add vendor/three.js
-python3 scripts/sync_threejs_docs.py --write
-python3 scripts/sync_threejs_docs.py --check
-git add skills/blender-threejs/references/threejs
+bash scripts/update_upstreams.sh
 ```
 
-不直接编辑生成文档。更新引用后，检查 API 变化并复测 Blender → GLB → Three.js 主流程；目标业务项目不会因此自动升级 Three.js。
+macOS、Linux 和 Windows Git Bash 使用同一命令。更新链路只依赖 Bash 3.2+、Git、awk、grep、sed、curl、常用 Unix 工具，以及 `sha256sum` 或 `shasum`，不调用 jq、Python 或 Node；缺少工具时明确报错，不自动安装。默认获取 Three.js 最新正式 `rN` 标签并更新 `vendor/three.js` 的 checkout，获取 Comfy Skills 官方 `main`，随后按实际 commit 同步原文、许可、API 文档及一层同仓库引用。Comfy Skills 源仓库缓存放本项目 `tmp/upstreams/`，仍采用原文快照分发，不额外创建 submodule。
+
+先准备全部候选文件、校验旧快照，再替换生成文件；人工修改过的原版、额外文件或 submodule 改动会被拒绝覆盖。只有旧清单登记且哈希未变的过期生成文件会被移除。`extend/`、业务工作流和运行依赖不在更新范围内；脚本不会暂存、提交、安装插件或下载模型。当前官方 Skills/文档的许可或入口结构不满足要求时停止，不能承诺未来每个上游版本无需适配。
+
+更新或预演在 `tmp/upstreams/<时间>/report.tsv` 和 `report.json` 留下前后 commit、文件增删改、引用状态和官方 API 链接可达性；同目录保留候选及旧快照。在线链接的 HTTP 错误记为 `unavailable`，TLS/超时等网络错误记为 `unknown`，在终端和报告里提示，不阻止已经校验完整的本地快照更新。失败会明确报告是否已部分应用，不自动 reset/clean。版本变化后仍需检查官方步骤与 `extend/` 是否冲突，更新成功不代表模型生成效果或业务主流程已验证。
+
+```bash
+# 只校验本地快照与引用，不联网
+bash scripts/update_upstreams.sh --check
+# 下载候选并查看差异，不替换分发文件或移动 submodule HEAD
+bash scripts/update_upstreams.sh --dry-run
+# 需要更深的同仓库引用时（0–3 层，默认 1）
+bash scripts/update_upstreams.sh --reference-depth 2
+# 指定版本，适合重现一次已选定的更新
+bash scripts/update_upstreams.sh --three-ref r185 --comfy-ref <完整commit>
+```
+
+Three.js 文档原样保存到 `skills/blender-threejs/references/threejs/`；`SOURCE.tsv` 是维护清单，记录 revision、commit、文件哈希和引用映射；`SOURCE.json` 从清单生成供 Skill 按需读取，不作为脚本输入。Comfy Skills 原文保存到 `skills/comfyui-workflow/references/upstream/comfy-skills/`，保留 MIT LICENSE、README、全部 `claude-code/commands/*.md` 和范围内引用的资源；不注册其中的云端命令/MCP。本机差异只放 `extend/`。
+
+**次级引用有明确边界。** 支持 Markdown 链接、引用式链接、HTML/MDX 的 `href`/`src`，按同一个 commit 递归收录允许的同仓库文档和小型图片/JSON 等资源，循环引用去重。单文件上限 4 MiB，每个来源上限 128 文件。缺失的相对链接会阻止更新；跨站链接、源码、超出深度或范围的文件列在 `SOURCE.json`，不假装已经离线收录。复杂 MDX import、动态路由及隐含的类型名称不属于链接解析范围。
+
+Comfy 官方 `Comfy-Org/docs` 文档仓库采用 GPL，按本项目规则只保留在线 API 引用，并检查 `local-api.md` 中 `docs.comfy.org` 链接的可达性，不随插件打包其正文。HTTP 可达不代表内容与当前本机版本一致；现场 `/object_info` 等接口仍是运行能力的依据。
+
+普通 plugin 使用者无需运行这些维护命令。更新与校验统一使用 `update_upstreams.sh`，引用提取和 TSV 到 JSON 输出由同目录 `upstream_text.awk` 完成，不使用 JSON 解析器。清单和 JSON 都会校验，不要直接编辑生成文档。Git 属性固定脚本换行并禁止转换官方原文，避免 Windows autocrlf 破坏哈希。
 
 ## 仓库结构与发版
 
@@ -195,17 +247,19 @@ skills/
   xjb-coding-codex/              Codex 宿主适配
   sketch-to-prototype/           草图生成 Web 原型
   blender-threejs/               Blender + Three.js 工作流、脚本与官方参考资料
+  comfyui-workflow/              官方 Comfy Skills 原版、本机 extend 和查询/保存脚本
 vendor/three.js/                 固定版本的官方 submodule
 scripts/
   claude_worker_bridge.sh        可选 Claude worker 桥接
-  sync_threejs_docs.py           官方文档同步与校验
+  update_upstreams.sh            一键更新与校验官方来源、submodule 和次级引用
+  upstream_text.awk              文本引用提取与 TSV 到 JSON 输出
 git_tag.sh                       版本同步、changelog、提交与标签推送
 ```
 
 先校验改动并提交功能，再在干净的工作区发版：
 
 ```bash
-python3 scripts/sync_threejs_docs.py --check
+bash scripts/update_upstreams.sh --check
 ./git_tag.sh
 ```
 
@@ -213,6 +267,16 @@ python3 scripts/sync_threejs_docs.py --check
 
 ## 许可证与依赖边界
 
-本仓库采用 [BSD-3-Clause](LICENSE)。引用的 Three.js 官方代码与文档保留其 [MIT 许可证](skills/blender-threejs/references/threejs/LICENSE)。
+本仓库自有代码采用 [BSD-3-Clause](LICENSE)。随包引用的 Three.js 文档和 Comfy Skills 原文分别保留 [Three.js MIT](skills/blender-threejs/references/threejs/LICENSE) 与 [Comfy Skills MIT](skills/comfyui-workflow/references/upstream/comfy-skills/LICENSE)，来源及 commit 见各自的 `SOURCE.json`。
+
+以下是用户单独安装的外部工具，不复制、链接其代码或随本仓库打包二进制；本仓库仅提供操作指引及标准接口调用：
+
+| 外部工具 | 官方来源 / 许可证 |
+| --- | --- |
+| ComfyUI | [Comfy-Org/ComfyUI](https://github.com/Comfy-Org/ComfyUI) · [GPL-3.0](https://github.com/Comfy-Org/ComfyUI/blob/master/LICENSE) |
+| comfy-cli | [Comfy-Org/comfy-cli](https://github.com/Comfy-Org/comfy-cli) · [GPL-3.0](https://github.com/Comfy-Org/comfy-cli/blob/main/LICENSE) |
+| comfy-mcp | [Comfy-Org/comfy-mcp](https://github.com/Comfy-Org/comfy-mcp) · [AGPL-3.0-or-later 或商业许可](https://github.com/Comfy-Org/comfy-mcp/blob/main/LICENSE) |
+
+外部工具按各自许可证使用。来源声明不替代许可证义务；将来复制、修改或重新分发其代码时，应重新评估许可要求。
 
 新增开源依赖优先 MIT，其次 BSD、Apache-2.0，不引入 GPL/AGPL 库或隐式接入付费服务。Blender 作为外部工具使用，不在 plugin 中分发其 GPL 本体；第三方模型、贴图和扩展分别检查许可证。

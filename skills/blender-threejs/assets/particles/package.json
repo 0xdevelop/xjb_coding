@@ -1,0 +1,6 @@
+{
+  "name": "blender-threejs-particles",
+  "private": true,
+  "type": "module",
+  "dependencies": { "three": "0.185.1" }
+}
