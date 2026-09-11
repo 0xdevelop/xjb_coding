@@ -111,11 +111,8 @@ function git_handle_ready() {
     # SKILL.md：`> **Version**：vX.X.X` （中文冒号，无引号）
     sed -i -e "s/^\(> \*\*Version\*\*：\)v[0-9.]*/\1${NEXT_VERSION}/" "$VersionFile"
 
-    # SKILL.md YAML frontmatter：`version: X.X.X`（hermes skills 必需字段，两个 skill 都同步）
+    # SKILL.md YAML frontmatter：`version: X.X.X`（hermes skills 必需字段）
     sed -i -e "s/^version: [0-9.]*/version: ${plain_version}/" "$VersionFile"
-    if [ -f "./skills/xjb-coding-codex/SKILL.md" ]; then
-        sed -i -e "s/^version: [0-9.]*/version: ${plain_version}/" "./skills/xjb-coding-codex/SKILL.md"
-    fi
 
     # start_coding.md：`> **版本**：vX.X.X <任意后缀>`（后缀无关，只替换版本号本身；
     # 旧模式硬编码「 通用版」后缀，footer 改文案后 sed 静默不匹配，曾致版本停在 v0.0.10）
@@ -132,7 +129,7 @@ function git_handle_ready() {
     fi
 
     if [[ $OS_TYPE == "Darwin" ]]; then
-        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" "${CodexPluginJsonFile}-e" "./skills/xjb-coding-codex/SKILL.md-e" 2>/dev/null || true
+        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" "${CodexPluginJsonFile}-e" 2>/dev/null || true
     fi
 }
 

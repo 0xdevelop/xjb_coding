@@ -11,7 +11,6 @@
 | Skill | 领域 | 支持的工作 |
 | --- | --- | --- |
 | [xjb-coding](skills/xjb-coding/SKILL.md) | 软件开发 | 项目初始化、需求细化、任务分解、编码、四层质量门禁、断点续做 |
-| [xjb-coding-codex](skills/xjb-coding-codex/SKILL.md) | Codex 宿主适配 | 为自驱编码提供 controller / worker 协作、改动审查与恢复规则 |
 | [sketch-to-prototype](skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
 | [blender-threejs](skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
 | [comfyui-workflow](skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
@@ -106,7 +105,7 @@ skills:
 需求：实现邮箱登录，并验证真实登录主流程。
 ```
 
-流程为：需求细化 → 按依赖拆任务 → 编码与验证 → 工程、架构、业务、专项门禁 → 交付或保存断点。Codex 宿主同时使用 `xjb-coding-codex` 适配规则。
+流程为：需求细化 → 按依赖拆任务 → 编码与验证 → 工程、架构、业务、专项门禁 → 交付或保存断点。controller / worker 协作规则统一在 `.auto_coding/AGENT_COLLABORATION.md`，Claude Code / Codex / Hermes 只是执行层不同（见 Skill「宿主差异」）。
 
 | 模式 | 用法 | 结果 |
 | --- | --- | --- |
@@ -284,7 +283,6 @@ Comfy 官方 `Comfy-Org/docs` 文档仓库采用 GPL，按本项目规则只保�
 .mcp.claude.json                 Claude MCP 用户配置引用
 skills/
   xjb-coding/                    自驱编码
-  xjb-coding-codex/              Codex 宿主适配
   sketch-to-prototype/           草图生成 Web 原型
   blender-threejs/               Blender + Three.js 工作流、脚本与官方参考资料
   comfyui-workflow/              官方 Comfy Skills 原版、本机 extend 和查询/保存脚本

@@ -173,6 +173,18 @@ scripts/claude_worker_bridge.sh --cwd <project-root> --task <task.md> --mode tmu
 
 约束：bridge 只负责进程编排和 guardrail prompt 注入，不是系统级沙箱。Claude worker 完成后必须由 controller 审查 `git status`、`git diff`、日志和测试结果。默认禁止 commit/tag/push、安装依赖、修改环境变量或越界改文件。
 
+### 宿主差异（同一份 Skill，三类宿主）
+
+controller / worker 协作规则（角色、委派 brief、worker 硬边界、审查标签 OK / MUST FIX / RISK / STOP、恢复顺序）只有一份：`.auto_coding/AGENT_COLLABORATION.md`。各宿主只是执行层不同：
+
+| 宿主 | 调用 | worker 形态 | 备注 |
+| --- | --- | --- | --- |
+| Claude Code | 插件安装后按触发词自动命中 | `Agent` 子代理，或经 bridge 驱动另一个 Claude Code | MCP key 走 `/plugin` 的 `mcp_api_key` |
+| Codex | `$xjb-coding` 或触发词 | Codex sub-agent；父 agent 保持 controller，用 `update_plan` 做可见计划，worker 验收后即关闭 | MCP key 写 `~/.codex/config.toml` 的 `http_headers` |
+| Hermes Agent | `hermes skills install` 后按描述匹配 | 宿主自身的子任务机制 | MCP 按 Hermes 配置文档加 url 与 Authorization 头 |
+
+任何宿主都不得让 worker 在开工后扩大范围；没有 xjb_code MCP 时统一回退 `TRACKER.md` 软锁。
+
 ## 二、安装 / 使用步骤
 
 ### 方式 A：Plugin 宿主安装
