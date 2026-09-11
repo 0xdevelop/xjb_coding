@@ -58,14 +58,14 @@ metadata:
 
 ### 4. Prototype
 
-- 在 `prototype/` 生成可本地运行、可点击的前端原型，默认使用 React + Vite；样式可用 Tailwind CSS，交互测试可用 Playwright。
+- 在 `prototype/` 生成可本地运行、可点击的前端原型，默认使用 React + Vite；样式可用 Tailwind CSS；自动化交互测试可用 Playwright 测试库写在项目内。
 - 使用 mock data，不为原型虚构生产后端、鉴权或付费云服务。
 - 每个页面根节点标记对应 `screen_id`，关键控件标记 `action_id`，使产品模型与代码可互相追踪。
 - 不使用仅有图片热点的伪交互；表单、对话框、抽屉、导航、成功/失败反馈应真实可操作。
 
 ### 5. UX Review
 
-- 必须在浏览器中按 `flow_id` 实际走通主流程，覆盖关键异常状态和键盘操作。
+- 必须在真浏览器中按 `flow_id` 实际走通主流程，覆盖关键异常状态和键盘操作；浏览器执行层按 `web-browser-debug` Skill 选定（macOS 优先官方 ego-browser，否则宿主 Playwright MCP）。
 - 输出 `review/UX_REPORT.md`，逐条记录流程、预期、实测、问题、修复和复测结果；截图放在 `review/screenshots/`。
 - 发现主流程问题时直接修复并复测；不要把待验证的草稿称为完成。
 

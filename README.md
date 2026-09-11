@@ -15,6 +15,7 @@
 | [sketch-to-prototype](skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
 | [blender-threejs](skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
 | [comfyui-workflow](skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
+| [web-browser-debug](skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 选定真浏览器执行层：macOS 优先官方 ego-browser（ego lite），回退宿主 Playwright MCP；统一截图、证据与任务空间约定 |
 
 自驱编码流程不绑定单一编程语言。原型与 3D 页面默认面向桌面 Web，用户指定其他平台时按实际需求处理。普通 2D Web 任务不需要加载 Blender + Three.js Skill。
 
@@ -66,6 +67,7 @@ hermes skills install 0xdevelop/xjb_coding/skills/xjb-coding
 hermes skills install 0xdevelop/xjb_coding/skills/sketch-to-prototype
 hermes skills install 0xdevelop/xjb_coding/skills/blender-threejs
 hermes skills install 0xdevelop/xjb_coding/skills/comfyui-workflow
+hermes skills install 0xdevelop/xjb_coding/skills/web-browser-debug
 ```
 
 单独分发 Skill 时保留其完整目录，包括 `references/` 和 `scripts/`。没有 Skills 加载机制的宿主，可直接读取对应 `SKILL.md`。
@@ -176,6 +178,10 @@ review/
 
 可编辑画布保存在目标项目 `workflows/<用途>/<版本>/workflow.json`，人工调整后保存为下一轮输入。需要程序运行时，再从同版 ComfyUI 画布导出 `workflow.api.json`；环境与实际验证信息记入 `environment.json`。缓存放目标项目 `tmp/comfyui/`。关闭 Agent 后仍可在 ComfyUI 独立反复运行。
 
+### Web 调试与浏览器验收
+
+Web 类任务的真浏览器验证统一走 [web-browser-debug](skills/web-browser-debug/SKILL.md)：先运行 `scripts/check_tools.sh`，macOS 上有 ego lite 时优先用官方 `ego-browser` Skill（App 随身携带于 `~/.local/share/ego/ego-skills`，本仓库只引用不复制，Claude Code 经 `~/.claude/skills/ego-browser` 符号链接加载，Codex 可链接到 `~/.agents/skills`），否则回退宿主 Playwright MCP，两者都没有时报告缺口、经用户授权再安装。叠加约定：一个目标一个 TaskSpace、联调结束保留结果页、截图落目标项目 `tmp/`、不做 profile 级状态清理。`sketch-to-prototype` 的 UX Review 与 `blender-threejs` 的浏览器验证阶段都由它提供执行层。
+
 ## 连接 xjb_code（可选）
 
 `xjb_coding` 定义工作步骤、约束和验收规则；`xjb_code` 管理确定性的任务、运行和产物状态。两者独立，未连接 MCP 时仍可使用项目本地文件完成工作。
@@ -282,6 +288,7 @@ skills/
   sketch-to-prototype/           草图生成 Web 原型
   blender-threejs/               Blender + Three.js 工作流、脚本与官方参考资料
   comfyui-workflow/              官方 Comfy Skills 原版、本机 extend 和查询/保存脚本
+  web-browser-debug/             真浏览器执行层选择（ego-browser 优先）、官方 Skill 引用与检查脚本
 vendor/three.js/                 固定版本的官方 submodule
 scripts/
   claude_worker_bridge.sh        可选 Claude worker 桥接
