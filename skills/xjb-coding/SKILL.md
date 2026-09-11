@@ -1,13 +1,13 @@
 ---
 name: xjb-coding
 description: AI 自驱编码 Skill — 需求细化、任务分解、TDD 自驱编码、多智能体并发、断点续做。Use when user says 使用 xjb_coding / 初始化 xjb_coding / setup xjb_coding / 安装 xjb_coding / 启用自驱编码 / 读 .auto_coding/start_coding.md。
-version: 0.0.25
+version: 0.0.26
 ---
 
 # xjb_coding — AI 自驱编码作战手册 (SKILL)
 
 > **SkillName**：`xjb_coding`
-> **Version**：v0.0.25
+> **Version**：v0.0.26
 > **适用工具**：Claude Code · Codex · Cursor · Trae · Windsurf · Copilot Chat · Cline · 任意支持系统提示词或 MCP 的 AI 编码助手
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 
