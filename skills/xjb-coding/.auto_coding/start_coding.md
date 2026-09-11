@@ -39,7 +39,7 @@
   Claude Code：用户级 ~/.claude/settings.json →
     pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url；
     key 走 /plugin 配置对话框的 mcp_api_key（sensitive）。
-凭证来源：登录 xjb_code Dashboard（http://<host>:12101/）→「API key」面板签发；明文只显示一次。
+凭证来源：登录 xjb_code Dashboard（http://<host>:12101/）→ 右上「API key」弹窗自签，或由管理员在「账号与 key」弹窗建号并代签；明文只显示一次。
 Claude 插件的 mcp_url 未设置时取默认值；其他 marketplace 使用实际插件 ID。
 不要在 settings.json 顶层写 mcpServers，或在项目 settings 中写 pluginConfigs。
 旧 ~/.claude.json 中的独立 xjb-code 条目需要先迁移 URL、核对认证字段，再移除，避免重复连接。

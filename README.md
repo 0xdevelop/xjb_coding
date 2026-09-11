@@ -198,7 +198,7 @@ go run .
 
 ### 用户体系与凭证
 
-`xjb_code` 是多用户服务：每人一个账号（管理员用 `auth.admin.create_account` 建号），登录 Dashboard `http://<host>:12101/` 后在「API key」面板签发一把 `xjbk_` 前缀的用户级 API key。**同一用户的所有 agent（Claude Code、Codex、多台机器）共用这一把 key**，宿主以 HTTP `Authorization: Bearer <key>` 头发送；`agent_id` 只用于区分是哪一个 agent 在干活。授权规则：所有用户可查看全部项目与任务；编辑只允许记录归属人；管理员拥有全部权限；技能目录写操作（`skills.sync` 等）仅管理员。
+`xjb_code` 是多用户服务：每人一个账号。管理员登录 Dashboard `http://<host>:12101/`，右上「账号与 key」弹窗里建号，点选该账号即可为其签发一把 `xjbk_` 前缀的用户级 API key 交给本人；成员登录后同一入口只看到本人的 key，可自签。**同一用户的所有 agent（Claude Code、Codex、多台机器）共用这一把 key**，宿主以 HTTP `Authorization: Bearer <key>` 头发送；`agent_id` 只用于区分是哪一个 agent 在干活。授权规则：所有用户可查看全部项目与任务；编辑只允许记录归属人；管理员拥有全部权限；技能目录写操作（`skills.sync` 等）仅管理员。
 
 Codex：在 `~/.codex/config.toml` 中添加或修改同名条目，用户配置优先于插件默认值。插件自带的 MCP 定义不能携带请求头，所以 key 必须写在这里（二选一）：
 
