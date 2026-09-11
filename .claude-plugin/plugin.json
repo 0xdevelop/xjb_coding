@@ -1,6 +1,6 @@
 {
   "name": "xjb-coding",
   "description": "自驱编码、Codex 协作、Web 原型、Blender + Three.js 资产和本机 ComfyUI 工作流 Skills；官方外部工具缺失时提示安装与关联。",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "author": { "name": "0xdevelop" }
 }
