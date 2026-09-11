@@ -1,8 +1,8 @@
 # xjb_coding
 
-面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库，支持自驱编码、草图生成 Web 原型、Blender + Three.js 资产接入，以及本机 ComfyUI 工作流设计。
+面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、真浏览器 Web 调试（macOS 优先官方 ego-browser）、草图生成 Web 原型、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
 
-安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，可连接独立的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端。
+安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号一把 API key，同一用户的所有 agent 共用；全员可读全部项目，编辑限本人，管理员全权；看板实时显示任务、待批决策点与工具调用统计。
 
 兼容目标是当前 Codex、Claude Code、Hermes Agent；按各宿主的官方入口加载完整 Skill 目录，不依赖宿主专有继承机制。人工保存的工作流始终可以重新打开并作为下一轮输入，更新插件或切换宿主不会迁移、覆盖这些业务文件。每次发版区分入口校验、宿主实测和生成结果验收，不承诺未经验证的未来版本。
 

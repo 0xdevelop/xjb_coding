@@ -84,7 +84,7 @@ Claude 插件的 mcp_url 未设置时取默认值；其他 marketplace 使用实
 
 若 .auto_coding/requirements/ 有需求文件但任务为空：
   对每个需求文件 → requirement.add(topic, version, raw_content, project_id)
-  逐条 → requirement.refine(id, refined_content)
+  逐条 → requirement.refine(requirement_id, refined_content)
                 ↑ 去歧义、统一术语、明确边界
   按依赖关系分解 → task.add(description, priority, layer, parent_id, project_id) 多次
   双向链接：task.assign(task_id, depends_on_id) 记录依赖
@@ -306,7 +306,7 @@ request.approval(
 
 ```
 1. requirement.add(topic, version="v<下一版>", raw_content=<用户原话>)
-2. （可选）requirement.refine(id, refined_content=<去歧义后的结构化版>)
+2. （可选）requirement.refine(requirement_id, refined_content=<去歧义后的结构化版>)
 3. 按依赖分解 → task.add(description, priority, parent_id, layer) 多次
 4. 评估对当前进行中任务的影响：
    - 无冲突 → 完成当前任务后按 priority 排入

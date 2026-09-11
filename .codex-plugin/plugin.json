@@ -1,28 +1,32 @@
 {
   "name": "xjb-coding",
   "version": "0.0.24",
-  "description": "Skills for coding, Web prototypes, real-browser Web debugging (ego-browser first on macOS), Blender + Three.js assets, and editable local ComfyUI workflows.",
+  "description": "Agent Skills for coding workflows, multi-user multi-agent collaboration via the xjb_code backend, real-browser Web debugging (ego-browser first on macOS), Web prototypes, Blender + Three.js, and local ComfyUI workflows. One skill set shared by Codex, Claude Code, and Hermes.",
   "author": {
     "name": "0xdevelop"
   },
+  "homepage": "https://github.com/0xdevelop/xjb_coding",
   "repository": "https://github.com/0xdevelop/xjb_coding",
+  "license": "BSD-3-Clause",
   "skills": "./skills/",
   "mcpServers": "./.mcp.codex.json",
   "interface": {
     "displayName": "xjb_coding",
-    "shortDescription": "Coding, Web, browser debugging, Blender + Three.js, and local ComfyUI workflows.",
-    "longDescription": "Includes coding collaboration, Web prototypes, real-browser Web debugging that prefers the official ego-browser (ego lite) skill on macOS and falls back to a host Playwright MCP, Blender + Three.js assets, and editable local ComfyUI workflows with official references and local extensions. Comfy CLI/MCP and ego lite are external tools; missing tools produce setup instructions. The xjb_code MCP backend is optional.",
+    "shortDescription": "Self-driving coding, multi-agent collaboration, browser debugging, Web / 3D / ComfyUI workflows.",
+    "longDescription": "xjb_coding packages the workflow Skills a coding agent needs end to end: refine requirements, split tasks, code with TDD behind four quality gates, checkpoint and resume across sessions, and coordinate several agents through the optional xjb_code backend (per-user API keys, shared task board, human approvals). It also covers real-browser Web debugging that prefers the official ego-browser (ego lite) skill on macOS, sketch-to-prototype Web UX, Blender + Three.js assets, and editable local ComfyUI workflows with official references and local extensions. Comfy CLI/MCP and ego lite are external tools; missing tools produce setup instructions. Source and docs: https://github.com/0xdevelop/xjb_coding",
     "developerName": "0xdevelop",
     "category": "Productivity",
     "capabilities": [
       "Coding",
       "Review",
-      "Workflow"
+      "Workflow",
+      "Browser"
     ],
     "defaultPrompt": [
       "使用 xjb_coding 初始化当前项目",
       "读 .auto_coding/start_coding.md",
       "以架构 controller 模式审查当前改动"
-    ]
+    ],
+    "websiteURL": "https://github.com/0xdevelop/xjb_coding"
   }
 }

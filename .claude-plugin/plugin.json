@@ -1,10 +1,24 @@
 {
   "name": "xjb-coding",
-  "description": "自驱编码、Codex 协作、Web 原型、Web 浏览器调试（macOS 优先 ego-browser）、Blender + Three.js 资产和本机 ComfyUI 工作流 Skills；官方外部工具缺失时提示安装与关联。",
+  "displayName": "xjb_coding",
   "version": "0.0.24",
+  "description": "多宿主 Agent Skills：自驱编码（需求细化→拆任务→TDD→四层门禁→断点续做）、多用户多 agent 协同（连 xjb_code 后端）、真浏览器 Web 调试（macOS 优先 ego-browser）、草图生成 Web 原型、Blender + Three.js、本机 ComfyUI 工作流。Claude Code / Codex / Hermes 共用同一份 Skills。",
   "author": {
     "name": "0xdevelop"
   },
+  "homepage": "https://github.com/0xdevelop/xjb_coding",
+  "repository": "https://github.com/0xdevelop/xjb_coding",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "agent-skills",
+    "coding-workflow",
+    "multi-agent",
+    "mcp",
+    "browser-debug",
+    "web-prototype",
+    "threejs",
+    "comfyui"
+  ],
   "userConfig": {
     "mcp_url": {
       "type": "string",
