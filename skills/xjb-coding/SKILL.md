@@ -82,9 +82,9 @@ INIT-6. 检测当前 AI 工具并复制对应配置文件
   → 输出："✅ 已复制 [工具名] 配置文件" 或 "⚠️ 未检测到工具类型，跳过配置文件复制"
 
 INIT-7. 检测 xjb_code MCP daemon（可选增强后端）
-  → 尝试调用 MCP 工具：task.next(agent_id="xjb-init-check", project_id="default")
-  → 工具存在并响应（不论返回任务还是 null）→ 标记 MCP_AVAILABLE=true
-  → 工具不存在 / 调用失败 → 标记 MCP_AVAILABLE=false
+  → 检查宿主 MCP 连接状态及已发现的 xjb_code 工具列表；不使用领取任务等业务操作探活
+  → 已连接且工具列表可用 → 标记 MCP_AVAILABLE=true；业务身份仍需按服务端要求认证
+  → 未配置 / 连接失败 / 无法发现工具 → 标记 MCP_AVAILABLE=false，区分地址、网络和认证问题
   → daemon 不是必需；MCP 模式下任务并发、断点续做、远程审批更可靠
 
 INIT-8. 输出初始化完成摘要
@@ -98,14 +98,15 @@ INIT-8. 输出初始化完成摘要
       ✅ [工具配置文件] 已复制（或 ⚠️ 未检测到工具，请参考 SKILL.md §五 手动配置）
     xjb_code MCP daemon：
       （若 MCP_AVAILABLE）✅ 已连接 → 工作流由 daemon 驱动（强一致 / 多 agent / web UI）
-      （若不可用）⚠️ 未连接 → 当前回退到 markdown 模式（功能受限）。推荐安装：
-          git clone git@github.com:0xdevelop/xjb_code.git
-          cd xjb_code && go build -o xjb_code . && ./xjb_code &
-          # Claude Code plugin（v0.0.16+）已自动注册本机 MCP，起好 daemon 即连；
-          # Codex / 非本机部署手动：
-          codex mcp add xjb-code --url http://localhost:12100/
-          claude mcp add --transport http xjb-code http://<host>:12100/
-        然后重载宿主 MCP / plugin 后重发触发词即可切到 MCP 模式。
+      （若不可用）⚠️ 未连接 → 当前回退到 markdown 模式（功能受限）。
+        插件不自动注册 MCP；先核对用户已有的私有服务地址，不擅自启动本机服务。
+        首次添加时将 URL 替换为用户实际地址：
+          codex mcp add xjb-code --url 'https://your-mcp-host/'
+          claude mcp add --scope user --transport http xjb-code 'https://your-mcp-host/'
+        已有条目时修改 url：Codex 的 ~/.codex/config.toml → [mcp_servers.xjb-code]；
+        Claude Code 的 ~/.claude.json → 顶层 mcpServers.xjb-code，不写 ~/.claude/settings.json。
+        保留已有认证字段及其他服务；不要编辑插件缓存。通过宿主 /mcp 确认连接和工具列表。
+        工具可见不等于业务已登录；按实际认证方式处理，不能把业务 jwt_token 当作 MCP OAuth。
 
     下一步：在此工具中输入触发词开始编码：
       读 .auto_coding/start_coding.md

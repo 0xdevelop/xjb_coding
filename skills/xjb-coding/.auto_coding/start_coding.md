@@ -20,22 +20,23 @@
 
 ## 0. 前提：检测 xjb_code daemon（可选增强）
 
-**第一步**：尝试调用 MCP 工具 `task.next(agent_id="<your-id>", project_id="default")`。
+**第一步**：检查宿主 MCP 连接状态和已发现的 xjb_code 工具列表。不使用领取任务等业务操作探活；工具可见后仍须按服务端要求完成业务认证。
 
 | 结果 | 含义 | 后续 |
 |------|------|------|
-| 返回任务对象 或 `null` | daemon 在线，进入 MCP 驱动 | 跳到 §1 |
-| 工具不存在 / 调用失败 | daemon 未连接 | 输出安装提示 + 进入 §附录 markdown 回退 |
+| 已连接且工具列表可用 | daemon 在线 | 核对业务身份后跳到 §1 |
+| 未配置 / 连接失败 / 无法发现工具 | MCP 当前不可用 | 区分配置、网络和认证问题，输出接入提示 + 进入 §附录 markdown 回退 |
 
-**安装提示模板**：
+**接入提示模板**：
 ```
-⚠️ xjb_code MCP daemon 未连接（task.next 工具不可用）。
-推荐安装：
-  git clone git@github.com:0xdevelop/xjb_code.git
-  cd xjb_code && go build -o xjb_code . && ./xjb_code &
-  claude mcp add --transport http xjb-code http://localhost:12100/
-  codex mcp add xjb-code --url http://localhost:12100/
-然后重载当前宿主 MCP / plugin 后重新发触发词。
+⚠️ xjb_code MCP 当前不可用。先核对用户部署的服务地址，不擅自启动本机服务。
+插件不自动注册 MCP。首次配置时替换下面的 URL：
+  claude mcp add --scope user --transport http xjb-code 'https://your-mcp-host/'
+  codex mcp add xjb-code --url 'https://your-mcp-host/'
+已有条目则修改 url：Claude Code 的 ~/.claude.json → 顶层 mcpServers.xjb-code；
+Codex 的 ~/.codex/config.toml → [mcp_servers.xjb-code]。保留其他配置。
+Claude 的 ~/.claude/settings.json 不用于定义服务地址；不要编辑插件缓存。
+通过宿主 /mcp 确认连接和工具列表，业务登录按服务端认证方式处理。
 当前回退到 markdown 模式（功能受限，见附录）。
 ```
 

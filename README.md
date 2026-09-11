@@ -180,7 +180,7 @@ review/
 
 `xjb_coding` 定义工作步骤、约束和验收规则；`xjb_code` 管理确定性的任务、运行和产物状态。两者独立，未连接 MCP 时仍可使用项目本地文件完成工作。
 
-先在独立 checkout 启动后端：
+使用已独立部署的后端地址；需要部署时，在服务端独立 checkout 按 `xjb_code` 的配置说明启动：
 
 ```bash
 git clone git@github.com:0xdevelop/xjb_code.git
@@ -188,12 +188,27 @@ cd xjb_code
 go run .
 ```
 
-仓库根 `.mcp.json` 已声明默认地址 `http://localhost:12100/`。宿主未从 plugin 加载配置时，可显式添加：
+插件不自动注册 MCP 地址。Codex 和 Claude Code 可以连接同一套私有服务，首次配置时把下面的 URL 换成实际可访问的完整地址（保留服务要求的路径）：
 
 ```bash
-codex mcp add xjb-code --url http://localhost:12100/
-claude mcp add --transport http xjb-code http://localhost:12100/
+codex mcp add xjb-code --url 'https://your-mcp-host/'
+claude mcp add --scope user --transport http xjb-code 'https://your-mcp-host/'
 ```
+
+已有配置时直接修改对应条目的 `url`，保留其他服务和认证配置：
+
+| 宿主 | 用户级配置文件 | 地址字段 |
+| --- | --- | --- |
+| Codex | `~/.codex/config.toml`（自定义 Codex 配置目录时以实际目录为准） | `[mcp_servers.xjb-code]` 下的 `url` |
+| Claude Code | `~/.claude.json`（设置 `CLAUDE_CONFIG_DIR` 时以实际目录为准） | 顶层 `mcpServers` → `xjb-code` → `url` |
+
+Claude Code 的 `~/.claude/settings.json` 不用于定义 MCP 服务 URL。项目 `.mcp.json` 中的同名服务器会优先于用户级配置；不要在共享仓库再放一个固定的 `localhost` 地址。`localhost` 指运行客户端的电脑，独立服务器必须通过可达地址、代理或隧道连接。
+
+升级旧版插件后重启宿主，使原来的 `Plugin:xjb-coding:xjb-code` 默认连接退出加载；用户级服务保留。不要修改插件缓存里的 `.mcp.json`，更新会覆盖它。
+
+通过两端 `/mcp` 确认连接和工具列表，再执行所需业务。连接失败与业务认证失败分开诊断：不能仅凭 “not authenticated” 就要求填写账密。`xjb_code` 当前业务认证使用登录工具签发的 `jwt_token`，受保护调用通过 `arguments.jwt_token` 传入；这不等于宿主的 MCP OAuth Authenticate 流程，不能假定添加 HTTP Bearer header 就完成业务认证。服务端实际部署的认证方式需单独核对。
+
+配置行为以 [Codex 官方 MCP 文档](https://developers.openai.com/codex/mcp) 和 [Claude Code 官方 MCP 文档](https://code.claude.com/docs/en/mcp) 为准。
 
 支持 MCP 状态管理的工作流按需使用 `skills.source_status` / `skills.sync`，再通过 `workflow.*`、`requirement.*`、`task.*` 和 `artifact.add` 推进。不要为独立资产导出强制创建后端工作流。
 
@@ -241,7 +256,6 @@ Comfy 官方 `Comfy-Org/docs` 文档仓库采用 GPL，按本项目规则只保�
 .claude-plugin/                  Claude Code manifest / marketplace
 .codex-plugin/                   Codex manifest
 .agents/plugins/                 Codex marketplace
-.mcp.json                        xjb_code 默认 MCP 地址
 skills/
   xjb-coding/                    自驱编码
   xjb-coding-codex/              Codex 宿主适配
