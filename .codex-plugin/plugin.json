@@ -1,6 +1,6 @@
 {
   "name": "xjb-coding",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Skills for coding, Web prototypes, real-browser Web debugging (ego-browser first on macOS), Blender + Three.js assets, and editable local ComfyUI workflows.",
   "author": {
     "name": "0xdevelop"
