@@ -83,7 +83,8 @@ INIT-6. 检测当前 AI 工具并复制对应配置文件
 
 INIT-7. 检测 xjb_code MCP daemon（可选增强后端）
   → 检查宿主 MCP 连接状态及已发现的 xjb_code 工具列表；不使用领取任务等业务操作探活
-  → 已连接且工具列表可用 → 标记 MCP_AVAILABLE=true；业务身份仍需按服务端要求认证
+  → 已连接且工具列表可用 → 调用 auth.jwt_token.check 核对身份；成功 → 标记 MCP_AVAILABLE=true
+  → 返回 error_code=10004 → 凭证缺失 / 错误 / 已吊销：提示用户在 xjb_code Dashboard 签发 API key 并写入宿主配置，标记 MCP_AVAILABLE=false
   → 未配置 / 连接失败 / 无法发现工具 → 标记 MCP_AVAILABLE=false，区分地址、网络和认证问题
   → daemon 不是必需；MCP 模式下任务并发、断点续做、远程审批更可靠
 
@@ -100,15 +101,18 @@ INIT-8. 输出初始化完成摘要
       （若 MCP_AVAILABLE）✅ 已连接 → 工作流由 daemon 驱动（强一致 / 多 agent / web UI）
       （若不可用）⚠️ 未连接 → 当前回退到 markdown 模式（功能受限）。
         插件默认连接 http://127.0.0.1:12100/；先核对用户部署地址，不擅自启动本机服务。
-        Codex：~/.codex/config.toml → [mcp_servers.xjb-code] → url，覆盖插件默认值。
+        凭证：登录 xjb_code Dashboard（http://<host>:12101/）→「API key」面板签发一把 key。
+        Codex：~/.codex/config.toml → [mcp_servers.xjb-code] → url +
+          http_headers = { Authorization = "Bearer xjbk_..." }（或 bearer_token_env_var）。
         Claude Code：用户级 ~/.claude/settings.json →
-          pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url。
+          pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url；
+          key 走 /plugin 配置对话框的 mcp_api_key（sensitive，存钥匙串）。
         Claude 的插件 mcp_url 未设置时取本机默认值；其他 marketplace 使用实际插件 ID。
         不要在 settings.json 顶层写 mcpServers，也不要把 pluginConfigs 写到项目 settings。
         若 ~/.claude.json 已有独立 xjb-code 条目，先迁移 URL 并核对认证字段，再移除旧条目，
         避免后续修改插件地址时重复连接；没有安装插件时才通过宿主 CLI 单独添加 MCP。
         保留已有认证字段及其他服务；不要编辑插件缓存。通过宿主 /mcp 确认连接和工具列表。
-        工具可见不等于业务已登录；按实际认证方式处理，不能把业务 jwt_token 当作 MCP OAuth。
+        工具可见不等于已认证：受保护方法返回 error_code=10004 即凭证问题；不要走宿主 MCP OAuth。
 
     下一步：在此工具中输入触发词开始编码：
       读 .auto_coding/start_coding.md

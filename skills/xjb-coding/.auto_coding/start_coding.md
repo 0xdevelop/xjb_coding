@@ -20,20 +20,26 @@
 
 ## 0. 前提：检测 xjb_code daemon（可选增强）
 
-**第一步**：检查宿主 MCP 连接状态和已发现的 xjb_code 工具列表。不使用领取任务等业务操作探活；工具可见后仍须按服务端要求完成业务认证。
+**第一步**：检查宿主 MCP 连接状态和已发现的 xjb_code 工具列表，再调 `auth.jwt_token.check` 核对身份（返回 `user`、`device_id`、`auth_source`）。不使用领取任务等业务操作探活。
 
 | 结果 | 含义 | 后续 |
 |------|------|------|
-| 已连接且工具列表可用 | daemon 在线 | 核对业务身份后跳到 §1 |
-| 未配置 / 连接失败 / 无法发现工具 | MCP 当前不可用 | 区分配置、网络和认证问题，输出接入提示 + 进入 §附录 markdown 回退 |
+| 已连接且 `auth.jwt_token.check` 成功 | daemon 在线且凭证有效 | 跳到 §1 |
+| 已连接但受保护方法返回 `error_code=10004` | 凭证缺失 / 错误 / 已吊销 | 输出接入提示（签发 API key 写入宿主配置）+ 进入 §附录 markdown 回退 |
+| 未配置 / 连接失败 / 无法发现工具 | MCP 当前不可用 | 区分地址、`bind_address` 与网络问题，输出接入提示 + 进入 §附录 markdown 回退 |
+
+身份模型：每个用户一个账号、一把 API key；同一用户的多个 agent 共用该 key，靠 `agent_id` 区分。所有用户可读全部项目与任务；`task.next` 只领本人任务；编辑（lock / complete / fail / respond / refine / heartbeat）仅归属人或管理员；技能目录写操作仅管理员。
 
 **接入提示模板**：
 ```
 ⚠️ xjb_code MCP 当前不可用。先核对用户部署的服务地址，不擅自启动本机服务。
 插件默认连接 http://127.0.0.1:12100/，私有部署修改用户配置：
-  Codex：~/.codex/config.toml → [mcp_servers.xjb-code] → url。
+  Codex：~/.codex/config.toml → [mcp_servers.xjb-code] → url +
+    http_headers = { Authorization = "Bearer xjbk_..." }（或 bearer_token_env_var）。
   Claude Code：用户级 ~/.claude/settings.json →
-    pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url。
+    pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url；
+    key 走 /plugin 配置对话框的 mcp_api_key（sensitive）。
+凭证来源：登录 xjb_code Dashboard（http://<host>:12101/）→「API key」面板签发；明文只显示一次。
 Claude 插件的 mcp_url 未设置时取默认值；其他 marketplace 使用实际插件 ID。
 不要在 settings.json 顶层写 mcpServers，或在项目 settings 中写 pluginConfigs。
 旧 ~/.claude.json 中的独立 xjb-code 条目需要先迁移 URL、核对认证字段，再移除，避免重复连接。
@@ -99,7 +105,7 @@ agent_id := <自选标识，如 claude-1 / cursor-2 / trae-1>
 loop {
   agent.heartbeat(agent_id)  # 让 web UI 看到我在线
 
-  t := task.next(agent_id, project_id)
+  t := task.next(project_id)   # 只返回本人（或管理员：全部）可领的任务
   if t == nil:
     # 队列空，看是否还有需求漂移
     drift := requirement.detect_drift(project_id)
@@ -287,7 +293,7 @@ request.approval(
 
 ### 4.3 用户响应流程
 
-用户在 dashboard `http://localhost:12101` 的「待批决策点」卡片点选项 → AI 的 `request.approval` 阻塞调用立即返回 → AI 按 `response` 继续；也可从任意客户端调 `request.respond(approval_id, response)`。
+用户登录 dashboard `http://<host>:12101` 后在「待批决策点」卡片点选项（只有发起人或管理员能答复）→ AI 的 `request.approval` 阻塞调用立即返回 → AI 按 `response` 继续；也可从任意客户端调 `request.respond(approval_id, response)`。
 
 **非交互场景（runloop / headless）**：`request.approval` 不可用或超时 → 不无限阻塞，按 §7.4 降级（任务标 blocked + 原因，继续下一任务）。
 
@@ -317,7 +323,7 @@ request.approval(
 
 并发模型：
 - `task.lock(task_id, agent_id)` 是 DB 行级 CAS：同一时间只有一个 agent 能锁一个任务
-- 其他 agent 的 `task.next` 自动跳过已锁任务
+- 其他 agent 的 `task.next` 自动跳过已锁任务；不同用户的任务互不可领（只读可见）
 - 任务在不同 git 分支编码（如 `task/TASK-XXX`），完成后合并回主干 + 删分支
 - 每次工具调用前 `agent.heartbeat(agent_id)` 让 web UI 看到在线状态
 

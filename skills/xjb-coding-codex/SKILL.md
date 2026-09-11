@@ -160,6 +160,15 @@ For private or team deployments, pass `project_id` when the target project space
 known. The daemon defaults to `default` and keeps project-scoped task,
 requirement, approval, and session queries isolated.
 
+Credentials: every user has one account and one API key (issued in the xjb_code
+Dashboard); all of that user's agents share the key and are told apart by
+`agent_id`. In Codex the key lives in `~/.codex/config.toml` under
+`[mcp_servers.xjb-code]` as `http_headers = { Authorization = "Bearer xjbk_..." }`
+(or `bearer_token_env_var`). Start with `auth.jwt_token.check`; `error_code=10004`
+means the credential is missing, wrong, or revoked. Reads are open to every
+user; edits are limited to the record owner or an admin, and `task.next` only
+offers the caller's own tasks.
+
 ## Claude Worker Bridge
 
 When the user explicitly wants Codex to drive Claude Code as an external worker, use the repository/plugin bridge script instead of improvising a terminal workflow.

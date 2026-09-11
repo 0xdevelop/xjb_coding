@@ -2,7 +2,10 @@
   "mcpServers": {
     "xjb-code": {
       "type": "http",
-      "url": "${user_config.mcp_url}"
+      "url": "${user_config.mcp_url}",
+      "headers": {
+        "Authorization": "Bearer ${user_config.mcp_api_key}"
+      }
     }
   }
 }

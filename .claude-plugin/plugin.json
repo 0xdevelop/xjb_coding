@@ -2,13 +2,22 @@
   "name": "xjb-coding",
   "description": "自驱编码、Codex 协作、Web 原型、Blender + Three.js 资产和本机 ComfyUI 工作流 Skills；官方外部工具缺失时提示安装与关联。",
   "version": "0.0.22",
-  "author": { "name": "0xdevelop" },
+  "author": {
+    "name": "0xdevelop"
+  },
   "userConfig": {
     "mcp_url": {
       "type": "string",
       "title": "xjb_code MCP URL",
       "description": "xjb_code 服务完整地址；本机使用默认值，私有部署改为实际可访问地址。",
       "default": "http://127.0.0.1:12100/"
+    },
+    "mcp_api_key": {
+      "type": "string",
+      "title": "xjb_code API key",
+      "sensitive": true,
+      "default": "",
+      "description": "在 xjb_code Dashboard「API key」面板签发的用户级凭证（xjbk_ 前缀）；同一用户的所有 agent 共用一把，以 Authorization: Bearer 头发送。留空时只能调用公开方法。"
     }
   },
   "mcpServers": "./.mcp.claude.json"
