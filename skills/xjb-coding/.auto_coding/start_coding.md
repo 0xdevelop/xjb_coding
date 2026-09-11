@@ -452,7 +452,7 @@ git -C ~/.claude/plugins/repos/xjb-coding-marketplace show v0.0.9:plugins/xjb-co
 
 ---
 
-> **版本**：v0.0.21 (Skills-first, MCP-enhanced)
+> **版本**：v0.0.22 (Skills-first, MCP-enhanced)
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 > **架构**：Skills / markdown 默认可用；[xjb_code MCP daemon](https://github.com/0xdevelop/xjb_code) 可作为可选增强后端；Claude Code / Codex / Cursor / 其他 MCP 客户端作为前端
 > **使用方式**：将 `.auto_coding/` 复制到项目根目录 → 填写 §9 约定区 → 发触发词；如已安装并配置 xjb_code，则自动增强
