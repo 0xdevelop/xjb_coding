@@ -188,27 +188,38 @@ cd xjb_code
 go run .
 ```
 
-插件不自动注册 MCP 地址。Codex 和 Claude Code 可以连接同一套私有服务，首次配置时把下面的 URL 换成实际可访问的完整地址（保留服务要求的路径）：
+插件自动注册 `xjb-code`，默认地址为 `http://127.0.0.1:12100/`。本机使用无需改地址；私有部署时修改下面的用户级配置，升级插件不会覆盖用户值。保留服务要求的完整路径。
 
-```bash
-codex mcp add xjb-code --url 'https://your-mcp-host/'
-claude mcp add --scope user --transport http xjb-code 'https://your-mcp-host/'
+Codex：在 `~/.codex/config.toml` 中添加或修改同名条目，用户配置优先于插件默认值：
+
+```toml
+[mcp_servers.xjb-code]
+url = "http://127.0.0.1:12100/"
 ```
 
-已有配置时直接修改对应条目的 `url`，保留其他服务和认证配置：
+Claude Code：在用户级 `~/.claude/settings.json` 中合并以下配置，修改 `mcp_url` 即可：
 
-| 宿主 | 用户级配置文件 | 地址字段 |
-| --- | --- | --- |
-| Codex | `~/.codex/config.toml`（自定义 Codex 配置目录时以实际目录为准） | `[mcp_servers.xjb-code]` 下的 `url` |
-| Claude Code | `~/.claude.json`（设置 `CLAUDE_CONFIG_DIR` 时以实际目录为准） | 顶层 `mcpServers` → `xjb-code` → `url` |
+```json
+{
+  "pluginConfigs": {
+    "xjb-coding@xjb-coding-marketplace": {
+      "options": {
+        "mcp_url": "http://127.0.0.1:12100/"
+      }
+    }
+  }
+}
+```
 
-Claude Code 的 `~/.claude/settings.json` 不用于定义 MCP 服务 URL。项目 `.mcp.json` 中的同名服务器会优先于用户级配置；不要在共享仓库再放一个固定的 `localhost` 地址。`localhost` 指运行客户端的电脑，独立服务器必须通过可达地址、代理或隧道连接。
+这是 Claude 官方 `userConfig` / `pluginConfigs` 机制：插件声明 `mcp_url` 的默认值，MCP 配置引用 `${user_config.mcp_url}`。设置写在用户目录，不能放到项目 `.claude/settings.json`；如果从其他 marketplace 安装，键名使用实际的 `插件名@marketplace名`。Codex 和 Claude 使用各自的 MCP 配置文件，避免把一种宿主的占位符交给另一种宿主解析。
 
-升级旧版插件后重启宿主，使原来的 `Plugin:xjb-coding:xjb-code` 默认连接退出加载；用户级服务保留。不要修改插件缓存里的 `.mcp.json`，更新会覆盖它。
+先前通过 `claude mcp add --scope user` 添加的独立服务存放在 `~/.claude.json` 的顶层 `mcpServers.xjb-code`，直接在 `settings.json` 顶层写 `mcpServers` 无效。迁移到插件配置时，先复制原 URL 到上述 `mcp_url`；若旧条目还带认证或其他字段，先确认插件配置能够保留这些行为，再移除旧条目。仅 URL 的旧条目迁移后可运行 `claude mcp remove --scope user xjb-code`，防止以后改地址时加载两条连接。不要移除其他 MCP 服务。
+
+修改后重启宿主；Codex 新开任务加载更新后的插件。保留其他配置，不编辑插件缓存。`127.0.0.1` 指运行客户端的电脑，独立服务器必须通过可达地址、代理或隧道连接。
 
 通过两端 `/mcp` 确认连接和工具列表，再执行所需业务。连接失败与业务认证失败分开诊断：不能仅凭 “not authenticated” 就要求填写账密。`xjb_code` 当前业务认证使用登录工具签发的 `jwt_token`，受保护调用通过 `arguments.jwt_token` 传入；这不等于宿主的 MCP OAuth Authenticate 流程，不能假定添加 HTTP Bearer header 就完成业务认证。服务端实际部署的认证方式需单独核对。
 
-配置行为以 [Codex 官方 MCP 文档](https://developers.openai.com/codex/mcp) 和 [Claude Code 官方 MCP 文档](https://code.claude.com/docs/en/mcp) 为准。
+配置行为以 [Codex 官方 MCP 文档](https://developers.openai.com/codex/mcp)、[Claude Code 插件用户配置](https://code.claude.com/docs/en/plugins-reference#user-configuration) 和 [Claude Code 官方 MCP 文档](https://code.claude.com/docs/en/mcp) 为准。
 
 支持 MCP 状态管理的工作流按需使用 `skills.source_status` / `skills.sync`，再通过 `workflow.*`、`requirement.*`、`task.*` 和 `artifact.add` 推进。不要为独立资产导出强制创建后端工作流。
 
@@ -256,6 +267,8 @@ Comfy 官方 `Comfy-Org/docs` 文档仓库采用 GPL，按本项目规则只保�
 .claude-plugin/                  Claude Code manifest / marketplace
 .codex-plugin/                   Codex manifest
 .agents/plugins/                 Codex marketplace
+.mcp.codex.json                  Codex MCP 默认地址
+.mcp.claude.json                 Claude MCP 用户配置引用
 skills/
   xjb-coding/                    自驱编码
   xjb-coding-codex/              Codex 宿主适配

@@ -30,12 +30,14 @@
 **接入提示模板**：
 ```
 ⚠️ xjb_code MCP 当前不可用。先核对用户部署的服务地址，不擅自启动本机服务。
-插件不自动注册 MCP。首次配置时替换下面的 URL：
-  claude mcp add --scope user --transport http xjb-code 'https://your-mcp-host/'
-  codex mcp add xjb-code --url 'https://your-mcp-host/'
-已有条目则修改 url：Claude Code 的 ~/.claude.json → 顶层 mcpServers.xjb-code；
-Codex 的 ~/.codex/config.toml → [mcp_servers.xjb-code]。保留其他配置。
-Claude 的 ~/.claude/settings.json 不用于定义服务地址；不要编辑插件缓存。
+插件默认连接 http://127.0.0.1:12100/，私有部署修改用户配置：
+  Codex：~/.codex/config.toml → [mcp_servers.xjb-code] → url。
+  Claude Code：用户级 ~/.claude/settings.json →
+    pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url。
+Claude 插件的 mcp_url 未设置时取默认值；其他 marketplace 使用实际插件 ID。
+不要在 settings.json 顶层写 mcpServers，或在项目 settings 中写 pluginConfigs。
+旧 ~/.claude.json 中的独立 xjb-code 条目需要先迁移 URL、核对认证字段，再移除，避免重复连接。
+修改后重启宿主，保留其他配置，不编辑插件缓存。
 通过宿主 /mcp 确认连接和工具列表，业务登录按服务端认证方式处理。
 当前回退到 markdown 模式（功能受限，见附录）。
 ```

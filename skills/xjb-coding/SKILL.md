@@ -99,12 +99,14 @@ INIT-8. 输出初始化完成摘要
     xjb_code MCP daemon：
       （若 MCP_AVAILABLE）✅ 已连接 → 工作流由 daemon 驱动（强一致 / 多 agent / web UI）
       （若不可用）⚠️ 未连接 → 当前回退到 markdown 模式（功能受限）。
-        插件不自动注册 MCP；先核对用户已有的私有服务地址，不擅自启动本机服务。
-        首次添加时将 URL 替换为用户实际地址：
-          codex mcp add xjb-code --url 'https://your-mcp-host/'
-          claude mcp add --scope user --transport http xjb-code 'https://your-mcp-host/'
-        已有条目时修改 url：Codex 的 ~/.codex/config.toml → [mcp_servers.xjb-code]；
-        Claude Code 的 ~/.claude.json → 顶层 mcpServers.xjb-code，不写 ~/.claude/settings.json。
+        插件默认连接 http://127.0.0.1:12100/；先核对用户部署地址，不擅自启动本机服务。
+        Codex：~/.codex/config.toml → [mcp_servers.xjb-code] → url，覆盖插件默认值。
+        Claude Code：用户级 ~/.claude/settings.json →
+          pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url。
+        Claude 的插件 mcp_url 未设置时取本机默认值；其他 marketplace 使用实际插件 ID。
+        不要在 settings.json 顶层写 mcpServers，也不要把 pluginConfigs 写到项目 settings。
+        若 ~/.claude.json 已有独立 xjb-code 条目，先迁移 URL 并核对认证字段，再移除旧条目，
+        避免后续修改插件地址时重复连接；没有安装插件时才通过宿主 CLI 单独添加 MCP。
         保留已有认证字段及其他服务；不要编辑插件缓存。通过宿主 /mcp 确认连接和工具列表。
         工具可见不等于业务已登录；按实际认证方式处理，不能把业务 jwt_token 当作 MCP OAuth。
 
