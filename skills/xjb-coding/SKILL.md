@@ -160,6 +160,8 @@ INIT-9. 询问是否立即启动
 
 **主流程递进**：`--refine` → `--task_plan` → `--worker`，无参数是三者完整串联；`--tick` 是同一主流程的有界切片，供外部循环反复触发。
 
+需要 Dashboard 定期任务、微信 ClawBot 状态汇报或手机下发目标时，读取 [Runloop 接单与续做](references/runloop.md)，使用 `xjb_code runloop` 原生 Go 执行端。收到执行端的 `run_id` 和结果文件路径时按该契约推进，不重复初始化或领取同一轮次。
+
 ---
 
 ### Codex 驱动 Claude Code worker（可选）
