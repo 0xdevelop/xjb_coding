@@ -1,7 +1,7 @@
 {
   "name": "xjb-coding",
   "version": "0.0.26",
-  "description": "Agent Skills for coding workflows, multi-user multi-agent collaboration via the xjb_code backend, real-browser Web debugging (ego-browser first on macOS), Web prototypes, Blender + Three.js, and local ComfyUI workflows. One skill set shared by Codex, Claude Code, and Hermes.",
+  "description": "Agent Skills for coding workflows, multi-user multi-agent collaboration via the xjb_code backend, real-browser Web debugging (ego-browser first on macOS), Web prototypes, requirement planning prototypes, Blender + Three.js, and local ComfyUI workflows. One skill set shared by Codex, Claude Code, and Hermes.",
   "author": {
     "name": "0xdevelop"
   },
@@ -13,7 +13,7 @@
   "interface": {
     "displayName": "xjb_coding",
     "shortDescription": "Self-driving coding, multi-agent collaboration, browser debugging, Web / 3D / ComfyUI workflows.",
-    "longDescription": "xjb_coding packages the workflow Skills a coding agent needs end to end: refine requirements, split tasks, code with TDD behind four quality gates, checkpoint and resume across sessions, and coordinate several agents through the optional xjb_code backend (per-user API keys, shared task board, human approvals). It also covers real-browser Web debugging that prefers the official ego-browser (ego lite) skill on macOS, sketch-to-prototype Web UX, Blender + Three.js assets, and editable local ComfyUI workflows with official references and local extensions. Comfy CLI/MCP and ego lite are external tools; missing tools produce setup instructions. Source and docs: https://github.com/0xdevelop/xjb_coding",
+    "longDescription": "xjb_coding packages the workflow Skills a coding agent needs end to end: refine requirements, split tasks, code with TDD behind four quality gates, checkpoint and resume across sessions, and coordinate several agents through the optional xjb_code backend (per-user API keys, shared task board, human approvals). It also covers real-browser Web debugging that prefers the official ego-browser (ego lite) skill on macOS, sketch-to-prototype Web UX, single-file requirement planning prototypes (two-end screen comparison, call chain with parameters, per-end hardening), Blender + Three.js assets, and editable local ComfyUI workflows with official references and local extensions. Comfy CLI/MCP and ego lite are external tools; missing tools produce setup instructions. Source and docs: https://github.com/0xdevelop/xjb_coding",
     "developerName": "0xdevelop",
     "category": "Productivity",
     "capabilities": [

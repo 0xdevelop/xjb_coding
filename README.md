@@ -12,6 +12,7 @@
 | --- | --- | --- |
 | [xjb-coding](skills/xjb-coding/SKILL.md) | 软件开发 | 项目初始化、需求细化、任务分解、编码、四层质量门禁、断点续做 |
 | [sketch-to-prototype](skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
+| [planning-prototype](skills/planning-prototype/SKILL.md) | 需求规划原型 | 把一个需求做成可落码的单文件 HTML：两端界面对照、调用链与传参、各端要补的能力；开工前按清单交互问询补齐必备项 |
 | [blender-threejs](skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
 | [comfyui-workflow](skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
 | [web-browser-debug](skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 选定真浏览器执行层：macOS 优先官方 ego-browser（ego lite），回退宿主 Playwright MCP；统一截图、证据与任务空间约定 |
@@ -64,6 +65,7 @@ codex plugin list
 ```bash
 hermes skills install 0xdevelop/xjb_coding/skills/xjb-coding
 hermes skills install 0xdevelop/xjb_coding/skills/sketch-to-prototype
+hermes skills install 0xdevelop/xjb_coding/skills/planning-prototype
 hermes skills install 0xdevelop/xjb_coding/skills/blender-threejs
 hermes skills install 0xdevelop/xjb_coding/skills/comfyui-workflow
 hermes skills install 0xdevelop/xjb_coding/skills/web-browser-debug
