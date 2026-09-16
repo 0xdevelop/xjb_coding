@@ -100,7 +100,7 @@ Claude 插件的 mcp_url 未设置时取默认值；其他 marketplace 使用实
 ### 1.3 阶段 2：worker 循环
 
 ```
-agent_id := <自选标识，如 claude-1 / cursor-2 / trae-1>
+agent_id := agent.create(name=<自选名称，如 claude-1 / cursor-2 / trae-1>, project_id=project_id).agent_id   # 同一宿主复用已注册的 agent_id
 
 loop {
   agent.heartbeat(agent_id)  # 让 web UI 看到我在线
@@ -113,7 +113,7 @@ loop {
       处理漂移 → task.add 补任务，continue
     break  # 真完工
 
-  locked := task.lock(t.id, agent_id)
+  locked := task.lock(t.task_id, agent_id)
   if locked == nil:  # 被别人抢了 / 状态变更
     continue
 
@@ -142,7 +142,7 @@ loop {
   git push origin <branch>
 
   ## 关闭任务
-  task.complete(t.id, commit_hash=<sha>, notes=<关键决策摘要>)
+  task.complete(t.task_id, commit_hash=<sha>, notes=<关键决策摘要>)
 }
 ```
 
