@@ -38,6 +38,8 @@ ego lite 不是 MCP 服务：`ego-browser` 是 App 注册到 `~/.local/bin` 的 
 6. **多端事件链验证**（SSE / WebSocket / 流式渲染）：后端日志与浏览器控制台双对照，漏一处即视为未通过。
 7. **xjb_code 后台进程**：联调前核对端口、PID、可执行文件和父进程；通过 GoLand 的 `xjb_code-debug` 配置启动或重启，不另起临时二进制或后台服务。结束时停止本次 Debug 并复查监听端口和子进程无残留；保留用户原有进程。
 
+使用 JetBrains IDE 做运行/调试时，先按需读取 [官方知识库入口与本项目集成约定](references/jetbrains.md)，覆盖 Windows / macOS / Linux；首次运行优先检查仓库 `.run/`。
+
 ## 交付流程
 
 1. `bash <skill-dir>/scripts/check_tools.sh`，按输出选层并在报告首行写明「浏览器层：ego-browser / Playwright MCP / 缺失」。
