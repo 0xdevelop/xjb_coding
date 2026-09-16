@@ -4,7 +4,7 @@
 >
 > **驱动模型**：默认可通过本地 Skills / markdown 模式工作；如果 [xjb_code](https://github.com/0xdevelop/xjb_code) MCP daemon 已由用户显式部署并连通，则优先使用它提供的工具。`xjb_code` 是独立的通用 MCP Streamable HTTP 后端，配合本 skill 使用效果更佳。
 >
-> **数据边界**：本 workflow 不做 telemetry，不上传仓库、diff、prompt、任务状态。MCP 模式下数据写入用户自部署的 `xjb_code` SQLite；多项目空间部署可传 `project_id`（默认 `default`）。
+> **数据边界**：本 workflow 不做 telemetry，不上传仓库、diff、prompt、任务状态。MCP 模式下数据写入用户自部署的 `xjb_code` SQLite，按仓库绑定的 `project_id` 隔离（见 §1.1）。
 >
 > 触发词后可携带可选参数：
 >
@@ -72,7 +72,7 @@ Claude 插件的 mcp_url 未设置时取默认值；其他 marketplace 使用实
 
 汇报：「已识别语言：**X**，项目：**Y**，session_id 已创建，开始执行。」
 
-`project_id := <用户指定租户；未指定则 default>`。
+`project_id` 按 xjb-coding Skill 的 `references/projects.md` 绑定：先读 `.auto_coding/project.json` 并用 `project.get` 验证；未绑定时取仓库标识（用户指定或版本管理远端，规范为 `<host>/<命名空间…>/<仓库>`，不限 GitHub）→ `project.list(repository=…)` 唯一匹配即复用、多个问用户、没有就 `project.create(visibility=private)` → 写回 `.auto_coding/project.json`。不回退 `default`。
 
 `session.create(agent_id, project_id)` → 拿到 session_id，后续工具调用都带上 `project_id`。
 
