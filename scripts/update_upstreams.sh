@@ -172,7 +172,7 @@ apply_bundle() {
 check_api_links() {
     local url code resolved availability exit_code number=0
     : > "$WORK/api.tsv"
-    text_tool links "$ROOT/skills/comfyui-workflow/references/local-api.md" "$ROOT/skills/web-browser-debug/references/jetbrains.md" | awk '/^https:\/\/(docs[.]comfy[.]org|www[.]jetbrains[.]com)\//' | sort -u > "$WORK/api-urls"
+    text_tool links "$ROOT/skills/comfyui-workflow/references/local-api.md" "$ROOT/skills/xjb-extends-jetbrains/references/official-docs.md" | awk '/^https:\/\/(docs[.]comfy[.]org|www[.]jetbrains[.]com)\//' | sort -u > "$WORK/api-urls"
     while IFS= read -r url; do
         (( number += 1 )); exit_code=0
         curl --proto '=https' --proto-redir '=https' -ILsS --max-time 5 -o /dev/null -w '%{http_code}\n%{url_effective}\n' "$url" > "$WORK/http.txt" 2> "$WORK/http-$number.error" || exit_code=$?

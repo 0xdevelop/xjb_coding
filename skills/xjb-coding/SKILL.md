@@ -19,7 +19,7 @@ version: 0.0.27
 - `xjb_code` 是用户自部署的通用 MCP Streamable HTTP 后端，不接 LLM；它与本 skill 独立存在，配合使用效果更佳。
 - 没有连通 MCP 时，必须回退到本地 Skills / markdown 模式，不得阻塞初始化。
 - 项目绑定先核对当前仓库和服务端权限，见 [项目识别与共享范围](references/projects.md)。公司项目面向单公司实例账号共享；个人项目仅活跃成员可读，新建默认 private，不把 `default` 当隐私隔离。
-- JetBrains IDE 调试读取 [官方知识库入口](../web-browser-debug/references/jetbrains.md)，不复制官方手册；复用仓库 `.run/` 配置并按实际 OS / Keymap 操作。
+- JetBrains IDE 调试使用独立的 [xjb-extends-jetbrains](../xjb-extends-jetbrains/SKILL.md) Skill：只引用官方知识库，复用仓库 `.run/` 配置并按实际 OS / Keymap 操作。
 
 ---
 

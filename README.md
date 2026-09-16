@@ -15,6 +15,7 @@
 | [planning-prototype](skills/planning-prototype/SKILL.md) | 需求规划原型 | 把一个需求做成可落码的单文件 HTML：两端界面对照、调用链与传参、各端要补的能力；开工前按清单交互问询补齐必备项 |
 | [blender-threejs](skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
 | [comfyui-workflow](skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
+| [xjb-extends-jetbrains](skills/xjb-extends-jetbrains/SKILL.md) | JetBrains IDE 调试 | 独立管理官方知识库引用、`.run` 集成、Run/Debug 与项目窗口边界，覆盖 Windows / macOS / Linux |
 | [web-browser-debug](skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 选定真浏览器执行层：macOS 优先官方 ego-browser（ego lite），回退宿主 Playwright MCP；统一截图、证据与任务空间约定 |
 
 自驱编码流程不绑定单一编程语言。原型与 3D 页面默认面向桌面 Web，用户指定其他平台时按实际需求处理。普通 2D Web 任务不需要加载 Blender + Three.js Skill。
@@ -68,6 +69,7 @@ hermes skills install 0xdevelop/xjb_coding/skills/sketch-to-prototype
 hermes skills install 0xdevelop/xjb_coding/skills/planning-prototype
 hermes skills install 0xdevelop/xjb_coding/skills/blender-threejs
 hermes skills install 0xdevelop/xjb_coding/skills/comfyui-workflow
+hermes skills install 0xdevelop/xjb_coding/skills/xjb-extends-jetbrains
 hermes skills install 0xdevelop/xjb_coding/skills/web-browser-debug
 ```
 
@@ -288,6 +290,7 @@ skills/
   sketch-to-prototype/           草图生成 Web 原型
   blender-threejs/               Blender + Three.js 工作流、脚本与官方参考资料
   comfyui-workflow/              官方 Comfy Skills 原版、本机 extend 和查询/保存脚本
+  xjb-extends-jetbrains/           独立 JetBrains IDE 调试、官方知识库引用与跨平台约定
   web-browser-debug/             真浏览器执行层选择（ego-browser 优先）、官方 Skill 引用与检查脚本
 vendor/three.js/                 固定版本的官方 submodule
 scripts/

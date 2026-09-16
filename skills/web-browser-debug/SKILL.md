@@ -36,9 +36,7 @@ ego lite 不是 MCP 服务：`ego-browser` 是 App 注册到 `~/.local/bin` 的 
 4. **验收证据按流程留**：每条主流程至少一份最终状态快照或截图 + 关键断言（URL、可见元素、控制台无错误）；用 `page.evaluate` 取控制台错误、资源失败、`renderer.info` 等运行时事实，不凭构建通过宣称页面可用。
 5. **不清空浏览器 profile 级状态**：清 cookie / cache 前先读官方 `references/clearing-state.md`；只用单 origin 级命令。
 6. **多端事件链验证**（SSE / WebSocket / 流式渲染）：后端日志与浏览器控制台双对照，漏一处即视为未通过。
-7. **xjb_code 后台进程**：联调前核对端口、PID、可执行文件和父进程；通过 GoLand 的 `xjb_code-debug` 配置启动或重启，不另起临时二进制或后台服务。结束时停止本次 Debug 并复查监听端口和子进程无残留；保留用户原有进程。
-
-使用 JetBrains IDE 做运行/调试时，先按需读取 [官方知识库入口与本项目集成约定](references/jetbrains.md)，覆盖 Windows / macOS / Linux；首次运行优先检查仓库 `.run/`。
+7. **后台联调**：启动方式遵循目标仓库约定；涉及 JetBrains IDE 时，按需使用独立的 [xjb-extends-jetbrains](../xjb-extends-jetbrains/SKILL.md) Skill 处理运行配置、调试和窗口操作。本 Skill 负责浏览器页面验证。
 
 ## 交付流程
 
