@@ -28,7 +28,7 @@
 | 已连接但受保护方法返回 `error_code=10004` | 凭证缺失 / 错误 / 已吊销 | 输出接入提示（签发 API key 写入宿主配置）+ 进入 §附录 markdown 回退 |
 | 未配置 / 连接失败 / 无法发现工具 | MCP 当前不可用 | 区分地址、`bind_address` 与网络问题，输出接入提示 + 进入 §附录 markdown 回退 |
 
-身份模型：每个用户一个账号、一把 API key；同一用户的多个 agent 共用该 key，靠 `agent_id` 区分。所有用户可读全部项目与任务；`task.next` 只领本人任务；编辑（lock / complete / fail / respond / refine / heartbeat）仅归属人或管理员；技能目录写操作仅管理员。
+身份模型：每个用户一个账号、一把 API key；同一用户的多个 agent 共用该 key，靠 `agent_id` 区分。公司项目（`company`）本实例所有账号可读任务详情与历史记忆，个人项目（`private`）只有活跃成员可读，管理员也不例外；`task.next` 只领本人任务；编辑（lock / complete / fail / respond / refine / heartbeat）仅归属人或管理员；技能目录写操作仅管理员。
 
 **接入提示模板**：
 ```

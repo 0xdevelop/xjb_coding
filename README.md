@@ -2,7 +2,7 @@
 
 面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、真浏览器 Web 调试（macOS 优先官方 ego-browser）、草图生成 Web 原型、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
 
-安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号一把 API key，同一用户的所有 agent 共用；全员可读全部项目，编辑限本人，管理员全权；看板实时显示任务、待批决策点与工具调用统计。
+安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号一把 API key，同一用户的所有 agent 共用；公司项目全实例可读、个人项目仅成员可读，编辑限记录归属人或管理员；看板实时显示任务、待批决策点与工具调用统计。
 
 兼容目标是当前 Codex、Claude Code、Hermes Agent；按各宿主的官方入口加载完整 Skill 目录，不依赖宿主专有继承机制。人工保存的工作流始终可以重新打开并作为下一轮输入，更新插件或切换宿主不会迁移、覆盖这些业务文件。每次发版区分入口校验、宿主实测和生成结果验收，不承诺未经验证的未来版本。
 
@@ -201,7 +201,7 @@ go run .
 
 ### 用户体系与凭证
 
-`xjb_code` 是多用户服务：每人一个账号。管理员登录 Dashboard `http://<host>:12101/`，右上「账号与 key」弹窗里建号，点选该账号即可为其签发一把 `xjbk_` 前缀的用户级 API key 交给本人；成员登录后同一入口只看到本人的 key，可自签。**同一用户的所有 agent（Claude Code、Codex、多台机器）共用这一把 key**，宿主以 HTTP `Authorization: Bearer <key>` 头发送；`agent_id` 只用于区分是哪一个 agent 在干活。授权规则：所有用户可查看全部项目与任务；编辑只允许记录归属人；管理员拥有全部权限；技能目录写操作（`skills.sync` 等）仅管理员。
+`xjb_code` 是多用户服务：每人一个账号。管理员登录 Dashboard `http://<host>:12101/`，右上「账号与 key」弹窗里建号，点选该账号即可为其签发一把 `xjbk_` 前缀的用户级 API key 交给本人；成员登录后同一入口只看到本人的 key，可自签。**同一用户的所有 agent（Claude Code、Codex、多台机器）共用这一把 key**，宿主以 HTTP `Authorization: Bearer <key>` 头发送；`agent_id` 只用于区分是哪一个 agent 在干活。授权规则：公司项目（`company`）本实例所有账号可查看任务详情与历史记忆；个人项目（`private`，新建默认）只有活跃成员可查看，管理员也不绕过；编辑只允许记录归属人或管理员；技能目录写操作（`skills.sync` 等）仅管理员。
 
 Codex：在 `~/.codex/config.toml` 中添加或修改同名条目，用户配置优先于插件默认值。插件自带的 MCP 定义不能携带请求头，所以 key 必须写在这里（二选一）：
 

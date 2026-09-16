@@ -219,6 +219,12 @@ function gen_changelog_if_possible() {
     fi
 }
 
+# run_release_step 记录当前步骤再执行；&& 链中途失败不会触发 set -e，靠它指出停在哪一步。
+function run_release_step() {
+    last_release_step="$*"
+    "$@"
+}
+
 function git_handle_push() {
     local current_version_no=${CURRENT_VERSION//v/}
     local next_version_no=${NEXT_VERSION//v/}
@@ -235,21 +241,40 @@ function git_handle_push() {
     echo next_version_no: $next_version_no
     echo pre_del_version_no: $pre_del_version_no
 
-    gen_changelog_if_possible "${pre_del_version_no}" \
-    && git add . \
-    && git commit -m "Release:--: v${next_version_no}_$(date -u +"%Y-%m-%d_%H:%M:%S")"_"UTC" \
-    && git tag v${next_version_no} \
-    && git tag -f latest v${next_version_no}
+    if ! { run_release_step gen_changelog_if_possible "${pre_del_version_no}" \
+    && run_release_step git add . \
+    && run_release_step git commit -m "Release:--: v${next_version_no}_$(date -u +"%Y-%m-%d_%H:%M:%S")"_"UTC" \
+    && run_release_step git tag v${next_version_no} \
+    && run_release_step git tag -f latest v${next_version_no}; }; then
+        echo "[git_tag] ERROR: release v${next_version_no} stopped before push at: ${last_release_step}" >&2
+        echo "[git_tag] nothing was pushed; inspect git status / git log -1 / git tag, fix the cause, then rerun." >&2
+        exit 1
+    fi
 
+    local push_failed_remotes=""
     for remote in $(git remote)
     do
         echo "Pushing to ${remote}..."
-        git push --delete ${remote} latest \
-        && git push ${remote} \
-        && git push ${remote} latest \
-        && git push ${remote} v${next_version_no}
+        if ! { run_release_step git push --delete ${remote} latest \
+        && run_release_step git push ${remote} \
+        && run_release_step git push ${remote} latest \
+        && run_release_step git push ${remote} v${next_version_no}; }; then
+            echo "[git_tag] ERROR: push to ${remote} stopped at: ${last_release_step}" >&2
+            push_failed_remotes="${push_failed_remotes} ${remote}"
+        fi
     done
     git tag -d v${pre_del_version_no}
+
+    if [ -n "${push_failed_remotes}" ]; then
+        echo "[git_tag] ERROR: release v${next_version_no} is committed and tagged locally, but push failed for:${push_failed_remotes}" >&2
+        echo "[git_tag] retry each failed remote in order, starting from the step that failed:" >&2
+        echo "[git_tag]   git push --delete <remote> latest   (skip when the remote has no latest tag)" >&2
+        echo "[git_tag]   git push <remote>" >&2
+        echo "[git_tag]   git push <remote> latest" >&2
+        echo "[git_tag]   git push <remote> v${next_version_no}" >&2
+        echo "[git_tag] verify: git ls-remote <remote> refs/heads/main refs/tags/latest refs/tags/v${next_version_no}" >&2
+        exit 1
+    fi
 }
 
 handle_input(){
