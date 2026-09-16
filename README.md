@@ -12,7 +12,7 @@
 | --- | --- | --- |
 | [xjb-coding](skills/xjb-coding/SKILL.md) | 软件开发 | 项目初始化、需求细化、任务分解、编码、四层质量门禁、断点续做 |
 | [sketch-to-prototype](skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
-| [planning-prototype](skills/planning-prototype/SKILL.md) | 需求规划原型 | 把一个需求做成可落码的单文件 HTML：两端界面对照、调用链与传参、各端要补的能力；开工前按清单交互问询补齐必备项 |
+| [planning-prototype](skills/planning-prototype/SKILL.md) | 需求规划原型 | 把一个需求做成可落码的自包含 HTML：两端界面对照、调用链与传参、各端 check 项、路径差异；综合 / 产品 / 技术三个视角同源生成；开工前按八项清单交互问询补齐必备项 |
 | [blender-threejs](skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
 | [comfyui-workflow](skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
 | [xjb-extends-jetbrains](skills/xjb-extends-jetbrains/SKILL.md) | JetBrains IDE 调试 | 独立管理官方知识库引用、`.run` 集成、Run/Debug 与项目窗口边界，覆盖 Windows / macOS / Linux |
@@ -288,9 +288,10 @@ Comfy 官方 `Comfy-Org/docs` 文档仓库采用 GPL，按本项目规则只保�
 skills/
   xjb-coding/                    自驱编码
   sketch-to-prototype/           草图生成 Web 原型
+  planning-prototype/            需求规划原型（两端界面、调用链、check 项）
   blender-threejs/               Blender + Three.js 工作流、脚本与官方参考资料
   comfyui-workflow/              官方 Comfy Skills 原版、本机 extend 和查询/保存脚本
-  xjb-extends-jetbrains/           独立 JetBrains IDE 调试、官方知识库引用与跨平台约定
+  xjb-extends-jetbrains/         独立 JetBrains IDE 调试、官方知识库引用与跨平台约定
   web-browser-debug/             真浏览器执行层选择（ego-browser 优先）、官方 Skill 引用与检查脚本
 vendor/three.js/                 固定版本的官方 submodule
 scripts/
