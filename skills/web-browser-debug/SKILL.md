@@ -1,8 +1,8 @@
 ---
 name: web-browser-debug
-description: Choose and drive the real browser for Web debugging, end-to-end checks, and UI acceptance. Prefers the official ego-browser (ego lite) skill on macOS, falls back to a host Playwright MCP, and reports the gap when neither exists. Use before any browser-level verification of a Web page or app.
+description: Choose and drive the real browser for Web debugging, end-to-end checks, and UI acceptance. Prefers the official ego-browser (ego lite) skill on macOS, falls back to a host Playwright MCP, and reports the gap when neither exists. Use before any browser-level verification of a Web page or app. Also carries the hard integration-test standard: after every data-writing action, verify the data end to end across UI, gateway, execution logs, database and runtime cache — a green UI alone never counts as passing.
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
   hermes:
     category: development
     tags: [web, browser, debug, e2e, ego-browser]
@@ -37,6 +37,29 @@ ego lite 不是 MCP 服务：`ego-browser` 是 App 注册到 `~/.local/bin` 的 
 5. **不清空浏览器 profile 级状态**：清 cookie / cache 前先读官方 `references/clearing-state.md`；只用单 origin 级命令。
 6. **多端事件链验证**（SSE / WebSocket / 流式渲染）：后端日志与浏览器控制台双对照，漏一处即视为未通过。
 7. **后台联调**：启动方式遵循目标仓库约定；涉及 JetBrains IDE 时，按需使用独立的 [xjb-extends-jetbrains](../xjb-extends-jetbrains/SKILL.md) Skill 处理运行配置、调试和窗口操作。本 Skill 负责浏览器页面验证。
+
+## 联调硬标准：界面不算数，数据流转对了才算（用户拍板，不可省）
+
+页面上出现「成功」只证明前端画了个成功。**每做完一个会写数据的动作，必须把这条数据从头到尾核一遍**，缺任何一环都算未通过、不准写进报告。
+
+**动手前先报「这一步用到什么」**：涉及外部供应商 / 工作流定义体时，列出本步会用到的 `workstream_xxx` 与它当前指向的目的地（从运行时配置实读，不从文件猜），让用户确认是不是他预期的那套环境。打真供应商的动作，用户没明确说「真跑」就不点。
+
+**每步核这五层**（顺着数据流方向，一层不对就停下来定位，不要接着往下点）：
+
+| 层 | 核什么 | 怎么核 |
+| --- | --- | --- |
+| 1 界面 | 动作后的可见状态、计数、角标、禁用态 | `page.evaluate` 读真实 DOM，不看截图印象 |
+| 2 网关 / 调用方 | 方法名、入参、HTTP 状态 | 前端网络面板或网关日志 |
+| 3 执行端 | 任务是否真跑、走了哪条分支、耗时 | 执行引擎日志（按任务 / 别名 grep），含**外部接口的真实回包** |
+| 4 事实源 | 该写的列写没写、值对不对、`updated_at` 是不是这一刻 | 直接查库（只读），按业务主键定位 |
+| 5 运行时 | 热层状态、绑定关系、队列 | Redis 只读命令 |
+
+**判定规则**：
+
+- **只要任意两层说法不一致，就是一个 bug**，哪怕界面看着正常。典型：界面显示「已回传」而事实源里对应字段没写，或计数与明细对不上。
+- **回包字段要逐个对落库**：外部接口回了什么字段，落库时就该有什么字段。回包里有、库里没有 = 回报那一跳丢字段，下游按它做判据的功能会永远解不开。
+- **不用「日志没报错」代替「数据写对了」**：没报错只说明没抛异常。
+- 报告里逐层写结论，**分清「已实测」与「未覆盖」**；没核过的层不许写成通过。
 
 ## 交付流程
 
