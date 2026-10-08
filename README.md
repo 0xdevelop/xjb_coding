@@ -17,6 +17,7 @@
 | [comfyui-workflow](skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
 | [xjb-extends-jetbrains](skills/xjb-extends-jetbrains/SKILL.md) | JetBrains IDE 调试 | 独立管理官方知识库引用、`.run` 集成、Run/Debug 与项目窗口边界，覆盖 Windows / macOS / Linux |
 | [web-browser-debug](skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 选定真浏览器执行层：macOS 优先官方 ego-browser（ego lite），回退宿主 Playwright MCP；统一截图、证据与任务空间约定 |
+| [ubuntu-shell-tools](skills/ubuntu-shell-tools/SKILL.md) | Ubuntu 20.04+ 运维 | 使用时获取 shell_tools 最新 main，检查并使用服务器配置、软件安装、网络诊断和 SSH 等脚本 |
 
 自驱编码流程不绑定单一编程语言。原型与 3D 页面默认面向桌面 Web，用户指定其他平台时按实际需求处理。普通 2D Web 任务不需要加载 Blender + Three.js Skill。
 
@@ -71,6 +72,7 @@ hermes skills install 0xdevelop/xjb_coding/skills/blender-threejs
 hermes skills install 0xdevelop/xjb_coding/skills/comfyui-workflow
 hermes skills install 0xdevelop/xjb_coding/skills/xjb-extends-jetbrains
 hermes skills install 0xdevelop/xjb_coding/skills/web-browser-debug
+hermes skills install 0xdevelop/xjb_coding/skills/ubuntu-shell-tools
 ```
 
 单独分发 Skill 时保留其完整目录，包括 `references/` 和 `scripts/`。没有 Skills 加载机制的宿主，可直接读取对应 `SKILL.md`。
@@ -87,7 +89,8 @@ skills:
 
 ### 工具与参考资料
 
-- 安装 plugin 即包含上述五个 Skills；直接描述相关任务即可由宿主匹配，也可以点名 Skill。
+- 安装 plugin 即包含上述 Skills；直接描述相关任务即可由宿主匹配，也可以点名 Skill。
+- `ubuntu-shell-tools` 每次开始工具任务时，将 [shell_tools](https://github.com/0xdevelop/shell_tools) 最新 `main` 浅克隆到当前项目 `tmp/shell-tools/` 的独立目录，记录 commit，检查后按任务执行；上游脚本更新无需等待插件发版。获取失败明确报错，不自动执行旧副本。Skill 规则自身更新仍随插件发布，Ubuntu 各版本的适用性按选中脚本和目标机器核实。
 - Blender + Three.js Skill 以十份 Three.js 官方 API 文档为入口，并附带固定版本的同仓库次级引用，覆盖 GLB 加载、动画、计时、纹理、相机控制、粒子与网格采样。资料按问题读取，不要求用户下载官方源码或初始化 submodule。
 - 未收录内容或与目标项目版本不同的 API，再核对相应版本的官方资料。附带文档不等于完整离线知识库。
 - Blender 本体需在本机安装，Blender MCP 可选；Three.js 是目标项目依赖，使用该项目的包管理器与 lockfile。安装 plugin 不会自动安装这些运行工具。
@@ -293,6 +296,7 @@ skills/
   comfyui-workflow/              官方 Comfy Skills 原版、本机 extend 和查询/保存脚本
   xjb-extends-jetbrains/         独立 JetBrains IDE 调试、官方知识库引用与跨平台约定
   web-browser-debug/             真浏览器执行层选择（ego-browser 优先）、官方 Skill 引用与检查脚本
+  ubuntu-shell-tools/            Ubuntu 运维脚本选择与使用时获取最新 shell_tools
 vendor/three.js/                 固定版本的官方 submodule
 scripts/
   claude_worker_bridge.sh        可选 Claude worker 桥接
