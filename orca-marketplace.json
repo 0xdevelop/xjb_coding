@@ -1,0 +1,16 @@
+{
+  "name": "xjb-coding-marketplace",
+  "owner": "0xdevelop",
+  "plugins": [
+    {
+      "id": "0xdevelop.xjb-coding",
+      "source": {
+        "kind": "git",
+        "url": "https://github.com/0xdevelop/xjb_coding.git",
+        "ref": "latest"
+      },
+      "description": "安装 xjb_coding Skills 及读取提示命令，所有 agent 沿用现有规则与 xjb_code 接入方式。",
+      "categories": ["commands", "development"]
+    }
+  ]
+}

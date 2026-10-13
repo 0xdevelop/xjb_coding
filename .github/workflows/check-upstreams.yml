@@ -22,3 +22,5 @@ jobs:
         run: bash scripts/update_upstreams.sh --check
       - name: Verify local edit protection and text processing
         run: bash scripts/tests/test_upstreams.sh
+      - name: Verify Orca plugin loading and failure paths
+        run: node --test scripts/tests/test_orca_plugin.mjs

@@ -6,6 +6,7 @@ VersionFile=./skills/xjb-coding/SKILL.md
 SyncFile=./skills/xjb-coding/.auto_coding/start_coding.md
 PluginJsonFile=./.claude-plugin/plugin.json
 CodexPluginJsonFile=./.codex-plugin/plugin.json
+OrcaPluginJsonFile=./orca-plugin.json
 
 # SKILL.md 顶部样式：
 #   > **SkillName**：`xjb_coding`
@@ -127,9 +128,12 @@ function git_handle_ready() {
     if [ -f "$CodexPluginJsonFile" ]; then
         sed -i -e "s/\"version\": \"[^\"]*\"/\"version\": \"${plain_version}\"/" "$CodexPluginJsonFile"
     fi
+    if [ -f "$OrcaPluginJsonFile" ]; then
+        sed -i -e "s/\"version\": \"[^\"]*\"/\"version\": \"${plain_version}\"/" "$OrcaPluginJsonFile"
+    fi
 
     if [[ $OS_TYPE == "Darwin" ]]; then
-        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" "${CodexPluginJsonFile}-e" 2>/dev/null || true
+        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" "${CodexPluginJsonFile}-e" "${OrcaPluginJsonFile}-e" 2>/dev/null || true
     fi
 }
 

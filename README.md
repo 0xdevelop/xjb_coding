@@ -60,6 +60,16 @@ codex plugin list
 /reload-plugins
 ```
 
+### Orca
+
+在 Orca **设置 → 插件 → 管理源** 添加 `https://github.com/0xdevelop/xjb_coding.git`，ref 选 `latest`，再从该源安装 `0xdevelop.xjb-coding`。源索引是根目录 `orca-marketplace.json`，插件描述是 `orca-plugin.json`；发布脚本同步 plugin 版本。首次支持范围为 Orca `1.4.224` 及以上，更新时先刷新源，再审查并安装插件更新。
+
+安装包包含本仓库现有的 `skills/`。目前的命令 **xjb_coding：填入 Skills 读取提示** 只把目录路径和 Skill 列表填到 agent 输入框；用户发送后，agent 才读取对应文件。它尚未完成 agent 的自动发现与注册，也不自动配置 MCP。Codex、Claude Code 及其他 agents 的工作方法、协作规则和状态后端仍由原有入口定义，Orca 部分只说明安装格式和实际入口行为。
+
+Orca 当前没有原生 Skills / MCP 贡献点。该提示命令在工作区只有一个终端时可以确定目标；多个终端时不会写入提示。这是该命令的接口限制，不是 agents 的协作限制。MCP 配置沿用下方 [用户体系与凭证](#用户体系与凭证)。原生插件在桌面本机运行；SSH / 远程 agent 需在实际执行机器安装同版 Skills。已经安装的 Codex / Claude plugin 继续按原入口加载。
+
+官方接口依据：[原生插件示例](https://github.com/stablyai/orca/tree/main/examples/plugins/hello-orca)、[plugin manifest](https://github.com/stablyai/orca/blob/main/src/shared/plugins/plugin-manifest.ts)、[marketplace](https://github.com/stablyai/orca/blob/main/src/shared/plugins/plugin-marketplace.ts)。原生安装、命令加载和后端协同分别验收，不能以插件出现在列表代替任务协同验证。
+
 ### Hermes Agent / 其他 Agent Skills 宿主
 
 可按需安装单个 Skill，或把本仓库 `skills/` 加入宿主的外部 Skills 路径。例如：
