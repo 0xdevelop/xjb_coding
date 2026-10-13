@@ -58,20 +58,22 @@ function normalize(s,    n,a,b,i,k,out) {
     for(i=1;i<=k;i++) out=out (i==1 ? "" : "/") b[i]
     return (s ~ /^\// ? "/" : "") out
 }
-function resolve(href,    p,target,status,parent) {
+function resolve(href,    p,target,status,parent,url) {
     p=href; sub(/[#?].*$/,"",p); if(p=="") return
-    if(kind=="threejs" && p ~ /^https?:\/\/threejs\.org\/docs\/pages\//) {
-        sub(/^https?:\/\/threejs\.org\//,"",p); target=normalize(decode(p))
+    url=p
+    if(urlprefix ~ /^https:/ && url ~ /^http:/) sub(/^http:/,"https:",url)
+    if(urlprefix!="" && index(url,urlprefix)==1 && (refprefix=="" || index(substr(url,length(urlprefix)+1),refprefix)==1)) {
+        p=substr(url,length(urlprefix)+1); target=normalize(decode(p))
     } else if(p ~ /^[A-Za-z][A-Za-z0-9+.-]*:/ || p ~ /^\/\//) target="-"
     else if(p ~ /^\//) target=decode(p)
     else {
         parent=source; sub(/[^\/]+$/,"",parent); target=normalize(parent decode(p))
     }
-    if(kind=="threejs" && target ~ /\.html$/) target=target ".md"
+    if(htmlsuffix!="" && target ~ /\.html$/) target=target htmlsuffix
     if(target=="-") status="external"
     else if(!pathok(target)) status="outside_scope"
     else if(!(target in tree)) status="missing"
-    else if(target !~ /\.(md|mdx|html|txt|json|yaml|yml|png|svg|webp|jpg|jpeg)$/ || (kind=="threejs" && target !~ /^docs\/pages\//)) status="outside_scope"
+    else if(target !~ /\.(md|mdx|html|txt|json|yaml|yml|png|svg|webp|jpg|jpeg)$/ || (refprefix!="" && index(target,refprefix)!=1)) status="outside_scope"
     else status=(level<depth ? "bundled" : "depth_limit")
     print "ref", source, href, target, status, "-"
 }
@@ -93,7 +95,7 @@ function validate(    s) {
     } else die("Unknown TSV record")
     s=$0; gsub(/\t/,"",s); if(s ~ /[[:cntrl:]]/) die("Control character in TSV")
 }
-BEGIN { FS=OFS="\t"; mode=ENVIRON["MODE"]; kind=ENVIRON["KIND"]; source=ENVIRON["SOURCE_PATH"]; level=ENVIRON["LEVEL"]+0; depth=ENVIRON["DEPTH"]+0 }
+BEGIN { FS=OFS="\t"; mode=ENVIRON["MODE"]; layout=ENVIRON["LAYOUT"]; refprefix=ENVIRON["REFERENCE_PREFIX"]; urlprefix=ENVIRON["URL_PREFIX"]; htmlsuffix=ENVIRON["HTML_SUFFIX"]; source=ENVIRON["SOURCE_PATH"]; level=ENVIRON["LEVEL"]+0; depth=ENVIRON["DEPTH"]+0 }
 mode=="links" { extract($0); next }
 mode=="resolve" {
     if(FILENAME==ARGV[1]) tree[$2]=$1
@@ -104,7 +106,7 @@ mode=="finalize" {
     if(FILENAME==ARGV[1]) { seen[$0]=1; next }
     if($4 in seen) {
         $5="bundled"
-        if(kind=="threejs") { $6=$4; sub(/^.*\//,"",$6) }
+        if(layout=="flat") { $6=$4; sub(/^.*\//,"",$6) }
     }
     print; next
 }
@@ -112,7 +114,7 @@ mode=="validate" { validate(); next }
 mode=="json" {
     if($1=="meta") metadata=append(metadata,quote($2) ":" ($2=="reference_depth" ? $3 : quote($3)))
     if($1=="root") rootjson=append(rootjson,quote($2))
-    if($1=="file") filejson=append(filejson,quote($2) ":" (kind=="threejs" ? "{\"path\":" quote($4) ",\"sha256\":" quote($3) "}" : quote($3)))
+    if($1=="file") filejson=append(filejson,quote($2) ":" (layout=="flat" ? "{\"path\":" quote($4) ",\"sha256\":" quote($3) "}" : quote($3)))
     if($1=="ref") refjson=append(refjson,"{\"source\":" quote($2) ",\"href\":" quote($3) ",\"target\":" ($4=="-" ? "null" : quote($4)) ",\"status\":" quote($5) ($6=="-" ? "" : ",\"local\":" quote($6)) "}")
     next
 }

@@ -1,3 +1,5 @@
 [submodule "vendor/three.js"]
 	path = vendor/three.js
 	url = https://github.com/mrdoob/three.js.git
+	references = skills/blender-threejs/references/threejs
+	referenceUrl = https://threejs.org/

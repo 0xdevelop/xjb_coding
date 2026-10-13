@@ -25,7 +25,7 @@ file	TrackballControls.html.md	5af66d5c117bfbe3e74b999624ef828f07423d71c83d968f4
 file	Uniform.html.md	992a5253197aeff745b9d726aae038be3eb27146ecda44215954b0c3072f0b65	docs/pages/Uniform.html.md
 file	WebGLRenderer.html.md	661a8bc44ddea70021e7fae200bdea9e3546923c57acecef937c062c955caaaf	docs/pages/WebGLRenderer.html.md
 file	WebGPURenderer.html.md	26ce32e7c6d628d661097096114ead680bf18e6aaf5c53078a1480e809935dd2	docs/pages/WebGPURenderer.html.md
-meta	commit	148ef33ecb6d2502ff796d4554abd1549c95d519
+meta	commit	9b4a2ac29c63ccb43fd51c5661f2f873ac2c39b8
 meta	reference_depth	1
 meta	repository	https://github.com/mrdoob/three.js
 meta	revision	186

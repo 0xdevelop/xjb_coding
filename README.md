@@ -259,13 +259,15 @@ Claude Code：在用户级 `~/.claude/settings.json` 中合并地址；key 是 `
 
 ## 上游引用与维护
 
-维护本仓库时，一条命令更新已接入的官方来源：
+`git_tag.sh` 发版前自动调用现有上游更新脚本；维护时也可单独运行：
 
 ```bash
 bash scripts/update_upstreams.sh
 ```
 
-macOS、Linux 和 Windows Git Bash 使用同一命令。更新链路只依赖 Bash 3.2+、Git、awk、grep、sed、curl、常用 Unix 工具，以及 `sha256sum` 或 `shasum`，不调用 jq、Python 或 Node；缺少工具时明确报错，不自动安装。默认获取 Three.js 最新正式 `rN` 标签并更新 `vendor/three.js` 的 checkout，获取 Comfy Skills 官方 `main`，随后按实际 commit 同步原文、许可、API 文档及一层同仓库引用。Comfy Skills 源仓库缓存放本项目 `tmp/upstreams/`，仍采用原文快照分发，不额外创建 submodule。
+macOS、Linux 和 Windows Git Bash 使用同一命令。更新链路只依赖 Bash 3.2+、Git、awk、grep、sed、curl、常用 Unix 工具，以及 `sha256sum` 或 `shasum`，不调用 jq、Python 或 Node；缺少工具时明确报错，不自动安装。脚本动态读取 `.gitmodules` 和 `skills/` 下已有 `SOURCE.tsv`，逐个更新原文、许可、API 文档及一层同仓库引用，不在脚本中维护来源名单。submodule 按已声明的 branch 更新；未声明 branch 且已有 revision 数字标签的快照延续该标签策略（Three.js 当前为 `rN`），其他来源跟随远端 HEAD（Comfy Skills 当前为 main）。非 submodule 的 Git 缓存放本项目 `tmp/upstreams/`。
+
+首次接入 submodule 时，在它已有的 `.gitmodules` 段中声明 `references = skills/<skill>/references/<名称>` 作为引用输出目录；`referenceRoot` 可重复声明上游文件或目录，限定引用范围。不声明 `referenceRoot` 时默认选择 LICENSE、README、SKILL.md 和 commands 中的 Markdown；`referenceUrl` 可声明官方文档网址前缀，用于同仓库链接映射。这些是本仓库的自定义字段，不是 Git 原生更新选项。`SOURCE.tsv` 和 `SOURCE.json` 均由脚本生成，不需手写；之后会自动发现并更新。已有快照直接沿用当前目录，不要求重新登记。缺少输出位置、许可不符合要求或目录已有其他内容时停止，保留现状。
 
 先准备全部候选文件、校验旧快照，再替换生成文件；人工修改过的原版、额外文件或 submodule 改动会被拒绝覆盖。只有旧清单登记且哈希未变的过期生成文件会被移除。`extend/`、业务工作流和运行依赖不在更新范围内；脚本不会暂存、提交、安装插件或下载模型。当前官方 Skills/文档的许可或入口结构不满足要求时停止，不能承诺未来每个上游版本无需适配。
 
@@ -279,7 +281,7 @@ bash scripts/update_upstreams.sh --dry-run
 # 需要更深的同仓库引用时（0–3 层，默认 1）
 bash scripts/update_upstreams.sh --reference-depth 2
 # 指定版本，适合重现一次已选定的更新
-bash scripts/update_upstreams.sh --three-ref r185 --comfy-ref <完整commit>
+bash scripts/update_upstreams.sh --ref threejs r185 --ref comfy-skills <完整commit>
 ```
 
 Three.js 文档原样保存到 `skills/blender-threejs/references/threejs/`；`SOURCE.tsv` 是维护清单，记录 revision、commit、文件哈希和引用映射；`SOURCE.json` 从清单生成供 Skill 按需读取，不作为脚本输入。Comfy Skills 原文保存到 `skills/comfyui-workflow/references/upstream/comfy-skills/`，保留 MIT LICENSE、README、全部 `claude-code/commands/*.md` 和范围内引用的资源；不注册其中的云端命令/MCP。本机差异只放 `extend/`。
@@ -322,7 +324,7 @@ bash scripts/update_upstreams.sh --check
 ./git_tag.sh
 ```
 
-发版脚本同步 plugin 与编码 Skill 版本、生成 changelog 并推送版本标签和 `latest`；GitHub Actions 校验官方文档后创建 Release。当前发布流程保留近期版本，并清理旧版本，执行前应核对脚本与工作区状态。
+发版脚本先自动更新引用，上游获取或校验失败即停止，然后同步 plugin 与编码 Skill 版本、生成 changelog 并推送版本标签和 `latest`；GitHub Actions 只校验发布 commit 的固定快照后创建 Release。当前发布流程保留近期版本，并清理旧版本，执行前应核对脚本与工作区状态。
 
 ## 许可证与依赖边界
 

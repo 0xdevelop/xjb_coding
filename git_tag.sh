@@ -102,7 +102,7 @@ function get_pre_del_version_no {
 }
 
 function git_handle_ready() {
-    bash scripts/update_upstreams.sh --check
+    bash scripts/update_upstreams.sh
 
     echo "Current Version With ${CURRENT_VERSION}"
     echo "Next Version    With ${NEXT_VERSION}"
