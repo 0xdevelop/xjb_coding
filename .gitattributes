@@ -4,3 +4,4 @@
 # Upstream Markdown uses trailing spaces for hard line breaks; preserve originals.
 skills/blender-threejs/references/threejs/** -text whitespace=-blank-at-eol
 skills/comfyui-workflow/references/upstream/** -text whitespace=-blank-at-eol
+skills/archify/references/.upstream/** -text whitespace=-blank-at-eol

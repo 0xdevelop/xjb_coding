@@ -87,7 +87,7 @@ grep -Fq 'quote \" and backslash \\' "$WORK/escape.json"
 
 # A new reference snapshot must work without changing updater source code.
 FIXTURE_ROOT="$WORK/discovery"
-UPSTREAM_REPO="$WORK/official-source"
+UPSTREAM_REPO="$WORK/official-source.git"
 mkdir -p "$FIXTURE_ROOT/scripts" "$UPSTREAM_REPO/commands"
 cp "$SCRIPT_DIR/update_upstreams.sh" "$SCRIPT_DIR/upstream_text.awk" "$FIXTURE_ROOT/scripts/"
 git -C "$UPSTREAM_REPO" init --quiet
@@ -146,7 +146,8 @@ sort "$SNAPSHOT/SOURCE.tsv" -o "$SNAPSHOT/SOURCE.tsv"
 LAYOUT=tree manifest_json fixture "$SNAPSHOT/SOURCE.tsv" "$SNAPSHOT/SOURCE.json"
 git -C "$UPSTREAM_REPO" tag r1 "$NEW_COMMIT"
 git -C "$SUBMODULE_ROOT" init --quiet
-git -C "$SUBMODULE_ROOT" -c protocol.file.allow=always submodule add --quiet "$UPSTREAM_REPO" vendor/official
+# Local repository aliases must match the snapshot's original repository path.
+git -C "$SUBMODULE_ROOT" -c protocol.file.allow=always submodule add --quiet "$UPSTREAM_REPO/." vendor/official
 git -C "$SUBMODULE_ROOT" add -- scripts skills .gitmodules vendor/official
 git -C "$SUBMODULE_ROOT" -c user.name=Fixture -c user.email=fixture@example.invalid commit --quiet -m reference
 printf 'newer command\n' > "$UPSTREAM_REPO/commands/new.md"
@@ -184,6 +185,41 @@ SNAPSHOT="$BOOTSTRAP_ROOT/skills/example/references/automatic"
 cmp "$SNAPSHOT/commands/new.md" "$UPSTREAM_REPO/commands/new.md"
 bash "$BOOTSTRAP_ROOT/scripts/update_upstreams.sh" --check > "$WORK/bootstrap-check.log" 2>&1
 (( passed += 1 ))
+
+
+# Runtime packages keep directory roots so future imports/assets are included.
+PACKAGE_ROOT="$WORK/runtime-package"
+mkdir -p "$PACKAGE_ROOT/scripts" "$UPSTREAM_REPO/package/bin"
+cp "$SCRIPT_DIR/update_upstreams.sh" "$SCRIPT_DIR/upstream_text.awk" "$PACKAGE_ROOT/scripts/"
+for ((index=0; index<130; index++)); do
+    printf 'export default %s;\n' "$index" > "$UPSTREAM_REPO/package/bin/module-$index.mjs"
+done
+git -C "$UPSTREAM_REPO" add -- package
+git -C "$UPSTREAM_REPO" -c user.name=Fixture -c user.email=fixture@example.invalid commit --quiet -m package
+git -C "$PACKAGE_ROOT" init --quiet
+git -C "$PACKAGE_ROOT" -c protocol.file.allow=always submodule add --quiet "$UPSTREAM_REPO" vendor/official
+git -C "$PACKAGE_ROOT" config -f .gitmodules submodule.vendor/official.references skills/example/references/runtime
+git -C "$PACKAGE_ROOT" config -f .gitmodules --add submodule.vendor/official.referenceRoot package
+GIT_ALLOW_PROTOCOL=file bash "$PACKAGE_ROOT/scripts/update_upstreams.sh" > "$WORK/package-import.log" 2>&1
+SNAPSHOT="$PACKAGE_ROOT/skills/example/references/runtime"
+[[ $(file_names "$SNAPSHOT/SOURCE.tsv" | wc -l | tr -d ' ') == 131 ]]
+grep -Fxq $'root\tpackage' "$SNAPSHOT/SOURCE.tsv"
+# Continue as a cached source, as a distributed Skill does without a submodule.
+rm "$PACKAGE_ROOT/.gitmodules"
+git -C "$UPSTREAM_REPO" rm --quiet package/bin/module-0.mjs
+printf 'new runtime asset\n' > "$UPSTREAM_REPO/package/new.bin"
+git -C "$UPSTREAM_REPO" add -- package/new.bin
+git -C "$UPSTREAM_REPO" -c user.name=Fixture -c user.email=fixture@example.invalid commit --quiet -m asset
+bash "$PACKAGE_ROOT/scripts/update_upstreams.sh" > "$WORK/package-update.log" 2>&1
+[[ ! -e "$SNAPSHOT/package/bin/module-0.mjs" && -f "$SNAPSHOT/package/new.bin" ]]
+cmp "$SNAPSHOT/package/new.bin" "$UPSTREAM_REPO/package/new.bin"
+bash "$PACKAGE_ROOT/scripts/update_upstreams.sh" --check > "$WORK/package-check.log" 2>&1
+(( passed += 1 ))
+PACKAGE_BEFORE=$(sha "$SNAPSHOT/SOURCE.tsv")
+git -C "$UPSTREAM_REPO" rm -rq package
+git -C "$UPSTREAM_REPO" -c user.name=Fixture -c user.email=fixture@example.invalid commit --quiet -m removed-package
+expect_fail bash "$PACKAGE_ROOT/scripts/update_upstreams.sh"
+[[ $(sha "$SNAPSHOT/SOURCE.tsv") == "$PACKAGE_BEFORE" && -f "$SNAPSHOT/package/new.bin" ]]
 
 
 FAILURE_SNAPSHOT="$FIXTURE_ROOT/skills/example/references/zzz-failure"

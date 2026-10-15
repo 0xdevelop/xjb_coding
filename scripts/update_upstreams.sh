@@ -28,7 +28,12 @@ manifest_json() { LAYOUT="${LAYOUT:-tree}" text_tool json "$2" > "$3"; }
 setting() { awk -F '\t' -v id="$1" -v key="$2" '$1==id && $2==key {print $3}' "${CONFIG:-/dev/null}"; }
 source_ids() { awk -F '\t' '!/^#/ && NF {print $1}' "$CONFIG" | sort -u; }
 repository_key() {
-    local url=${1%.git}
+    local url=$1 directory
+    if [[ -d "$url" ]] && directory=$(git -C "$url" rev-parse --absolute-git-dir 2>/dev/null); then
+        printf '%s\n' "$directory"
+        return
+    fi
+    url=${url%.git}
     url=${url#https://}; url=${url#http://}; url=${url#ssh://git@}; url=${url#git@}
     printf '%s\n' "${url/:/\/}"
 }
@@ -244,11 +249,7 @@ collect_bundle() {
         git config -f "$ROOT/.gitmodules" --get-all "$MODULE_KEY.referenceRoot" > "$base/declared-roots" || true
     fi
     if [[ -s "$base/declared-roots" ]]; then
-        : > "$base/roots"
-        while IFS= read -r reference_root; do
-            safe_path "$reference_root"
-            awk -F '\t' -v path="${reference_root%/}" '$2==path || index($2,path "/")==1 {print $2; found=1} END {exit !found}' "$base/tree.tsv" >> "$base/roots" || fail "Reference root missing: $reference_root"
-        done < "$base/declared-roots"
+        cp "$base/declared-roots" "$base/roots"
     else
         while IFS= read -r root_pattern; do
             awk -F '\t' -v pattern="$root_pattern" '$2 ~ pattern {print $2}' "$base/tree.tsv" > "$base/matched-roots"
@@ -258,7 +259,12 @@ collect_bundle() {
     fi
     printf '%s\n' "$LICENSE_FILE" >> "$base/roots"
     sort -u "$base/roots" -o "$base/roots"
-    cp "$base/roots" "$base/queue"
+    : > "$base/queue"
+    while IFS= read -r reference_root; do
+        safe_path "$reference_root"
+        awk -F '\t' -v path="${reference_root%/}" '$2==path || index($2,path "/")==1 {print $2; found=1} END {exit !found}' "$base/tree.tsv" >> "$base/queue" || fail "Reference root missing: $reference_root"
+    done < "$base/roots"
+    sort -u "$base/queue" -o "$base/queue"
     : > "$base/seen"; : > "$base/records"; : > "$base/references"
     printf 'meta\trepository\t%s\nmeta\tcommit\t%s\nmeta\treference_depth\t%s\n' "$REPO" "$commit" "$depth" >> "$base/records"
     awk '{print "root\t" $0}' "$base/roots" >> "$base/records"
@@ -272,7 +278,7 @@ collect_bundle() {
             [[ "$mode" == 100644 || "$mode" == 100755 ]] || fail "Missing regular upstream file: $path"
             name=$path; [[ "$LAYOUT" != flat ]] || name=$(basename "$path")
             [[ ! -e "$dest/files/$name" ]] || fail "Duplicate output path: $name"
-            (( count += 1 )); [[ $count -le 128 ]] || fail 'Bundle exceeds 128 files'
+            (( count += 1 )); [[ $count -le 512 ]] || fail 'Bundle exceeds 512 files'
             bytes=$(git -C "$SOURCE" cat-file -s "$commit:$path")
             [[ $bytes -le 4194304 ]] || fail "File exceeds 4 MiB: $path"
             mkdir -p "$(dirname "$dest/files/$name")"

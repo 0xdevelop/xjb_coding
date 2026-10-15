@@ -1,6 +1,6 @@
 # xjb_coding
 
-面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、真浏览器 Web 调试（macOS 优先官方 ego-browser）、草图生成 Web 原型、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
+面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、真浏览器 Web 调试（macOS 优先官方 ego-browser）、草图生成 Web 原型、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
 
 安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号一把 API key，同一用户的所有 agent 共用；公司项目全实例可读、个人项目仅成员可读，编辑限记录归属人或管理员；看板实时显示任务、待批决策点与工具调用统计。
 
@@ -18,6 +18,7 @@
 | [xjb-extends-jetbrains](skills/xjb-extends-jetbrains/SKILL.md) | JetBrains IDE 调试 | 独立管理官方知识库引用、`.run` 集成、Run/Debug 与项目窗口边界，覆盖 Windows / macOS / Linux |
 | [web-browser-debug](skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 选定真浏览器执行层：macOS 优先官方 ego-browser（ego lite），回退宿主 Playwright MCP；统一截图、证据与任务空间约定 |
 | [ubuntu-shell-tools](skills/ubuntu-shell-tools/SKILL.md) | Ubuntu 20.04+ 运维 | 使用时获取 shell_tools 最新 main，检查并使用服务器配置、软件安装、网络诊断和 SSH 等脚本 |
+| [archify](skills/archify/SKILL.md) | 交互图表 | 从描述、Mermaid 或源码证据生成独立 HTML：架构、流程、时序、数据流、状态、ER、类、树、时间线与执行瀑布图 |
 
 自驱编码流程不绑定单一编程语言。原型与 3D 页面默认面向桌面 Web，用户指定其他平台时按实际需求处理。普通 2D Web 任务不需要加载 Blender + Three.js Skill。
 
@@ -83,6 +84,7 @@ hermes skills install 0xdevelop/xjb_coding/skills/comfyui-workflow
 hermes skills install 0xdevelop/xjb_coding/skills/xjb-extends-jetbrains
 hermes skills install 0xdevelop/xjb_coding/skills/web-browser-debug
 hermes skills install 0xdevelop/xjb_coding/skills/ubuntu-shell-tools
+hermes skills install 0xdevelop/xjb_coding/skills/archify
 ```
 
 单独分发 Skill 时保留其完整目录，包括 `references/` 和 `scripts/`。没有 Skills 加载机制的宿主，可直接读取对应 `SKILL.md`。
@@ -194,6 +196,16 @@ review/
 
 可编辑画布保存在目标项目 `workflows/<用途>/<版本>/workflow.json`，人工调整后保存为下一轮输入。需要程序运行时，再从同版 ComfyUI 画布导出 `workflow.api.json`；环境与实际验证信息记入 `environment.json`。缓存放目标项目 `tmp/comfyui/`。关闭 Agent 后仍可在 ComfyUI 独立反复运行。
 
+### Archify 交互图表
+
+```text
+使用 archify，按当前仓库的真实源码画一张请求调用链图，输出可独立打开的 HTML，保留 JSON 供后续修改。
+```
+
+来源为 [archify.si](https://archify.si) / [tt-a1i/archify](https://github.com/tt-a1i/archify)。本包通过 [archify Skill](skills/archify/SKILL.md) 加载完整官方运行包和独立的 [本仓库适配](skills/archify/extend/local.md)，无需另装全局 Archify、初始化 submodule 或 npm install；运行需 Node.js 18+。可按描述、Mermaid 或仓库证据生成十种图表；数值统计图、网站实现和需求规划原型使用各自对应工具。
+
+官方 `finalize` 依次执行验证、生成、严格 provenance 检查和内置 Chrome/Chromium 浏览器检查。浏览器缺失或任一门禁失败须报告实际缺口；ego-browser 的人工交互/视觉检查另留证据，不替代官方自动检查回执。CLI 更新提示不授权覆盖随包版本，原文仍由本仓库统一维护。正式 HTML 与 JSON 保存在目标项目，缓存、临时截图与浏览器临时目录放目标项目 `tmp/`。
+
 ### Web 调试与浏览器验收
 
 Web 类任务的真浏览器验证统一走 [web-browser-debug](skills/web-browser-debug/SKILL.md)：先运行 `scripts/check_tools.sh`，macOS 上有 ego lite 时优先用官方 `ego-browser` Skill（App 随身携带于 `~/.local/share/ego/ego-skills`，本仓库只引用不复制，Claude Code 经 `~/.claude/skills/ego-browser` 符号链接加载，Codex 可链接到 `~/.agents/skills`），否则回退宿主 Playwright MCP，两者都没有时报告缺口、经用户授权再安装。叠加约定：一个目标一个 TaskSpace、联调结束保留结果页、截图落目标项目 `tmp/`、不做 profile 级状态清理。`sketch-to-prototype` 的 UX Review 与 `blender-threejs` 的浏览器验证阶段都由它提供执行层。
@@ -267,9 +279,9 @@ bash scripts/update_upstreams.sh
 
 macOS、Linux 和 Windows Git Bash 使用同一命令。更新链路只依赖 Bash 3.2+、Git、awk、grep、sed、curl、常用 Unix 工具，以及 `sha256sum` 或 `shasum`，不调用 jq、Python 或 Node；缺少工具时明确报错，不自动安装。脚本动态读取 `.gitmodules` 和 `skills/` 下已有 `SOURCE.tsv`，逐个更新原文、许可、API 文档及一层同仓库引用，不在脚本中维护来源名单。submodule 按已声明的 branch 更新；未声明 branch 且已有 revision 数字标签的快照延续该标签策略（Three.js 当前为 `rN`），其他来源跟随远端 HEAD（Comfy Skills 当前为 main）。非 submodule 的 Git 缓存放本项目 `tmp/upstreams/`。
 
-首次接入 submodule 时，在它已有的 `.gitmodules` 段中声明 `references = skills/<skill>/references/<名称>` 作为引用输出目录；`referenceRoot` 可重复声明上游文件或目录，限定引用范围。不声明 `referenceRoot` 时默认选择 LICENSE、README、SKILL.md 和 commands 中的 Markdown；`referenceUrl` 可声明官方文档网址前缀，用于同仓库链接映射。这些是本仓库的自定义字段，不是 Git 原生更新选项。`SOURCE.tsv` 和 `SOURCE.json` 均由脚本生成，不需手写；之后会自动发现并更新。已有快照直接沿用当前目录，不要求重新登记。缺少输出位置、许可不符合要求或目录已有其他内容时停止，保留现状。
+首次接入 submodule 时，在它已有的 `.gitmodules` 段中声明 `references = skills/<skill>/references/<名称>` 作为引用输出目录；`referenceRoot` 可重复声明上游文件或目录，限定引用范围。不声明 `referenceRoot` 时默认选择 LICENSE、README、SKILL.md 和 commands 中的 Markdown；`referenceUrl` 可声明官方文档网址前缀，用于同仓库链接映射。这些是本仓库的自定义字段，不是 Git 原生更新选项。`SOURCE.tsv` 和 `SOURCE.json` 均由脚本生成，不需手写；之后会自动发现并更新。目录根保留为目录声明，每轮重新枚举其文件，使完整运行包的新模块和资源能随上游进入快照；每个包最多 512 个文件、单文件最多 4 MiB，超限停止。已有快照直接沿用当前目录，不要求重新登记。缺少输出位置、许可不符合要求或目录已有其他内容时停止，保留现状。
 
-先准备全部候选文件、校验旧快照，再替换生成文件；人工修改过的原版、额外文件或 submodule 改动会被拒绝覆盖。只有旧清单登记且哈希未变的过期生成文件会被移除。`extend/`、业务工作流和运行依赖不在更新范围内；脚本不会暂存、提交、安装插件或下载模型。当前官方 Skills/文档的许可或入口结构不满足要求时停止，不能承诺未来每个上游版本无需适配。
+先准备全部候选文件、校验旧快照，再替换生成文件；人工修改过的原版、额外文件或 submodule 改动会被拒绝覆盖。只有旧清单登记且哈希未变的过期生成文件会被移除。`extend/`、业务工作流和用户独立安装的外部工具不在更新范围内；脚本不会暂存、提交、安装插件或下载模型。当前官方 Skills/文档的许可或入口结构不满足要求时停止，不能承诺未来每个上游版本无需适配。
 
 更新或预演在 `tmp/upstreams/<时间>/report.tsv` 和 `report.json` 留下前后 commit、文件增删改、引用状态和官方 API 链接可达性；同目录保留候选及旧快照。在线链接的 HTTP 错误记为 `unavailable`，TLS/超时等网络错误记为 `unknown`，在终端和报告里提示，不阻止已经校验完整的本地快照更新。失败会明确报告是否已部分应用，不自动 reset/clean。版本变化后仍需检查官方步骤与 `extend/` 是否冲突，更新成功不代表模型生成效果或业务主流程已验证。
 
@@ -286,7 +298,9 @@ bash scripts/update_upstreams.sh --ref threejs r185 --ref comfy-skills <完整co
 
 Three.js 文档原样保存到 `skills/blender-threejs/references/threejs/`；`SOURCE.tsv` 是维护清单，记录 revision、commit、文件哈希和引用映射；`SOURCE.json` 从清单生成供 Skill 按需读取，不作为脚本输入。Comfy Skills 原文保存到 `skills/comfyui-workflow/references/upstream/comfy-skills/`，保留 MIT LICENSE、README、全部 `claude-code/commands/*.md` 和范围内引用的资源；不注册其中的云端命令/MCP。本机差异只放 `extend/`。
 
-**次级引用有明确边界。** 支持 Markdown 链接、引用式链接、HTML/MDX 的 `href`/`src`，按同一个 commit 递归收录允许的同仓库文档和小型图片/JSON 等资源，循环引用去重。单文件上限 4 MiB，每个来源上限 128 文件。缺失的相对链接会阻止更新；跨站链接、源码、超出深度或范围的文件列在 `SOURCE.json`，不假装已经离线收录。复杂 MDX import、动态路由及隐含的类型名称不属于链接解析范围。
+Archify 完整官方 `archify/` 目录保存在 `skills/archify/references/.upstream/archify/archify/`，原始目录结构、字节内容与许可说明保持不变；清单位于上一级，来源为缓存型 Git 仓库，更新自动发现，无新增 submodule。隐藏的 `.upstream/` 随 Skill 一并分发，对跳过隐藏目录的发现器隔离原始入口；指定公开入口为顶层 `skills/archify/SKILL.md`。包含隐藏目录的递归扫描须另行验收，目录结构检查不代表真实宿主发现或安装通过。运行包内的开发 npm scripts 可能引用未分发的上游开发仓库，只使用 Skill 文档中的运行命令；本仓库适配保留在 `skills/archify/extend/`，不随原文更新覆盖。
+
+**次级引用有明确边界。** 支持 Markdown 链接、引用式链接、HTML/MDX 的 `href`/`src`，按同一个 commit 递归收录允许的同仓库文档和小型图片/JSON 等资源，循环引用去重。单文件上限 4 MiB，每个来源上限 512 文件。缺失的相对链接会阻止更新；跨站链接、超出深度或范围的文件列在 `SOURCE.json`，不假装已经离线收录。源码不靠文档链接自动收录，完整运行包通过目录根显式纳入。复杂 MDX import、动态路由及隐含的类型名称不属于链接解析范围。
 
 Comfy 官方 `Comfy-Org/docs` 文档仓库采用 GPL，按本项目规则只保留在线 API 引用，并检查 `local-api.md` 中 `docs.comfy.org` 链接的可达性，不随插件打包其正文。HTTP 可达不代表内容与当前本机版本一致；现场 `/object_info` 等接口仍是运行能力的依据。
 
@@ -309,6 +323,7 @@ skills/
   xjb-extends-jetbrains/         独立 JetBrains IDE 调试、官方知识库引用与跨平台约定
   web-browser-debug/             真浏览器执行层选择（ego-browser 优先）、官方 Skill 引用与检查脚本
   ubuntu-shell-tools/            Ubuntu 运维脚本选择与使用时获取最新 shell_tools
+  archify/                       Archify 官方完整运行包、交互图表入口与本仓库适配
 vendor/three.js/                 固定版本的官方 submodule
 scripts/
   claude_worker_bridge.sh        可选 Claude worker 桥接
@@ -329,6 +344,8 @@ bash scripts/update_upstreams.sh --check
 ## 许可证与依赖边界
 
 本仓库自有代码采用 [BSD-3-Clause](LICENSE)。随包引用的 Three.js 文档和 Comfy Skills 原文分别保留 [Three.js MIT](skills/blender-threejs/references/threejs/LICENSE) 与 [Comfy Skills MIT](skills/comfyui-workflow/references/upstream/comfy-skills/LICENSE)，来源及 commit 见各自的 `SOURCE.json`。
+
+Archify 自有代码保留 [MIT LICENSE](skills/archify/references/.upstream/archify/archify/LICENSE)。其品牌图标和嵌入字体分别适用 [第三方说明](skills/archify/references/.upstream/archify/archify/THIRD_PARTY_NOTICES.md) 中的各自许可与商标条款（包括部分图标的非商业/相同方式共享条件及字体 OFL），不能将所有素材统一视为 MIT。
 
 以下是用户单独安装的外部工具，不复制、链接其代码或随本仓库打包二进制；本仓库仅提供操作指引及标准接口调用：
 
