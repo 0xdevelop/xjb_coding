@@ -40,6 +40,31 @@ REFERENCE_PREFIX=docs/pages/ URL_PREFIX=https://docs.example.invalid/ HTML_SUFFI
 grep -q $'manual/\t-\texternal' "$WORK/flat-refs"
 (( passed += 1 ))
 
+# Discovery must handle a manifest larger than the pipe buffer without SIGPIPE.
+# Only LICENSE exists; snapshot validation must report the missing data.
+LARGE_ROOT="$WORK/large-discovery"
+LARGE_SNAPSHOT="$LARGE_ROOT/skills/example/references/large-discovery"
+mkdir -p "$LARGE_ROOT/scripts" "$LARGE_SNAPSHOT"
+cp "$SCRIPT_DIR/update_upstreams.sh" "$SCRIPT_DIR/upstream_text.awk" "$LARGE_ROOT/scripts/"
+printf 'MIT License\n' > "$LARGE_SNAPSHOT/LICENSE"
+awk -v digest="$(sha "$LARGE_SNAPSHOT/LICENSE")" 'BEGIN {
+    print "meta\trepository\thttps://example.invalid/official.git"
+    print "meta\tcommit\t0000000000000000000000000000000000000000"
+    print "meta\treference_depth\t1"
+    print "meta\tlicense\tMIT"
+    print "root\tLICENSE"
+    print "file\tLICENSE\t" digest "\tLICENSE"
+    for (part=0; part<32; part++) prefix=prefix "long-manifest-path/"
+    for (entry=1; entry<512; entry++) {
+        name=prefix "module-" entry ".mjs"
+        print "file\t" name "\t" digest "\t" name
+    }
+}' > "$LARGE_SNAPSHOT/SOURCE.tsv"
+LAYOUT=tree manifest_json fixture "$LARGE_SNAPSHOT/SOURCE.tsv" "$LARGE_SNAPSHOT/SOURCE.json"
+expect_fail bash "$LARGE_ROOT/scripts/update_upstreams.sh" --check
+cp "$WORK/expected-error.log" "$WORK/large-discovery-check.log"
+grep -Fq 'Missing or locally modified file:' "$WORK/large-discovery-check.log"
+
 bundle_paths() { CONTENT="$WORK/fixture/files"; MANIFEST="$WORK/fixture/SOURCE.tsv"; }
 bundle_paths fixture
 mkdir -p "$CONTENT"

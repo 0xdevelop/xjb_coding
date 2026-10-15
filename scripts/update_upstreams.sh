@@ -79,7 +79,7 @@ discover_upstreams() {
     [[ ! -d "$ROOT/skills" ]] || find "$ROOT/skills" -type f -name SOURCE.tsv | sort > "$WORK/manifests"
     while IFS= read -r manifest; do
         text_tool validate "$manifest"
-        directory=$(dirname "$manifest"); first=$(file_names "$manifest" | head -n 1)
+        directory=$(dirname "$manifest"); first=$(awk -F '\t' '$1=="file" {print $2; exit}' "$manifest")
         content=; matches=0
         for candidate in "$directory" "$directory"/*; do
             [[ -d "$candidate" && -f "$candidate/$first" ]] || continue
@@ -137,9 +137,9 @@ discover_upstreams() {
             branch=$(git config -f "$ROOT/.gitmodules" --get "$module_key.branch" || true)
             tag=; prefix=
             if [[ -z "$branch" && -n "$(meta "$manifest" revision)" && -e "$ROOT/$submodule/.git" ]]; then
-                tag=$(git -C "$ROOT/$submodule" tag --points-at "$(meta "$manifest" commit)" | awk '/^[A-Za-z-]*[0-9]+$/ {print; exit}')
+                tag=$(git -C "$ROOT/$submodule" tag --points-at "$(meta "$manifest" commit)" | awk '/^[A-Za-z-]*[0-9]+$/ && !found {print; found=1}')
                 if [[ -z "$tag" && -n "$(meta "$manifest" revision)" ]]; then
-                    tag=$(git -C "$ROOT/$submodule" tag --list | awk '/^[A-Za-z-]+[0-9]+$/ {print; exit}')
+                    tag=$(git -C "$ROOT/$submodule" tag --list | awk '/^[A-Za-z-]+[0-9]+$/ && !found {print; found=1}')
                 fi
                 [[ -z "$tag" ]] || prefix=${tag%%[0-9]*}
             fi
