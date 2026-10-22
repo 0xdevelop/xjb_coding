@@ -1,6 +1,6 @@
 # xjb_coding
 
-面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、真浏览器 Web 调试（macOS 优先官方 ego-browser）、草图生成 Web 原型、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
+面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、Bruno 接口与流程测试、真浏览器 Web 调试（macOS 优先官方 ego-browser）、草图生成 Web 原型、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
 
 安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号一把 API key，同一用户的所有 agent 共用；公司项目全实例可读、个人项目仅成员可读，编辑限记录归属人或管理员；看板实时显示任务、待批决策点与工具调用统计。
 
@@ -11,6 +11,7 @@
 | Skill | 领域 | 支持的工作 |
 | --- | --- | --- |
 | [xjb-coding](skills/xjb-coding/SKILL.md) | 软件开发 | 项目初始化、需求细化、任务分解、编码、四层质量门禁、断点续做 |
+| [bruno-api-tests](skills/bruno-api-tests/SKILL.md) | 接口与业务流程测试 | 关联 Bruno 官方 skills 与文档，生成完整集合、接通参数和文件，由 Agent 验证全新导入及真实场景 |
 | [sketch-to-prototype](skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
 | [planning-prototype](skills/planning-prototype/SKILL.md) | 需求规划原型 | 把一个需求做成可落码的自包含 HTML：两端界面对照、调用链与传参、各端 check 项、路径差异；综合 / 产品 / 技术三个视角同源生成；开工前按八项清单交互问询补齐必备项 |
 | [blender-threejs](skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
@@ -77,6 +78,7 @@ Orca 当前没有原生 Skills / MCP 贡献点。该提示命令在工作区只�
 
 ```bash
 hermes skills install 0xdevelop/xjb_coding/skills/xjb-coding
+hermes skills install 0xdevelop/xjb_coding/skills/bruno-api-tests
 hermes skills install 0xdevelop/xjb_coding/skills/sketch-to-prototype
 hermes skills install 0xdevelop/xjb_coding/skills/planning-prototype
 hermes skills install 0xdevelop/xjb_coding/skills/blender-threejs
@@ -102,6 +104,7 @@ skills:
 ### 工具与参考资料
 
 - 安装 plugin 即包含上述 Skills；直接描述相关任务即可由宿主匹配，也可以点名 Skill。
+- Bruno 测试由 `bruno-api-tests` 入口按任务读取官方 skills 和当前文档；维护沿原上游链接检查，用户更新插件后按原宿主加载方式使用，不需要另装官方 skills、运行维护脚本或同步后端。
 - `ubuntu-shell-tools` 每次开始工具任务时，将 [shell_tools](https://github.com/0xdevelop/shell_tools) 最新 `main` 浅克隆到当前项目 `tmp/shell-tools/` 的独立目录，记录 commit，检查后按任务执行；上游脚本更新无需等待插件发版。获取失败明确报错，不自动执行旧副本。Skill 规则自身更新仍随插件发布，Ubuntu 各版本的适用性按选中脚本和目标机器核实。
 - Blender + Three.js Skill 以十份 Three.js 官方 API 文档为入口，并附带固定版本的同仓库次级引用，覆盖 GLB 加载、动画、计时、纹理、相机控制、粒子与网格采样。资料按问题读取，不要求用户下载官方源码或初始化 submodule。
 - 未收录内容或与目标项目版本不同的 API，再核对相应版本的官方资料。附带文档不等于完整离线知识库。
@@ -158,6 +161,17 @@ review/
 ```
 
 `PRODUCT.yaml` 是产品模型事实源。页面、状态、动作和用户流使用稳定 ID，原型与审核结果需要对应这些 ID。面向用户的说明跟随对话主语言，机器字段和稳定 ID 不翻译。
+
+### Bruno 接口与流程测试
+
+```text
+基于当前项目生成 Bruno 导入即用测试用例，覆盖已确认的业务流程。
+复用现有配置与素材，接好鉴权、前后请求参数、附件和异步状态；由你验证全新导入与真实执行。
+```
+
+宿主匹配 [bruno-api-tests](skills/bruno-api-tests/SKILL.md)，读取 [本仓库约定](skills/bruno-api-tests/extend/local.md) 及 [官方知识索引](skills/bruno-api-tests/references/official-docs.md)。不初始化额外工作区、创建后端工作流或另造执行器。已有集合按原格式和原入口修改；新集合提供完整文件与确定的 Send / Runner 入口，避免让用户补参数、脚本或附件。
+
+Agent 在已有授权内复用真实配置、秘密引用和业务输入，核对目标 App / CLI 版本及沙箱。交付前验证目标 App 的全新导入、空运行状态下的真实流程及业务终态，CLI 补充回归；接口清单、静态检查、HTTP 2xx 或 mock 通过均不能作为“导入即用”的依据。确实缺少不可推导的凭证、业务输入、工具或权限时明确说明，不能交付占位集合并宣称可用。Bruno 是用户独立安装的工具，更新插件不修改其配置。
 
 ### Blender + Three.js
 
@@ -304,6 +318,8 @@ Archify 完整官方 `archify/` 目录保存在 `skills/archify/references/.upst
 
 Comfy 官方 `Comfy-Org/docs` 文档仓库采用 GPL，按本项目规则只保留在线 API 引用，并检查 `local-api.md` 中 `docs.comfy.org` 链接的可达性，不随插件打包其正文。HTTP 可达不代表内容与当前本机版本一致；现场 `/object_info` 等接口仍是运行能力的依据。
 
+Bruno 官方 skills 与文档通过 `skills/bruno-api-tests/references/official-docs.md` 在线关联，自动进入同一个官方链接检查，不新增来源分支或专用更新器。生成任务按需读取当前原文并核对目标版本；维护时的 HEAD 检查只记录可达性，不代表正文已同步或流程已验证。未经确认允许再分发的上游原文不随插件复制，用户无需额外执行维护命令。
+
 普通 plugin 使用者无需运行这些维护命令。更新与校验统一使用 `update_upstreams.sh`，引用提取和 TSV 到 JSON 输出由同目录 `upstream_text.awk` 完成，不使用 JSON 解析器。清单和 JSON 都会校验，不要直接编辑生成文档。Git 属性固定脚本换行并禁止转换官方原文，避免 Windows autocrlf 破坏哈希。
 
 ## 仓库结构与发版
@@ -316,6 +332,7 @@ Comfy 官方 `Comfy-Org/docs` 文档仓库采用 GPL，按本项目规则只保�
 .mcp.claude.json                 Claude MCP 用户配置引用
 skills/
   xjb-coding/                    自驱编码
+  bruno-api-tests/               Bruno 官方知识关联、完整集合生成与真实导入验收
   sketch-to-prototype/           草图生成 Web 原型
   planning-prototype/            需求规划原型（两端界面、调用链、check 项）
   blender-threejs/               Blender + Three.js 工作流、脚本与官方参考资料

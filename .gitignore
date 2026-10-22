@@ -11,3 +11,6 @@ build/
 
 # 会话临时产物
 tmp/
+
+# AI 自驱编码本地状态
+.auto_coding/
