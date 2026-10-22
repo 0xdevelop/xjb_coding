@@ -1,6 +1,6 @@
 # xjb_coding
 
-面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、Bruno 接口与流程测试、真浏览器 Web 调试（macOS 优先官方 ego-browser）、草图生成 Web 原型、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
+面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、Bruno 接口与流程测试、真浏览器 Web 调试（macOS 优先官方 ego-browser）、草图生成 Web 原型、draw.io 可编辑图表、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
 
 安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号一把 API key，同一用户的所有 agent 共用；公司项目全实例可读、个人项目仅成员可读，编辑限记录归属人或管理员；看板实时显示任务、待批决策点与工具调用统计。
 
@@ -20,6 +20,7 @@
 | [web-browser-debug](skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 选定真浏览器执行层：macOS 优先官方 ego-browser（ego lite），回退宿主 Playwright MCP；统一截图、证据与任务空间约定 |
 | [ubuntu-shell-tools](skills/ubuntu-shell-tools/SKILL.md) | Ubuntu 20.04+ 运维 | 使用时获取 shell_tools 最新 main，检查并使用服务器配置、软件安装、网络诊断和 SSH 等脚本 |
 | [archify](skills/archify/SKILL.md) | 交互图表 | 从描述、Mermaid 或源码证据生成独立 HTML：架构、流程、时序、数据流、状态、ER、类、树、时间线与执行瀑布图 |
+| [drawio](skills/drawio/SKILL.md) | 可编辑图表 | 随包提供 draw.io 官方 Skill 与 XML / Mermaid 参考，生成和修改原生 `.drawio`，通过已有 Desktop CLI 导出 PNG/SVG/PDF |
 
 自驱编码流程不绑定单一编程语言。原型与 3D 页面默认面向桌面 Web，用户指定其他平台时按实际需求处理。普通 2D Web 任务不需要加载 Blender + Three.js Skill。
 
@@ -87,6 +88,7 @@ hermes skills install 0xdevelop/xjb_coding/skills/xjb-extends-jetbrains
 hermes skills install 0xdevelop/xjb_coding/skills/web-browser-debug
 hermes skills install 0xdevelop/xjb_coding/skills/ubuntu-shell-tools
 hermes skills install 0xdevelop/xjb_coding/skills/archify
+hermes skills install 0xdevelop/xjb_coding/skills/drawio
 ```
 
 单独分发 Skill 时保留其完整目录，包括 `references/` 和 `scripts/`。没有 Skills 加载机制的宿主，可直接读取对应 `SKILL.md`。
@@ -105,6 +107,7 @@ skills:
 
 - 安装 plugin 即包含上述 Skills；直接描述相关任务即可由宿主匹配，也可以点名 Skill。
 - Bruno 测试由 `bruno-api-tests` 入口按任务读取官方 skills 和当前文档；维护沿原上游链接检查，用户更新插件后按原宿主加载方式使用，不需要另装官方 skills、运行维护脚本或同步后端。
+- draw.io 官方 Skill、XML / Mermaid 参考和许可随本聚合包分发，沿现有上游快照机制更新，不需要另加 draw.io 插件市场或插件。原生 `.drawio` 生成不依赖 Desktop；Mermaid 转换、自动布局和图片/PDF 导出复用本机 draw.io Desktop。
 - `ubuntu-shell-tools` 每次开始工具任务时，将 [shell_tools](https://github.com/0xdevelop/shell_tools) 最新 `main` 浅克隆到当前项目 `tmp/shell-tools/` 的独立目录，记录 commit，检查后按任务执行；上游脚本更新无需等待插件发版。获取失败明确报错，不自动执行旧副本。Skill 规则自身更新仍随插件发布，Ubuntu 各版本的适用性按选中脚本和目标机器核实。
 - Blender + Three.js Skill 以十份 Three.js 官方 API 文档为入口，并附带固定版本的同仓库次级引用，覆盖 GLB 加载、动画、计时、纹理、相机控制、粒子与网格采样。资料按问题读取，不要求用户下载官方源码或初始化 submodule。
 - 未收录内容或与目标项目版本不同的 API，再核对相应版本的官方资料。附带文档不等于完整离线知识库。
@@ -219,6 +222,14 @@ Agent 在已有授权内复用真实配置、秘密引用和业务输入，核�
 来源为 [archify.si](https://archify.si) / [tt-a1i/archify](https://github.com/tt-a1i/archify)。本包通过 [archify Skill](skills/archify/SKILL.md) 加载完整官方运行包和独立的 [本仓库适配](skills/archify/extend/local.md)，无需另装全局 Archify、初始化 submodule 或 npm install；运行需 Node.js 18+。可按描述、Mermaid 或仓库证据生成十种图表；数值统计图、网站实现和需求规划原型使用各自对应工具。
 
 官方 `finalize` 依次执行验证、生成、严格 provenance 检查和内置 Chrome/Chromium 浏览器检查。浏览器缺失或任一门禁失败须报告实际缺口；ego-browser 的人工交互/视觉检查另留证据，不替代官方自动检查回执。CLI 更新提示不授权覆盖随包版本，原文仍由本仓库统一维护。正式 HTML 与 JSON 保存在目标项目，缓存、临时截图与浏览器临时目录放目标项目 `tmp/`。
+
+### draw.io 可编辑图表
+
+```text
+使用 drawio，按当前仓库画一张请求调用链图，保留可逐节点编辑的 .drawio；本机支持时同时导出 PNG。
+```
+
+通过 [drawio Skill](skills/drawio/SKILL.md) 使用 [draw.io 官方 Skill](https://github.com/jgraph/drawio-mcp/tree/main/plugins/codex/drawio) 和同版参考资料。只安装、更新本聚合包即可加载，无需单独安装官方插件或 MCP。用到转换、布局或导出时才检测本机 Desktop CLI 及版本；缺少能力则说明影响，给出对应系统的官方安装/升级与续做步骤，同时先完成可生成的原生 XML。源文件始终保留，已有图表可继续人工或由 Agent 修改；交互式独立 HTML 图表沿用 Archify。验收区分源文件结构检查、实际导出与视觉/编辑检查，不把未运行的部分报为通过。
 
 ### Web 调试与浏览器验收
 

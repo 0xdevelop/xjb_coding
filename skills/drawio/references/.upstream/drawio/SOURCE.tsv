@@ -1,0 +1,30 @@
+file	LICENSE	006e61a1b8c97620d75ceacc283de7a363d78da7da9a5b92203324c40feb7232	LICENSE
+file	plugins/codex/drawio/skills/drawio/SKILL.md	60e1fd54b577f41ba3297f492d22dc5d6ed94fac95c173b79e1bc549ec2629e4	plugins/codex/drawio/skills/drawio/SKILL.md
+file	shared/mermaid-reference.md	ac7af3fe47a817c902b11efd85737080bfcc93ac0f2dc8b7b5b381a5ba32eeaf	shared/mermaid-reference.md
+file	shared/mxfile.xsd	905db85d4e8ebec0e91518cdd62982e0afb3f09ebdcaf9e6b1952957a606639a	shared/mxfile.xsd
+file	shared/style-reference.md	73c07137b457fd2587f63e4cf4991526d5ae448d1a2af5a08648ff616ce937b0	shared/style-reference.md
+file	shared/xml-essentials.md	4efa661fa028224816a05c4c2449d2b6ac6779e0835cb122bdd20daadc10e128	shared/xml-essentials.md
+file	shared/xml-reference.md	4a0dfdfaf507924700a21373abb9703661d60e385d7df8086bd3575b17b9a11a	shared/xml-reference.md
+meta	commit	307725c331847c15bf5ddeef64a9c8434a30fadf
+meta	license	Apache
+meta	reference_depth	1
+meta	repository	https://github.com/jgraph/drawio-mcp.git
+ref	plugins/codex/drawio/skills/drawio/SKILL.md	https://app.diagrams.net/#R...`	-	external	-
+ref	plugins/codex/drawio/skills/drawio/SKILL.md	https://app.diagrams.net/?grid=0&pv=0&border=10&edit=_blank#R	-	external	-
+ref	plugins/codex/drawio/skills/drawio/SKILL.md	https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio	-	external	-
+ref	plugins/codex/drawio/skills/drawio/SKILL.md	https://raw.githubusercontent.com/jgraph/drawio-mcp/main/shared/mermaid-reference.md	-	external	-
+ref	plugins/codex/drawio/skills/drawio/SKILL.md	https://raw.githubusercontent.com/jgraph/drawio-mcp/main/shared/xml-essentials.md	-	external	-
+ref	plugins/codex/drawio/skills/drawio/SKILL.md	https://raw.githubusercontent.com/jgraph/drawio-mcp/main/shared/xml-reference.md	-	external	-
+ref	shared/mermaid-reference.md	https://github.com/jgraph/drawio/discussions/5643	-	external	-
+ref	shared/style-reference.md	https://github.com/jgraph/drawio-mcp/blob/main/shared/mxfile.xsd	-	external	-
+ref	shared/style-reference.md	https://www.drawio.com/docs/reference/diagram-generation/	-	external	-
+ref	shared/style-reference.md	https://www.drawio.com/docs/reference/json-layout-specification	-	external	-
+ref	shared/xml-reference.md	https://github.com/jgraph/drawio-mcp/blob/main/shared/mxfile.xsd	-	external	-
+ref	shared/xml-reference.md	https://github.com/jgraph/drawio-mcp/blob/main/shared/style-reference.md	-	external	-
+root	LICENSE
+root	plugins/codex/drawio/skills/drawio
+root	shared/mermaid-reference.md
+root	shared/mxfile.xsd
+root	shared/style-reference.md
+root	shared/xml-essentials.md
+root	shared/xml-reference.md
