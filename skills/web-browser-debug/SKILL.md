@@ -1,6 +1,6 @@
 ---
 name: web-browser-debug
-description: Choose and drive the real browser for Web debugging, end-to-end checks, and UI acceptance. Prefers the official ego-browser (ego lite) skill on macOS, falls back to a host Playwright MCP, and reports the gap when neither exists. Use before any browser-level verification of a Web page or app. Also carries the hard integration-test standard: after every data-writing action, verify the data end to end across UI, gateway, execution logs, database and runtime cache — a green UI alone never counts as passing.
+description: "Choose and drive the real browser for Web debugging, end-to-end checks, and UI acceptance. Prefers the official ego-browser (ego lite) skill on macOS, falls back to a host Playwright MCP, and reports the gap when neither exists. Use before any browser-level verification of a Web page or app. Also carries the hard integration-test standard: after every data-writing action, verify the data end to end across UI, gateway, execution logs, database and runtime cache — a green UI alone never counts as passing."
 metadata:
   version: "0.2.0"
   hermes:
@@ -37,6 +37,8 @@ ego lite 不是 MCP 服务：`ego-browser` 是 App 注册到 `~/.local/bin` 的 
 5. **不清空浏览器 profile 级状态**：清 cookie / cache 前先读官方 `references/clearing-state.md`；只用单 origin 级命令。
 6. **多端事件链验证**（SSE / WebSocket / 流式渲染）：后端日志与浏览器控制台双对照，漏一处即视为未通过。
 7. **后台联调**：启动方式遵循目标仓库约定；涉及 JetBrains IDE 时，按需使用独立的 [xjb-extends-jetbrains](../xjb-extends-jetbrains/SKILL.md) Skill 处理运行配置、调试和窗口操作。本 Skill 负责浏览器页面验证。
+
+动效默认缺失或跨电脑表现不同时，先执行通用 Agent 约束中的[动效偏好排查](../xjb-coding/.auto_coding/AGENT_COLLABORATION.md#motion-preferences)，再判断页面实现问题。
 
 ## 联调硬标准：界面不算数，数据流转对了才算（用户拍板，不可省）
 

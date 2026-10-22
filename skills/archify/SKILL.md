@@ -18,3 +18,4 @@ node <本Skill绝对路径>/references/.upstream/archify/archify/bin/archify.mjs
 真实仓库图还需按官方 Repository authoring 规则提供源码证据，并加 `--repo-root <目标仓库>`。不要把官方示例当作当前系统事实。
 
 用户要求可编辑 `.drawio` 时沿用其指定工具；需要「规划原型」时使用该项目对应 Skill，Archify 只负责图表。普通独立图表不额外初始化自驱编码工作区或后端工作流。
+ 

@@ -116,6 +116,28 @@ narrowest build or package test that still proves the changed code compiles.
 Environment failures must be separated from code failures. A compile error is
 never an environment failure.
 
+### Motion Preferences
+
+When UI or Web animations are absent by default, especially when another machine
+shows them, check operating-system motion preferences before attributing the
+behavior to hardware performance or rewriting animation code:
+
+- On macOS, first inspect **Reduce motion** in Accessibility settings. Find the
+  actual location for the installed OS version.
+- On Windows, Linux, or other systems, first inspect the corresponding animation,
+  reduced-motion, or desktop accessibility settings.
+- Check what the page actually receives with
+  `matchMedia('(prefers-reduced-motion: reduce)').matches`, then inspect browser
+  overrides or DevTools media emulation. **No emulation** follows the system;
+  it does not force animations on.
+- Next inspect page-specific motion/pause controls and CSS/JavaScript conditions.
+  Record the observed preferences separately from implementation defects; both
+  can contribute to missing motion.
+
+Respect the user's accessibility preferences. Do not change system or browser
+global settings without authorization, and do not confuse paused visual effects
+with backend task execution or business progress.
+
 ## Handoff Format
 
 Controller final reports should include:
