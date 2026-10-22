@@ -2,7 +2,9 @@
 
 项目是数据与协作边界；任务的 `layer` 是项目内分类，不按标题、语言或任务种类自动拆项目。协调仓可保留跨仓协调任务，独立代码仓按各自项目绑定。
 
-1. 续做先读目标项目 `.auto_coding/project.json` 的 `project_id`，调用 `project.get` 验证本次实例内可读，再沿用；不把另一实例同名项目当同一个项目。
+读取、审计和续做不触发初始化、项目创建或模板部署。按 `start_coding.md` §0、§7 核对连接、认证与原状态；只有已授权工作确实缺少项目绑定时才执行下述新建与写入步骤。
+
+1. 续做优先沿用用户已给出的或原断点中的 `project_id` / `task_id` / `session_id`，再核对目标项目 `.auto_coding/project.json`。调用 `project.get` 验证本次实例内可读，已知会话先 `session.restore`；不重新建会话或拆单，不把另一实例同名项目当同一个项目。绑定冲突或权限拒绝先核对来源，不以新建绕过。
 2. 未绑定时确定仓库标识 `repository`，不限定 GitHub，按顺序取第一个有的：
    - 用户明确给出的标识（自定义代码平台、无远端的仓库）；
    - 版本管理工具的远端：Git 取 `origin`，只有一个 remote 时取它，多个且无 `origin` 时问用户；其他工具取其默认远端（如 `hg paths default`、`svn info --show-item repos-root-url`）。

@@ -1,6 +1,8 @@
 # AI 自驱编码作战手册 (Skills-first, MCP-enhanced)
 
-> **触发词**：收到"读 .auto_coding/start_coding.md"（或含此短语的任意消息）后立即进入本规范。
+> **触发词**：用户要求按“读 .auto_coding/start_coding.md”执行工作流时进入本规范；引用、审计或读取规则不触发初始化与编码。续做先恢复原状态。
+>
+> **适用顺序**：遵守宿主安全要求、用户现行指令与授权、已确认项目约定；本 Skill 提供通用工作流，不自行扩大范围。冲突时保留用户原话与出处，按有效约定执行；只有缺少必须由用户决定的信息才询问。
 >
 > **驱动模型**：默认可通过本地 Skills / markdown 模式工作；如果 [xjb_code](https://github.com/0xdevelop/xjb_code) MCP daemon 已由用户显式部署并连通，则优先使用它提供的工具。`xjb_code` 是独立的通用 MCP Streamable HTTP 后端，配合本 skill 使用效果更佳。
 >
@@ -50,6 +52,8 @@ Claude 插件的 mcp_url 未设置时取默认值；其他 marketplace 使用实
 
 **状态后端契约（一套语义，两个实现）**：需求 / 任务 / 锁 / 审批 / 会话这五类工作流状态是**同一套操作语义**；`xjb_code` DB 与本地 markdown 是它的两个后端实现，后端切换**不得改变工作流规则**（门禁、行为准则、任务边界全部同源生效）。**自驱动力来自宿主执行循环**（会话内主循环、宿主定时循环、cron、headless CLI、外部编排器），不依赖 MCP —— MCP 后端换来的只是下面这些能力差异：
 
+先核对原 `project_id` / `task_id` / `session_id`、已有需求与授权，再进入主循环。MCP 可用且已认证时沿用原服务端状态；已知 `session_id` 先 `session.restore`，已知任务先 `task.get` 核对，不重新创建会话、重复拆单或覆盖目标项目目录。确实不可用才走附录的既有 markdown 回退；权限拒绝不能用新项目或本地状态绕过。服务恢复后先核对回退期间的改动与原任务，接回同一状态源，不同时维护两份进度。
+
 | 能力 | markdown 后端 | xjb_code DB 后端 |
 |------|--------------|-------------------|
 | 任务锁 | DISPATCH.md 软锁（弱一致，单机兜底） | DB 行级 CAS（强一致） |
@@ -70,63 +74,68 @@ Claude 插件的 mcp_url 未设置时取默认值；其他 marketplace 使用实
 3. `README.md` — 项目定位
 4. 根目录直接子目录（`ls` 一层）
 
-汇报：「已识别语言：**X**，项目：**Y**，session_id 已创建，开始执行。」
+汇报实际核对结果：语言、项目、恢复或新建的会话，以及本次授权范围；未创建会话不得称“已创建”。
 
 `project_id` 按 xjb-coding Skill 的 `references/projects.md` 绑定：先读 `.auto_coding/project.json` 并用 `project.get` 验证；未绑定时取仓库标识（用户指定或版本管理远端，规范为 `<host>/<命名空间…>/<仓库>`，不限 GitHub）→ `project.list(repository=…)` 唯一匹配即复用、多个问用户、没有就 `project.create(visibility=private)` → 写回 `.auto_coding/project.json`。不回退 `default`。
 
-`session.create(agent_id, project_id)` → 拿到 session_id，后续工具调用都带上 `project_id`。
+已知 `session_id` 按 §7.3 恢复；只有确需首次开工且没有可续会话时，先复用或注册 `agent_id`，再 `session.create(agent_id, project_id)`。仅缺少某个 ID 时先查原记录和项目绑定，不重建整个项目或任务。后续项目级调用带上 `project_id`。
 
 ### 1.2 阶段 1：任务拆解
 
 ```
-若 task.list(status=pending, project_id=project_id) 非空：
-  → 跳到 §1.3 worker 循环
+先读取已有需求、任务（含进行中、阻塞、已完成）与会话：
+  → 续做原任务，不因 pending 为空重新拆单
+  → --refine 仅细化当前需求后停止；--task_plan 仅核对/补齐当前任务计划后停止
 
 若 .auto_coding/requirements/ 有需求文件但任务为空：
   对每个需求文件 → requirement.add(topic, version, raw_content, project_id)
   逐条 → requirement.refine(requirement_id, refined_content)
                 ↑ 去歧义、统一术语、明确边界
+  （--refine 模式：到此停止，不拆任务、不写代码）
   按依赖关系分解 → task.add(description, priority, layer, parent_id, project_id) 多次
   双向链接：task.assign(task_id, depends_on_id) 记录依赖
   （--task_plan 模式：到此停止，等用户确认任务列表）
 
 若无需求且有代码（接管旧项目）：
-  按 §1.4 现有代码扫描推断待做项 → task.add(..., project_id) 补齐
+  仅在用户已授权接管/盘点时按 §1.4 核对；观察结果不自动成为开发需求
 
 若无需求且无代码（空项目）：
-  停下来询问："项目是做什么的？请描述核心功能。"（唯一需要问的情况）
+  缺少目标时询问最少必要信息；已有用户需求直接沿用
 ```
 
 ### 1.3 阶段 2：worker 循环
 
 ```
-agent_id := agent.create(name=<自选名称，如 claude-1 / cursor-2 / trae-1>, project_id=project_id).agent_id   # 同一宿主复用已注册的 agent_id
+agent_id := 阶段 0 已核对的 agent_id   # 复用，不在 worker 循环重新注册
 
 loop {
   agent.heartbeat(agent_id)  # 让 web UI 看到我在线
 
-  t := task.next(project_id)   # 只返回本人（或管理员：全部）可领的任务
+  t := 取出已恢复的当前任务（只取一次），否则 task.next(project_id)   # 不重复领取已在途任务；不以 task.next 探活
   if t == nil:
     # 队列空，看是否还有需求漂移
     drift := requirement.detect_drift(project_id)
     if drift not empty:
-      处理漂移 → task.add 补任务，continue
-    break  # 真完工
+      对照用户原需求与授权核实漂移；仅已授权范围内确认的缺项补任务后 continue
+    核对当前授权范围内任务的全状态及验收；在途、阻塞或未验收项记为未完成
+    break  # 本轮无可领取任务，不等于项目完工
 
-  locked := task.lock(t.task_id, agent_id)
+  核对原锁及归属；仅在需要领锁时 task.lock(t.task_id, agent_id)
+  locked := 本次有效锁结果
   if locked == nil:  # 被别人抢了 / 状态变更
     continue
 
   阅读 t.description / t.layer / t.parent_id 理解验收标准
 
   ## TDD 节奏编码
-  写测试 (Red) → 写最小实现 (Green) → 重构 (Refactor)
+  按 §3 选择验证范围；代码按需写测试 (Red) → 最小实现 (Green) → 重构 (Refactor)
 
   ## 自测（§3 四层门禁 L1→L4 顺序全过才能继续）
   L1 工程（BUILD/TEST/FMT_CHK/LINT）→ L2 架构 → L3 业务 → L4 专项
 
   ## 卡住或决策不确定（§4）
-  if 同一错误已修 3 次失败 OR 架构有疑问:
+  先查已有决定与授权；技术问题自行定位
+  if 实质越界 OR 缺少必须由用户决定的信息:
     choice := request.approval(
       prompt="<具体问题，含已尝试 + 卡在哪里>",
       options=["选项A 简短", "选项B 简短", "终止当前任务"],
@@ -134,31 +143,32 @@ loop {
       session_id=session_id,
       timeout_seconds=900
     )
-    根据 choice 继续 / task.fail
+    根据 choice 继续；用户否决/终止用 task.cancel，执行失败才 task.fail
 
-  ## commit + push
-  git add <仅本任务涉及文件，禁 -A>
-  git commit -m "<type>(TASK-XXX): <英文描述，≤72 字符>"
-  git push origin <branch>
+  ## Git 操作与存档解耦（§7.2）
+  只有获得本次提交授权才精确 add + commit；push、tag/发版分别核对授权
+  说明采用用户语言与仓库惯例，简短写事实；未授权不影响保存断点
 
   ## 关闭任务
-  task.complete(t.task_id, commit_hash=<sha>, notes=<关键决策摘要>)
+  task.complete(t.task_id, notes=<验证证据与交付状态>)  # 已提交时可带 commit_hash；未提交不伪造哈希
 }
 ```
 
-### 1.4 现有代码扫描（无需求文件接管旧项目时）
+### 1.4 现有代码扫描（已授权盘点旧项目时）
 
-| 信号 | 推断 |
+下表只生成待核查现状，须读实现、引用及对应需求；不能从代码反推用户架构或自动立项。仅将已授权范围内确认的问题写入原任务后端。
+
+| 信号 | 核对方式 |
 |---|---|
-| 函数有实现且测试通过 | 已完成，跳过 |
-| 函数是空 stub / TODO 注释 | 待实现 → task.add |
-| 测试存在但实现缺失 | 待实现 → task.add |
-| README 列出的功能在代码找不到 | 待实现 → task.add |
-| 编译或测试当前失败 | P0 任务，最高优先级 |
+| 函数有实现且测试通过 | 核对需求与验收证据，不能仅据此称业务完成 |
+| 函数是空 stub / TODO 注释 | 核对实际调用、归属与需求，确认是否待实现 |
+| 测试存在但实现疑似缺失 | 读取相关实现与引用，核实后记录 |
+| README 列出的功能在局部代码找不到 | 继续核对入口和依赖，不直接断言未实现 |
+| 编译或测试当前失败 | 记录实际错误、影响与既有基线，不擅自扩成修复任务 |
 
 ### 1.5 阶段 3：完工验收
 
-`task.list(status=completed)` → 拼成 markdown 报告输出：
+读取当前授权范围内任务的全部状态、需求闭合情况及验收记录，按实际完成情况输出报告；不能仅用 completed 列表或空的可领队列宣告完工：
 
 ```markdown
 ## 验收报告
@@ -169,8 +179,8 @@ loop {
 |---|---|---|
 [逐行]
 
-### 测试覆盖
-[run go test -cover 或等效]
+### 验证与验收
+[本次增量检查、复用记录及适用前提、最终必要验收；未验证项明确标注]
 
 ### 待跟进
 [未完成的 P2/P3 或 TODO]
@@ -180,14 +190,14 @@ loop {
 
 ## 2. 工具链适配器（语言识别 + 命令）
 
-按优先级识别主语言；多文件共存取最高优先级：
+先复用项目既定命令、锁文件与工具链；下表只作缺少约定时的候选，不据此安装工具或重跑无关检查。多语言项目按本次受影响模块选择：
 
 | 检测文件 | 主语言 | BUILD | TEST | FMT_CHK |
 |---|---|---|---|---|
 | `go.mod` | Go | `go build ./...` | `go test -race ./...` | `test -z "$(gofmt -l .)"` |
 | `Cargo.toml` | Rust | `cargo build` | `cargo test` | `cargo fmt --check` |
-| `package.json` + `tsconfig.json` | TypeScript | `npm run build` | `npm test` | `npx prettier --check .` |
-| `package.json` 仅有 | JavaScript | `npm run build`（脚本不存在 = 门禁未配置，记 ❌，不是绿） | `npm test` | `npx prettier --check .` |
+| `package.json` + `tsconfig.json` | TypeScript | 项目 build 脚本 | 项目 test 脚本 | 项目格式检查脚本 |
+| `package.json` 仅有 | JavaScript | 项目 build 脚本 | 项目 test 脚本 | 项目格式检查脚本 |
 | `pyproject.toml` / `requirements.txt` | Python | `python -m compileall -q .` | `pytest -x` | `black --check .` |
 | `pom.xml` | Java/Maven | `mvn -q compile` | `mvn test` | `mvn spotless:check`（未配置 spotless = 记「L1 部分未配置」） |
 | `build.gradle` | Kotlin/Gradle | `./gradlew build` | `./gradlew test` | `./gradlew ktlintCheck` |
@@ -197,11 +207,11 @@ loop {
 **反假绿规则（对每条门禁命令生效）**：
 
 - **可证伪自检**：跑之前答得出「这条命令什么情况下会红？」——答不出 = 假绿，换命令
-- **exit code 是唯一判据**：日志"看起来没错"不算；`gofmt -l` 这类"列出问题但 exit 0"的命令必须包 `test -z "$(...)"`
-- **空集绿不算绿**：TEST 收集到 0 个测试（Go 全 `[no test files]`、pytest `collected 0 items`、`Tests run: 0`）、BUILD 没有编译目标、FMT 扫到 0 个文件 → 一律视为「门禁未配置」记 ❌
+- **命令成功是必要条件**：日志“看起来没错”不算；`gofmt -l` 这类“列出问题但 exit 0”的命令必须包 `test -z "$(...)"`。命令通过仍须核对它是否验证了目标行为
+- **空集绿不算绿**：适用的 TEST 收集到 0 个测试、BUILD 没有编译目标、FMT 扫到 0 个文件，不能报通过；规则文档等本就不适用的检查说明理由，不为凑门禁新增测试
 - **「（可选）/（若有）」不是永久豁免**：项目具备条件后立即转强制；跳过必须在完成报告写明「L1 部分未配置：<项> + 原因」
 
-未识别 → 询问用户，写入项目特定约定区（§9）。
+未识别时先查项目脚本与既有验证记录，只有缺少必要信息才询问并记入项目特定约定区（§9）。
 
 ---
 
@@ -210,12 +220,14 @@ loop {
 > 门禁按**类继承**组织：L(n) 继承 L(n-1) 的全部要求再扩展本层检查；低层不过则高层不评（fail fast）；**L1→L4 全过才能 `task.complete`**。
 > **BUILD/TEST/FMT_CHK 全绿只是 L1 的机械子集 —— 全绿 ≠ 完成。**
 
+**增量验证与最终验收**：规则文档核对语义、引用和副本一致性；脚本/局部代码验证新增与受影响路径；最终集成按项目既定标准完成必要真实业务验收。每步选择与改动相称的检查，记录范围、环境、结果与证据。历史通过记录在代码、依赖、配置、契约及环境等适用前提未变时可复用；前提变化或出现新失败才补测相关范围。不把每个小改扩成历史全流程重跑，不新增无意义测试，也不能将未完成的既定验收标成通过。不适用项须说明依据，不能代替适用但未验证的项。
+
 ### L1 工程门（机械可验证）
 
 | 检查 | 命令 | 要求 |
 |------|------|------|
 | 编译/类型 | BUILD | 零 error；有 warning 概念的工具链零新增 warning |
-| 测试 | TEST | 全部通过，且**实际收集到 ≥1 个测试**（空集绿不算绿，见 §2 反假绿规则） |
+| 测试 | TEST | 适用范围全部通过，且实际收集到测试（空集绿不算绿，见 §2）；不适用时说明依据 |
 | 格式 | FMT_CHK | 无 diff（不通过先跑 FMT 再重检）；命令须以 exit code 判定 |
 | LINT（可选） | LINT | 无新增 warning |
 
@@ -225,8 +237,8 @@ loop {
 
 ### L2 架构门（继承 L1）
 
-- 只动任务 owned files，无 scope 扩张；越界需求 → 先 `request.approval`
-- 未擅改公共契约：对外 API / schema / proto / 依赖方向 / 存储命名归属，改动前必须走审批
+- 只动授权范围与 owned files；范围内常规技术选择自行处理，实质越界才 `request.approval`
+- 公共契约（对外 API / schema / proto / 依赖方向 / 存储命名归属）先查已有决定与授权，按确认方案实施，不重复审批；缺少必要决定时再询问
 - 命名符合项目既有约定与目录风格；不引入语义稀薄的泛词（Manager / Helper / Common 类占位名）
 - 不为假想未来加脚手架；每个新增抽象说得出当前用途
 - 新增能力若引入新数据形态 / 新契约，**配套存量数据、存量调用方的纳入机制**（回填 / 迁移 / 版本兼容），不留一次性孤儿
@@ -237,13 +249,13 @@ loop {
 - 主要失败路径（非法输入、依赖不可用、并发冲突、半写入）有处理或**显式拒绝**，不静默吞
 - 术语与需求文档一致，不造词、不用多义词糊核心概念
 - 行为对齐需求本意，而不是仅让现有测试碰巧通过
-- Web 页面 / 前端改动必须真浏览器端到端验证：执行层按 `web-browser-debug` Skill 选定（macOS 优先官方 ego-browser，回退宿主 Playwright MCP），证据（截图 / 快照 / 控制台）落目标项目 `tmp/`
+- Web 页面 / 前端改动收口时必须真浏览器端到端验证：执行层按 `web-browser-debug` Skill 的当前官方指南与能力探测选定；证据目录、结果页保留和进程生命周期服从当前用户与目标项目约定
 
-### L4 业务专项扩展门（继承 L3，项目 override 层）
+### L4 业务专项扩展门（继承 L3）
 
 - 执行 §9 约定区「L4 专项检查」定义的项目专属检查（性能预算 / 合规 / 集成联调命令 / 领域校验清单等）
 - §9 未定义时 L4 为空集，等同 L3 通过即整体通过
-- 目标项目**只能扩展本层**，不能削弱 L1–L3
+- 项目既定约定可定义各层适用检查与命令；通用模板不覆盖这些约定，也不得借此省略已确认的质量与验收要求
 
 **完成报告按层汇报**：L1 附命令输出摘要；L2 / L3 逐条结论；L4 附执行记录。
 
@@ -257,9 +269,9 @@ loop {
 
 **绝对禁止**：
 - 任一层门禁未过就 `task.complete`
-- 修改测试来让测试通过（测试是需求镜像，只改实现）
+- 削弱有效断言来伪造测试通过；测试随已授权契约变更时同步核对需求
 - `git add -A` 或 `git add .`（防止提交构建产物 + secrets）
-- 跳过 push（push 是回滚锚点；失败降级见 §7.3）
+- 未经授权执行 commit / push / tag 或发版（存档不依赖这些操作，见 §7.2）
 - 擅自更改架构或需求（用 `request.approval` 让用户决策）
 - 提交含硬编码密钥 / 密码 / token 的文件（发现立即停止 + 通知用户）
 
@@ -269,14 +281,16 @@ loop {
 
 ### 4.1 何时调 `request.approval`
 
+先查当前用户指令、已有决定与授权；授权仍有效且未实质越界时直接执行。上下文恢复、文件数量、常规技术选择本身不触发重复审批。保留法律条款确认、用户空间接管、敏感操作及宿主要求的真实安全确认，授权缺失时不以超时或非交互模式代替同意。
+
 | 触发 | 说明 |
 |------|------|
-| 同一 BUILD/TEST 错误修了 3 次仍失败 | 可能架构缺陷或环境问题 |
-| 任务标 ❌ 阻塞超 2 个 | 多阻塞点堆积，需人工决策 |
+| 同一 BUILD/TEST 错误反复失败 | 先核对根因；仅需用户信息或越界决定时询问，否则记录阻塞并推进独立工作 |
+| 多个任务阻塞 | 汇总共同原因；数量本身不产生审批要求 |
 | 发现硬编码密钥 / 密码 / token | 立即停 |
-| 需求与代码根本矛盾 | 不擅自选 |
-| 架构调整影响 > 3 个文件 | 超出补丁范围 |
-| 环境配置失败（git config / module cache / SSH key / DNS） | 重试 1 次失败必须停 |
+| 用户约定与代码冲突 | 说明差异，按用户约定执行；仅规范或授权不明确时询问 |
+| 架构或任务范围实质变化 | 查已有决定；未获授权的变化先询问，不以文件数判断 |
+| 环境配置失败（git config / module cache / SSH key / DNS） | 不擅改用户环境，报告需要用户处理的具体信息；继续不受影响工作 |
 
 ### 4.2 调用格式
 
@@ -309,12 +323,12 @@ request.approval(
 2. （可选）requirement.refine(requirement_id, refined_content=<去歧义后的结构化版>)
 3. 按依赖分解 → task.add(description, priority, parent_id, layer) 多次
 4. 评估对当前进行中任务的影响：
-   - 无冲突 → 完成当前任务后按 priority 排入
-   - 有依赖冲突 → request.approval 询问用户是暂停当前还是先做新任务
+   - 无冲突 → 按用户当前优先级衔接；未另行指定时完成当前任务后按 priority 排入
+   - 有依赖冲突 → 先按用户已有优先级与决定处理；仅缺少必要决定或需实质越界时 request.approval
 5. 汇报："已接收 v<X.X.X>，新增 N 个任务"
 ```
 
-不打断当前进行中任务，新任务按 priority 在队列里排队。
+按用户当前优先级与决定衔接；未另行指定且无冲突时，完成当前任务后将新任务按 priority 排入。
 
 ---
 
@@ -325,49 +339,50 @@ request.approval(
 并发模型：
 - `task.lock(task_id, agent_id)` 是 DB 行级 CAS：同一时间只有一个 agent 能锁一个任务
 - 其他 agent 的 `task.next` 自动跳过已锁任务；不同用户的任务互不可领（只读可见）
-- 任务在不同 git 分支编码（如 `task/TASK-XXX`），完成后合并回主干 + 删分支
+- 按目标项目并行约定隔离文件或工作树；分支、合并及清理由当前授权决定，不自动合并主干或删除用户分支
 - 每次工具调用前 `agent.heartbeat(agent_id)` 让 web UI 看到在线状态
 
 MCP 模式不使用 `DISPATCH.md` 文件锁；它仅在 markdown 回退模式作单机多会话软锁兜底（弱一致，见附录）。
 
 ---
 
-## 7. 紧急存档 + 断点续做
+## 7. 存档 + 断点续做
 
-### 7.1 触发条件（外部信号，不基于 AI 自感知百分比）
+### 7.1 触发条件
 
 - 收到 `<system-reminder>` 含 compaction / 上下文警告
 - 用户消息含「快满了 / token 不足 / 开新会话 / 上下文不够」
-- 当前任务**涉及**文件已超约束上限（5 个）—— 任务规划失误，需重新拆任务
+- 每个实质批次结束保存断点；切换任务或需移交时同样保存
+- 文件数量和自我估算的上下文百分比不单独触发紧急存档或重新拆任务
 
 ### 7.2 存档步骤
 
 ```
 1. snapshot := <markdown 状态快照：
-     - 当前任务 ID / 状态
+     - 原 project_id / task_id / session_id / agent_id 与当前状态、锁归属
+     - 用户关键原话、来源（消息/文档位置与日期），当前需求与架构约定
+     - 已确认边界、否决路线、验收标准、授权范围与有效性
      - 已完成的步骤
-     - 正在编辑的文件
-     - 未提交改动列表
-     - 下一步具体操作>
-2. session.checkpoint(session_id, snapshot)
-3. git add <已修改文件>
-   git commit -m "wip(TASK-XXX): checkpoint – <一句描述>"
-   git push
-4. 输出："已存档，可安全关闭。续做请发：读 .auto_coding/start_coding.md，从断点续做"
+     - 已有验证记录、范围、环境、结果、适用前提和证据路径，未验收项
+     - 工作树/分支、正在编辑的文件、未提交改动、在途任务与进程
+     - 当前未完成的一步、阻塞原因、下一步具体操作>
+2. MCP 模式 session.checkpoint(session_id, snapshot)
+   确实不可用时写入原 tasks/TRACKER.md 的断点续做指引，不覆盖已有任务
+3. 确认写入成功后报告存档位置和未完成项；失败明确报告，不声称已存档
 ```
+
+存档不要求 Git 操作。提交、推送、tag/发版分别按用户现行授权执行；无授权仍可保存未提交 diff 的断点。提交说明采用用户语言与仓库惯例，简短写事实，不强制英文。已授权的 Git 操作失败时保留文件与原断点，记录实际结果，不为存档重试未授权操作。
 
 ### 7.3 断点续做（新会话）
 
 ```
-1. 阶段 0 自检（重新识别语言、读约定）
-2. session.restore(session_id) → 拿出最新 snapshot
-3. git log --oneline -10 + git status → 与 snapshot 交叉验证
-   优先级：git 实际状态 > snapshot 内容 > 代码推断
-4. 汇报："恢复完成：最后 commit [hash]，当前任务 TASK-XXX，下一步：[操作]"
-5. 继续 §1.3 worker 循环
+1. 核对用户原任务、原 ID、既定约定和当前授权（§0 / §1.1），不运行初始化或 session.create
+2. MCP 可用时 session.restore(session_id)，并核对原需求与 task.get；不可用时读原 TRACKER 断点
+3. 核对实际 git status / diff / log、运行状态和已有验证记录
+   Git 实际状态仅核对文件、提交事实，不能覆盖需求、架构、授权和用户原话
+4. 核对：用户目标、确认边界、否决路线、当前未完成的一步；摘要不能改写要求
+5. 汇报恢复结果与待做步骤，按原模式继续；不重复创建会话、领取在途任务或拆单
 ```
-
-`git push` 失败不阻塞执行：记录原因 → 继续下一任务（本地 commit 已是回滚锚点）→ 在 snapshot 标注「⚠ N 个 commit 未推送」。
 
 ### 7.4 准 runloop 模式（`--tick [N]`，外部循环驱动）
 
@@ -376,10 +391,9 @@ MCP 模式不使用 `DISPATCH.md` 文件锁；它仅在 markdown 回退模式作
 **tick 契约**（单次触发 = 幂等有界工作单元）：
 
 ```
-1. 恢复状态：daemon 在线用 session.restore / task.list；否则读 TRACKER.md
-   一律以 git log / git status 交叉验证（优先级：git 实际状态 > 存档 > 推断）
+1. 按 §0 / §7.3 恢复原项目、任务和会话；Git 仅核对文件事实
 2. 领取至多 N 个任务（--tick N，默认 1），逐个走 §1.3 编码 + §3 四层门禁
-3. 写回状态（task.complete / TRACKER 更新 + wip commit）
+3. 按 §7.2 保存断点与验证记录，适用门禁全过才 task.complete / TRACKER 标完成；Git 操作另按授权
 4. 输出机器可读摘要后结束本轮，等待下一次外部触发：
    TICK_RESULT: done=<n> blocked=<n> remaining=<n> status=<progress|idle|stalled>
 ```
@@ -387,29 +401,31 @@ MCP 模式不使用 `DISPATCH.md` 文件锁；它仅在 markdown 回退模式作
 **降级与停机规则**：
 
 - 卡住且 `request.approval` 不可用或超时 → 任务标 blocked + 写明原因，**继续下一任务**；tick 摘要集中列出阻塞项。禁止无限阻塞等人
-- 队列空且 `requirement.detect_drift` 无漂移 → `status=idle`，外部循环可停
+- 无可领任务、无在途工作且 `requirement.detect_drift` 无漂移 → `status=idle`；有阻塞或未验收项仍记录未完成，不能据 idle 宣告项目完成
 - 连续 2 个 tick `done=0` 且 blocked 未减少 → `status=stalled`，必须人工介入，外部循环应停
 - 单 tick 内禁止吃光整个队列（有界性是 runloop 与「一气呵成」模式的本质区别）
 
 ---
 
-## 8. 全局硬约束（所有项目强制生效）
+## 8. 通用质量与安全约束
 
-- ❌ 禁止使用 Docker 进行 BUILD / 单元测试（集成测试若需 Docker 必须在 §9 约定区显式声明）
+按本文件开头的适用顺序执行，不赋予技能高于宿主安全要求、用户现行授权和已确认项目约定的权限。
+
+- 构建与测试复用项目既定工具和环境，不擅自安装或改环境
 - ❌ 禁止 `git add -A` 或 `git add .`（精确 add 本任务文件；发版脚本除外）
 - ❌ 禁止跳过四层质量门禁（§3 L1→L4 全过才能 task.complete；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集）
 - ❌ 禁止擅自修改架构（先 `request.approval` 让用户决策）
 - ❌ 禁止将 `.auto_coding/` 加入 git（含 `git add -f`）
-- ❌ 禁止修改测试来让测试通过（只改实现）
+- ❌ 禁止削弱有效断言来伪造通过；按已授权契约更新测试须保留需求依据
 - ❌ 禁止提交含硬编码密钥 / 密码 / token 的文件
 
 ---
 
 ## 9. 项目特定约定区
 
-> AI 读取规则：本区域每条非空值都是**强制生效指令**，必须遵守。
-> 值为空或为括号说明文字时跳过该条，按全局规则推断。
-> 阶段 0 读取，优先级高于 AI 推断，低于全局硬约束。
+> 本区域记录已确认的项目约定及其出处，不把代码观察或 AI 推断写成用户规范。
+> 空值不代表授权，也不允许推断架构；先查项目原指令，缺少必要信息才询问。
+> 阶段 0 读取，按本文件开头的适用顺序执行；可在各层定义适用检查，不限于 L4。
 
 | 配置项 | 值 | 说明 |
 |---|---|---|
@@ -418,7 +434,7 @@ MCP 模式不使用 `DISPATCH.md` 文件锁；它仅在 markdown 回退模式作
 | 禁止修改的文件/目录 |  | 如 `generated/` `proto/` `vendor/` |
 | 特殊构建前置步骤 |  | 如 `protoc` / `go generate` |
 | 测试依赖说明 |  | 本机预启服务（DB端口、缓存等） |
-| 集成测试 Docker 白名单 |  | 显式列出哪些测试用 Docker（默认禁） |
+| 构建与测试环境约定 |  | 用户已确认的工具、容器与运行方式，不擅自变更 |
 | 语言版本锁定 |  | 例：`go directive = 1.25.0`，防 toolchain auto-bump 漂移 |
 | L4 专项检查 |  | 本项目的业务专项扩展门（§3 L4）：压测命令 / 合规检查 / 集成联调脚本 / 领域校验清单；留空则 L4 为空集 |
 | 依赖发版联动 |  | 例：基础库 X 发 tag 后，依赖 submodule 跑 `go get -u <X>@latest && go mod tidy` |
@@ -430,7 +446,7 @@ MCP 模式不使用 `DISPATCH.md` 文件锁；它仅在 markdown 回退模式作
 
 ## 附录：Markdown 回退（xjb_code daemon 不可用时）
 
-如果 `task.next` 工具调用失败、并且用户拒绝安装 xjb_code daemon，回退到下方简化的 markdown 流程。**功能受限**：
+按 §0 确认 MCP 未配置、连接失败或认证不可用时，使用既有 markdown 回退；不以 `task.next` 探活，也不要求先拒绝安装。保留原项目与任务身份，服务恢复后核对接回，不绕过权限边界。**功能受限**：
 
 - 默认单 agent 模式（多 agent 仅可用 DISPATCH.md 软锁作单机兜底，弱一致，不建议长期并发）
 - 任务追踪手动写 `.auto_coding/tasks/TRACKER.md`
@@ -448,13 +464,13 @@ git -C ~/.claude/plugins/repos/xjb-coding-marketplace show v0.0.9:plugins/xjb-co
 回退基本流程：
 
 ```
-1. 读 .auto_coding/tasks/TRACKER.md（不存在则创建）
-2. 拆任务写到 .auto_coding/tasks/<层级>/TASK-XXX.md
-3. 在 TRACKER 详细状态表领单（手改状态 🔲 → 🔵）
+1. 读原 .auto_coding/tasks/TRACKER.md；仅首次启用且已授权时创建缺失文件，不覆盖已有状态
+2. 按原任务与 §1.2 继续，仅新增已授权需求才补任务，不重复拆单
+3. 按 .auto_coding/DISPATCH.md 软锁协议领单，再更新 TRACKER 状态
 4. 编码 + 自测（§3 同上）
-5. 提交 + push
+5. 按 §7.2 保存断点；提交、推送、发版分别按用户授权
 6. 在 TRACKER 标 ✅，写完成日志到任务文件
-7. 上下文压力时把进度写进 TRACKER「断点续做指引」 + git wip commit
+7. 每个实质批次及上下文移交时按 §7.2 更新原 TRACKER「断点续做指引」，无需 Git 写操作
 ```
 
 ---
@@ -462,5 +478,5 @@ git -C ~/.claude/plugins/repos/xjb-coding-marketplace show v0.0.9:plugins/xjb-co
 > **版本**：v0.0.35 (Skills-first, MCP-enhanced)
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 > **架构**：Skills / markdown 默认可用；[xjb_code MCP daemon](https://github.com/0xdevelop/xjb_code) 可作为可选增强后端；Claude Code / Codex / Cursor / 其他 MCP 客户端作为前端
-> **使用方式**：将 `.auto_coding/` 复制到项目根目录 → 填写 §9 约定区 → 发触发词；如已安装并配置 xjb_code，则自动增强
-> **禁止修改**：本文件主体内容（§0-§8），项目定制仅在 §9 约定区
+> **使用方式**：按 SKILL.md §零 核对首次启用或续做；已有状态直接恢复，不覆盖目录。如 MCP 可用且已认证则使用原服务端状态
+> **规则维护**：目标项目约定及出处优先记入 §9，升级时对比保留；通用源文件可在授权下维护，不以模板限制用户或项目约定

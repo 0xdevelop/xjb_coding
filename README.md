@@ -1,6 +1,6 @@
 # xjb_coding
 
-面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、Bruno 接口与流程测试、真浏览器 Web 调试（macOS 优先官方 ego-browser）、草图生成 Web 原型、draw.io 可编辑图表、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
+面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、Bruno 接口与流程测试、真浏览器 Web 调试（按实际能力优先官方 ego-browser）、草图生成 Web 原型、draw.io 可编辑图表、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
 
 安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号一把 API key，同一用户的所有 agent 共用；公司项目全实例可读、个人项目仅成员可读，编辑限记录归属人或管理员；看板实时显示任务、待批决策点与工具调用统计。
 
@@ -17,12 +17,14 @@
 | [blender-threejs](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
 | [comfyui-workflow](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
 | [xjb-extends-jetbrains](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-extends-jetbrains/SKILL.md) | JetBrains IDE 调试 | 独立管理官方知识库引用、`.run` 集成、Run/Debug 与项目窗口边界，覆盖 Windows / macOS / Linux |
-| [web-browser-debug](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 选定真浏览器执行层：macOS 优先官方 ego-browser（ego lite），回退宿主 Playwright MCP；统一截图、证据与任务空间约定 |
+| [web-browser-debug](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 按当前官方指南与实际能力选择 ego-browser（ego lite）或宿主 Playwright MCP；按确认契约与实际链路验收 |
 | [ubuntu-shell-tools](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/ubuntu-shell-tools/SKILL.md) | Ubuntu 20.04+ 运维 | 使用时获取 shell_tools 最新 main，检查并使用服务器配置、软件安装、网络诊断和 SSH 等脚本 |
 | [archify](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/archify/SKILL.md) | 交互图表 | 从描述、Mermaid 或源码证据生成独立 HTML：架构、流程、时序、数据流、状态、ER、类、树、时间线与执行瀑布图 |
 | [drawio](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/drawio/SKILL.md) | 可编辑图表 | 随包提供 draw.io 官方 Skill 与 XML / Mermaid 参考，生成和修改原生 `.drawio`，通过已有 Desktop CLI 导出 PNG/SVG/PDF |
 
 自驱编码流程不绑定单一编程语言。原型与 3D 页面默认面向桌面 Web，用户指定其他平台时按实际需求处理。普通 2D Web 任务不需要加载 Blender + Three.js Skill。
+
+读取、审计 Skill 不会部署到目标项目；首次启用才按授权初始化，已有项目先恢复原项目、任务与会话，不覆盖状态或重复追加宿主规则。各宿主共用主引擎的恢复、锁与存档协议，MCP 可用且已认证时沿用服务端状态，确实不可用才用既有 markdown 回退。断点保存与提交、推送、发版解耦，各项 Git 操作分别遵守用户授权。验证按改动范围增量执行，最终验收仍满足项目既定标准；技能不能覆盖宿主安全要求、用户现行授权与已确认项目约定。
 
 ## 安装与更新
 
@@ -235,7 +237,7 @@ Agent 在已有授权内复用真实配置、秘密引用和业务输入，核�
 
 ### Web 调试与浏览器验收
 
-Web 类任务的真浏览器验证统一走 [web-browser-debug](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/web-browser-debug/SKILL.md)：先运行 `scripts/check_tools.sh`，macOS 上有 ego lite 时优先用官方 `ego-browser` Skill（App 随身携带于 `~/.local/share/ego/ego-skills`，本仓库只引用不复制，Claude Code 经 `~/.claude/skills/ego-browser` 符号链接加载，Codex 可链接到 `~/.agents/skills`），否则回退宿主 Playwright MCP，两者都没有时报告缺口、经用户授权再安装。叠加约定：一个目标一个 TaskSpace、联调结束保留结果页、截图落目标项目 `tmp/`、不做 profile 级状态清理。`sketch-to-prototype` 的 UX Review 与 `blender-threejs` 的浏览器验证阶段都由它提供执行层。
+Web 类任务的真浏览器验证统一走 [web-browser-debug](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/web-browser-debug/SKILL.md)：先运行 `scripts/check_tools.sh`，读取 `ego-browser skill` 输出的完整当前指南，按实际能力选择官方 ego-browser 或宿主 Playwright MCP；没有可用层时报告缺口，经用户授权再安装。执行时按确认契约核对实际经过的服务、数据层、字段转换与落点，不因验收新增表、字段或写路径。结果页、证据目录和进程生命周期服从当前用户及目标项目约定，保留法律条款确认与用户空间接管等安全要求。`sketch-to-prototype` 的 UX Review 与 `blender-threejs` 的浏览器验证阶段都由它提供执行层。
 
 ## 连接 xjb_code（可选）
 

@@ -1,6 +1,6 @@
 ---
 name: web-browser-debug
-description: "Choose and drive the real browser for Web debugging, end-to-end checks, and UI acceptance. Prefers the official ego-browser (ego lite) skill on macOS, falls back to a host Playwright MCP, and reports the gap when neither exists. Use before any browser-level verification of a Web page or app. Also carries the hard integration-test standard: after every data-writing action, verify the data end to end across UI, gateway, execution logs, database and runtime cache — a green UI alone never counts as passing."
+description: "为 Web 调试、端到端检查和 UI 验收选择真实浏览器。优先按当前官方 ego-browser 指南探测能力，不可用时回退宿主 Playwright MCP；两者均不可用则报告缺口。写入动作按已确认契约核对实际经过的服务和数据层，界面成功不能代替数据验收。"
 metadata:
   version: "0.2.0"
   hermes:
@@ -8,70 +8,71 @@ metadata:
     tags: [web, browser, debug, e2e, ego-browser]
 ---
 
-# Web Browser Debug
+# Web 浏览器调试
 
 本页仓库链接供人工浏览；执行时优先从本次加载的插件目录读取 URL 中 `blob/latest/` 后的同路径文件，不依赖固定安装目录或线上正文。单独安装时，URL 中 `skills/web-browser-debug/` 对应当前 Skill 目录。
 
 为 Web 类任务（页面联调、端到端主流程验证、UI 验收、截图取证）选定并驱动**真浏览器**执行层。本 Skill 只负责「用哪一层、怎么复用官方规则、验收留什么证据」；页面 API 的权威来源是官方 ego-browser Skill 原文，本仓库不复制、不改写它。
 
-兼容目标为当前 Codex、Claude Code、Hermes Agent 的 Agent Skills 接口。先运行 `scripts/check_tools.sh` 得到本机事实，再按下表选层；不要凭命令同名或历史记忆断定工具可用。
+兼容目标为当前 Codex、Claude Code、Hermes Agent 的 Agent Skills 接口。Bash 环境先运行 `scripts/check_tools.sh` 得到本机事实；其他 shell 直接核对 `ego-browser --version` 和 `ego-browser skill`。再按下表选层，不凭操作系统、命令同名或历史记忆断定工具可用。
 
 ## 选层规则
 
 | 优先级 | 条件 | 执行层 | 依据 |
 | --- | --- | --- | --- |
-| 1 | macOS 且 `ego-browser --version` 成功、官方 Skill 目录存在 | **ego-browser**（ego lite 内嵌 Node 运行时 + CDP） | 复用用户已登录态、Agent 任务空间与用户标签页隔离、不与其他会话争抢浏览器实例；官方只支持 macOS，这是 macOS 上的最佳支持 |
-| 2 | 宿主已配置 Playwright MCP（`/mcp` 或宿主工具清单可见 `browser_*` 工具） | 宿主 Playwright MCP | 跨平台可用；缺点是独占浏览器 profile，并行会话会互相锁死 |
+| 1 | `ego-browser --version` 成功，`ego-browser skill` 返回完整指南，当前任务所需能力可用 | **ego-browser**（ego lite） | 按当前官方指南复用登录态、任务空间及受支持 API；以本机实际能力为准 |
+| 2 | ego-browser 存在能力缺口，宿主已配置可用的 Playwright MCP | 宿主 Playwright MCP | 核对宿主工具清单及实际连接；使用分配给本任务的浏览器会话，避免争用同一 profile |
 | 3 | 两者都没有 | 停止，报告缺口 | 给出安装/关联指引，用户授权后才安装；不自动下载、不自行启动其他浏览器 |
 
-ego lite 不是 MCP 服务：`ego-browser` 是 App 注册到 `~/.local/bin` 的 CLI，脚本经 `ego-browser nodejs` 的 heredoc 在内嵌 Node 中执行，只暴露官方列出的 TaskSpace / Page API。不要把它当 Playwright 写，也不要为它注册 MCP 条目。
+ego lite 通过 `ego-browser` CLI 执行浏览器脚本。运行形式按当前官方指南和 shell 选择；Bash/Zsh 的 heredoc 不能直接用于 PowerShell/cmd。只用指南列出的 API，不把它当 Playwright 写，也不为它注册 MCP 条目。
 
 选定层 1 后，**读官方原文再动手**：位置、加载方式、版本核对与升级见 [references/ego-browser.md](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/web-browser-debug/references/ego-browser.md)。官方 Skill 随 ego lite 升级而变化，本仓库不固定其快照；每次会话以本机当前版本为准。
 
-## 本仓库扩展约定（叠加在官方规则之上，用户拍板）
+## 项目约定与操作边界
 
-以下是 xjb_coding 项目的使用约定，不是 ego-browser 官方规则；与官方缺省冲突时按本节执行：
+宿主安全要求、当前用户授权和目标项目已确认约定必须遵守；个人历史偏好不作为通用规则。没有另行约定时按当前官方指南执行：
 
-1. **一个用户目标只开一个 TaskSpace**，首轮打印 `spaceId`，后续轮次复用；不用新空间绕过卡住的页面。
-2. **联调结束不关任务空间**：官方缺省是 `task.finish({ keep: [] })`，本仓库改为 `task.finish({ keep: ["<结果页标签>"] })` 或不调用 `finish()`，把结果页留给用户查看；只关本任务开的中间页（2026-09-02 用户指示）。
-3. **截图与快照落目标项目 `tmp/`**（如 `tmp/<场景>.png`），不写 `/tmp`、不落项目根；截图路径用绝对路径。
-4. **验收证据按流程留**：每条主流程至少一份最终状态快照或截图 + 关键断言（URL、可见元素、控制台无错误）；用 `page.evaluate` 取控制台错误、资源失败、`renderer.info` 等运行时事实，不凭构建通过宣称页面可用。
-5. **不清空浏览器 profile 级状态**：清 cookie / cache 前先读官方 `references/clearing-state.md`；只用单 origin 级命令。
+1. **同一目标复用 TaskSpace**，首轮打印 `spaceId`，后续轮次复用；用户明确要求多个空间时按其授权执行，不用新空间绕过卡住的页面。
+2. **结果页按约定留存**：用户要求保留或交付需要用户继续查看、操作时，仅保留必要结果页；否则按官方指南完成任务空间。不保留所有中间页，也不自行关闭用户已有标签页。
+3. **截图与快照按用户和目标项目的临时目录约定保存**，使用绝对路径；不把某位用户的目录习惯推广给所有项目。
+4. **验收证据按流程留**：保留足以证明最终状态的快照或截图及关键断言，按实际问题核对控制台、网络和运行时事实，不凭构建通过宣称页面可用。
+5. **状态清理服从授权**：清 cookie / cache / storage 前先读官方 `references/clearing-state.md`，核对范围及用户授权；不得以排障为由清空用户 profile。
 6. **多端事件链验证**（SSE / WebSocket / 流式渲染）：后端日志与浏览器控制台双对照，漏一处即视为未通过。
-7. **后台联调**：启动方式遵循目标仓库约定；涉及 JetBrains IDE 时，按需使用独立的 [xjb-extends-jetbrains](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-extends-jetbrains/SKILL.md) Skill 处理运行配置、调试和窗口操作。本 Skill 负责浏览器页面验证。
+7. **后台联调**：启动、重启、结束进程遵循当前用户授权和目标仓库约定；保留用户原有运行会话。涉及 JetBrains IDE 时，按需使用独立的 [xjb-extends-jetbrains](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-extends-jetbrains/SKILL.md) Skill 处理运行配置、调试和窗口操作。本 Skill 负责浏览器页面验证。
+8. **用户接管时停止**：用户接管、任务空间失活或权限提示需要用户操作时，遵循官方交接流程；不得重试绕过。接管用户所属空间必须已有明确授权，不能以恢复任务为由自行取得控制权。法律条款确认、设备选择及浏览器权限提示交由用户处理，不代替接受条款或绕过提示。
 
-动效默认缺失或跨电脑表现不同时，先执行通用 Agent 约束中的[动效偏好排查](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/.auto_coding/AGENT_COLLABORATION.md#motion-preferences)，再判断页面实现问题。
+动效默认缺失或跨电脑表现不同时，先执行通用 Agent 约束中的[动效偏好排查](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/.auto_coding/AGENT_COLLABORATION.md#动效偏好)，再判断页面实现问题。
 
-## 联调硬标准：界面不算数，数据流转对了才算（用户拍板，不可省）
+## 联调验收：按契约核对实际数据链路
 
-页面上出现「成功」只证明前端画了个成功。**每做完一个会写数据的动作，必须把这条数据从头到尾核一遍**，缺任何一环都算未通过、不准写进报告。
+页面上出现「成功」不能证明数据已正确流转。**每个写入动作都要按已确认契约核对实际经过的服务和数据层**；未核实的部分明确标注未覆盖，不能写成通过。
 
-**动手前先报「这一步用到什么」**：涉及外部供应商 / 工作流定义体时，列出本步会用到的 `workstream_xxx` 与它当前指向的目的地（从运行时配置实读，不从文件猜），让用户确认是不是他预期的那套环境。打真供应商的动作，用户没明确说「真跑」就不点。
+动手前核对目标环境、调用目的地及已有授权；涉及真实供应商调用、费用或外部写入时，确认该动作在授权范围内。缺少必须由用户决定的信息或实质越界时才询问，已明确授权的动作不重复审批。
 
-**每步核这五层**（顺着数据流方向，一层不对就停下来定位，不要接着往下点）：
+按实际调用链选择下列核查项；项目没有对应层时不强加网关、执行引擎、数据库或 Redis：
 
 | 层 | 核什么 | 怎么核 |
 | --- | --- | --- |
-| 1 界面 | 动作后的可见状态、计数、角标、禁用态 | `page.evaluate` 读真实 DOM，不看截图印象 |
-| 2 网关 / 调用方 | 方法名、入参、HTTP 状态 | 前端网络面板或网关日志 |
-| 3 执行端 | 任务是否真跑、走了哪条分支、耗时 | 执行引擎日志（按任务 / 别名 grep），含**外部接口的真实回包** |
-| 4 事实源 | 该写的列写没写、值对不对、`updated_at` 是不是这一刻 | 直接查库（只读），按业务主键定位 |
-| 5 运行时 | 热层状态、绑定关系、队列 | Redis 只读命令 |
+| 界面 | 动作后的可见状态、计数、角标、禁用态 | 快照、真实 DOM 或必要截图 |
+| 调用边界 | 方法名、入参、返回值和错误 | 浏览器网络记录或实际调用方日志 |
+| 实际处理服务 | 请求是否执行、处理分支及外部接口真实响应 | 对应服务日志，按业务身份关联 |
+| 契约指定的数据落点 | 应写字段、转换结果、业务身份及版本是否正确 | 对应存储的只读查询或项目已有查询能力 |
+| 实际运行时数据层 | 契约涉及的缓存、绑定关系或队列状态 | 该项目实际使用组件的只读查询 |
 
 **判定规则**：
 
-- **只要任意两层说法不一致，就是一个 bug**，哪怕界面看着正常。典型：界面显示「已回传」而事实源里对应字段没写，或计数与明细对不上。
-- **回包字段要逐个对落库**：外部接口回了什么字段，落库时就该有什么字段。回包里有、库里没有 = 回报那一跳丢字段，下游按它做判据的功能会永远解不开。
+- **按契约判断一致性**：核对异步时序、转换规则和最终状态；超出约定后仍不一致时定位问题，不因界面正常忽略数据差异。
+- **字段按确认契约核对**：逐项检查需保留的字段、转换规则和落点。允许契约明确的筛选、脱敏或聚合；不因外部回包多了字段就新增表、字段或写路径。契约不清时先核实，不能由验收自行扩大架构。
 - **不用「日志没报错」代替「数据写对了」**：没报错只说明没抛异常。
 - 报告里逐层写结论，**分清「已实测」与「未覆盖」**；没核过的层不许写成通过。
 
 ## 交付流程
 
-1. `bash <skill-dir>/scripts/check_tools.sh`，按输出选层并在报告首行写明「浏览器层：ego-browser / Playwright MCP / 缺失」。
-2. 层 1：读官方 `SKILL.md`（按需再读 `references/api.md`），建 TaskSpace，按官方「先快照后动作、同一 heredoc 内动作 + 等待 + 末尾快照」的节奏执行。层 2：用宿主 `browser_navigate` / `browser_snapshot` / `browser_click` 等工具，同样先快照后动作。
+1. 按当前 shell 运行上述探测，按实际结果选层，报告「浏览器层：ego-browser / Playwright MCP / 缺失」及能力缺口。
+2. 层 1：执行并完整阅读 `ego-browser skill`，确认末尾 `[ego-browser:skill] end of guide` 标记；输出截断时按用户和项目临时目录约定保存后分段读取。按指南复用 TaskSpace、观察页面、执行动作并等待可观察结果。层 2：使用宿主当前实际提供的 Playwright MCP 工具，同样先观察后动作。
 3. 按需求逐条走主流程与关键异常路径（loading / empty / error / 键盘操作 / 刷新后状态还原 / 鉴权回跳）。
-4. 证据写入目标项目（`tmp/` 截图 + 报告中的逐条结论）；报告区分「已实测」「未覆盖」，不把未走过的路径写成通过。
-5. 结束：层 1 按扩展约定 2 保留结果页；层 2 关闭本任务开的标签页。关闭自己启动的开发服务器与临时进程。
+4. 按目标项目约定保存证据；报告区分「已实测」「未覆盖」，不把未走过的路径写成通过。分步只验证新增及受影响路径，适用前提未变的历史通过记录可以复用；最终收口完成项目既定的真实业务验收。
+5. 结束：按官方指南及当前用户、项目约定处理任务空间、必要结果页和本次创建的进程；不得操作用户原有标签页或运行会话来清理现场。
 
 ## 与其他 Skill 的关系
 

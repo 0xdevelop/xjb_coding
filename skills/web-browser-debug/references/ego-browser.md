@@ -1,57 +1,41 @@
-# ego-browser 官方 Skill：位置、加载与升级
+# ego-browser 官方指南：发现、加载与升级
 
 ## 官方来源与边界
 
-- 产品：ego lite（macOS App，Bundle `com.citrolabs.ego.lite`），官网 <https://lite.ego.app/>。
-- CLI：App 首次运行完成 onboarding 后把 `ego-browser` 注册到 `~/.local/bin/ego-browser`（符号链接指向 `~/.local/share/ego/active_version_dir/Helpers/ego-browser`）。
-- 官方 Skill：`~/.local/share/ego/ego-skills/`（含 `SKILL.md`、`references/{api,install,clearing-state}.md`、`scripts/install.sh`）。App 升级时同步更新，`ego-browser --version` 与 Skill 内容对应同一版本。
-- 该目录没有公开 Git 仓库和许可证文件，本仓库**不 vendor、不改写**其内容，也不进入 `scripts/update_upstreams.sh` 的快照机制；引用方式是「按本机路径读取当前版本」。
-- 官方安装脚本仅支持 macOS（`uname -s` 为 `Darwin`）。其他平台按官网指引由用户安装；没有 ego lite 时本 Skill 退到宿主 Playwright MCP。
+- 产品：ego lite，官网 <https://lite.ego.app/>。
+- 官方入口是当前宿主加载的 `ego-browser` Skill；先读其 `SKILL.md`，再执行 `ego-browser skill` 获取与本机安装版本对应的完整指南。
+- 当前指南以 `[ego-browser:skill] end of guide` 行结束。没有该行即输出不完整；按用户和目标项目的临时目录约定保存后分段读取，不猜测缺失部分。
+- 本仓库只引用官方指南，不复制正文，不固定安装路径、Skill 子文件清单或浏览器 API 快照，也不把它纳入 `scripts/update_upstreams.sh` 的快照机制。
+- 不按操作系统硬编码可用性；按 CLI、指南和实际连接判断。安装方式及平台支持读取当前官方 `references/install.md` 或官网，不把某个平台安装脚本的限制当成产品限制。
 
-## 宿主如何加载官方 Skill
+## 宿主加载
 
-| 宿主 | 做法 |
-| --- | --- |
-| Claude Code | onboarding 已创建 `~/.claude/skills/ego-browser -> ~/.local/share/ego/ego-skills`；会话内 `Skill` 工具可直接调用 `ego-browser`。缺失时补建同名符号链接。 |
-| Codex | Codex 支持符号链接的 skill 目录，扫描 `~/.agents/skills`、仓库各级 `.agents/skills`：`ln -s ~/.local/share/ego/ego-skills ~/.agents/skills/ego-browser`，任务内用 `$ego-browser` 调用；或按绝对路径读取 `~/.local/share/ego/ego-skills/SKILL.md`。 |
-| Hermes Agent | `hermes skills install` 只接受仓库来源；本地目录按 Hermes 外部 Skills 路径配置加入，或按绝对路径读取。 |
-
-无论哪种宿主，都读**同一份**本机文件，不在各宿主目录复制副本；复制会在 App 升级后漂移。
+从当前宿主的 Skill 清单定位官方 `ego-browser`。宿主加载方式、平台路径及关联配置以当前官方指南为准，不从旧安装路径补建链接或复制副本。缺失时报告缺口；安装、升级和宿主配置变更按当前用户授权执行，不修改插件安装缓存。
 
 ## 每次会话的核对
 
 ```bash
 bash <skill-dir>/scripts/check_tools.sh
+ego-browser skill
 ```
 
-脚本只读不写：报告平台、`ego-browser --version`、官方 Skill 目录与关键文件、Claude 侧符号链接是否指向官方目录。任一项缺失时给出下面的处理，不自动安装。
+脚本只读不写：报告平台、CLI 版本及完整指南是否可用，不启动浏览器、不创建任务空间、不修改宿主配置。脚本通过不等于浏览器已连通，操作时仍须按完整指南检查所需能力。没有 Bash 的宿主直接运行 `ego-browser --version` 和 `ego-browser skill`，运行脚本不是选层前提。
 
-## 安装与关联（用户授权后）
+## 安装与关联
 
-```bash
-# macOS：官方脚本下载 DMG、安装到 /Applications、去除隔离属性并打开 App
-sh ~/.local/share/ego/ego-skills/scripts/install.sh      # 已有官方目录时
-# 首次安装没有官方目录：由用户从 https://lite.ego.app/ 下载安装
-```
-
-安装后用户在 App 内完成 onboarding（可选导入 Chrome 等浏览器数据）；onboarding 才会注册 `ego-browser` 命令。`~/.local/bin` 不在 PATH 时临时 `export PATH="$HOME/.local/bin:$PATH"`。验证：
-
-```bash
-ego-browser nodejs -e "console.log('ego-browser ready')"
-```
+命令缺失或 `skill` 子命令不可用时，读取官方 Skill 的 `references/install.md`；没有官方 Skill 时给出官网入口。核对已有授权，只执行授权范围内的安装、升级或配置动作。首次引导、权限提示和用户空间接管仍由用户按官方流程完成，不用修改 PATH、启动替代浏览器等方式绕开环境问题。
 
 ## 升级
 
-官方 Skill 输出含 `[ego-browser:notice]` 表示 App 有更新：先完成当前浏览器任务，告知用户，**经用户批准**再执行 `ego-browser upgrade`，升级后重新读取官方 `SKILL.md`。不要在任务中途升级。
+指南要求升级或输出更新提示时，按当前官方流程完成本轮并告知用户；执行 `ego-browser upgrade` 必须在授权范围内。升级后重新执行并阅读 `ego-browser skill`，不沿用旧 API 指南。没有安装、升级授权时报告缺口，不能自行修改环境。
 
 ## 与 Playwright MCP 的差异（选层依据）
 
 | 维度 | ego-browser | Playwright MCP |
 | --- | --- | --- |
-| 平台 | 仅 macOS | 跨平台 |
-| 登录态 | 复用用户 profile，Agent 任务空间隔离 | 独立 profile，需重新登录 |
-| 并发 | 多会话各自任务空间 | 同一 profile 被一个会话独占（"Browser is already in use"） |
-| 接口 | 官方自定义 TaskSpace / Page API（非 Playwright） | Playwright 工具集 |
-| 状态清理 | profile 级清理会波及用户全部站点，须按官方 `clearing-state.md` | 独立 profile，影响面小 |
+| 可用性 | 当前 CLI、指南及实际连接 | 宿主工具清单及实际连接 |
+| 登录态与并发 | 按官方任务空间规则复用，用户所属空间接管需明确授权 | 按宿主实际 profile 与会话隔离能力核对，不假定已登录或可并行 |
+| 接口 | 仅当前指南列出的 API，不推断 Playwright API | 宿主当前提供的 Playwright MCP 工具 |
+| 状态清理 | 先读官方 `references/clearing-state.md` 并核对授权 | 先核对 profile 归属、影响范围及授权 |
 
-用户 2026-08-26 指示：调试默认用 ego lite，Playwright MCP 作为能力缺口时的临时回退，回退前先报告缺口。
+优先使用可用的 ego-browser；存在实际能力缺口时先说明，再回退宿主 Playwright MCP。两者均不可用则报告缺口，不自行增加第三套浏览器执行层。

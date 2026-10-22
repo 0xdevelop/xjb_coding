@@ -65,7 +65,7 @@ metadata:
 
 ### 5. UX Review
 
-- 必须在真浏览器中按 `flow_id` 实际走通主流程，覆盖关键异常状态和键盘操作；浏览器执行层按 `web-browser-debug` Skill 选定（macOS 优先官方 ego-browser，否则宿主 Playwright MCP）。
+- 必须在真浏览器中按 `flow_id` 实际走通主流程，覆盖关键异常状态和键盘操作；浏览器执行层按 `web-browser-debug` Skill 的当前官方指南与实际能力选定。
 - 输出 `review/UX_REPORT.md`，逐条记录流程、预期、实测、问题、修复和复测结果；截图放在 `review/screenshots/`。
 - 发现主流程问题时直接修复并复测；不要把待验证的草稿称为完成。
 

@@ -8,29 +8,34 @@ alwaysApply: false
 
 ## 触发说明
 
-当用户在 Chat 或 Composer 中输入 `读 .auto_coding/start_coding.md`（或含此短语的消息）时，**立即读取项目中的 `.auto_coding/start_coding.md` 文件并严格按照其中规范执行**，不要跳过任何步骤。
+当用户在 Chat 或 Composer 中输入 `读 .auto_coding/start_coding.md` 时，读取该文件，按用户指定范围和模式执行。读取、审计和续做不触发部署、覆盖已有状态或重复追加宿主规则。
 
 ## 模式参数
 
 触发词后可携带可选参数：
 
-- （无参数）→ 全自动：`--refine` + `--task_plan` + `--worker` 串联
-- `--refine` → 只细化需求，输出到 `requirements/details/`，停止
-- `--task_plan` → 只做任务分解，写 TRACKER，不写代码，停止
-- `--worker <agent-id>` → 多智能体并发：自动领取任务 → 分支编码 → 合并 → 循环
+- （无参数）→ 在已授权范围内恢复已有状态，再推进主流程
+- `--refine` → 只细化需求，按当前状态后端保存，停止
+- `--task_plan` → 只做任务分解，按当前状态后端保存，不写代码，停止
+- `--worker <agent-id>` → 多智能体并发：恢复或领取授权任务，按项目协作方式实施
+- `--tick [N]` → 恢复状态，至多推进 N 个任务，保存断点后结束本轮
 
-## 强制约束（始终生效）
+## 执行约束
 
-1. `.auto_coding/` 目录下任何文件**禁止加入 git**（包括 `git add -f`）
+宿主安全要求、用户现行授权和已确认项目约定优先；本包装不扩大任务范围。
+
+1. 目标项目 `.auto_coding/` 本地任务状态禁止加入 git
 2. 禁止 `git add -A` 或 `git add .`，只能精确 add 本任务涉及的文件
-3. 禁止跳过四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 专项全过才能标记任务 ✅，见 start_coding.md §3）
-4. 禁止擅自修改架构，需先标注 ❌ 并说明原因后询问用户
-5. 禁止使用 Docker 进行任何测试或构建操作
+3. 按 start_coding.md §3 对新增及受影响内容增量验证，复用适用前提未变的已有通过记录；最终验收满足项目既定要求
+4. 禁止擅自修改架构；先查已有决定与授权，只有实质越界或缺少必须由用户决定的信息时才询问（§4）
+5. 工具和运行环境服从当前用户及目标项目约定，不擅自安装或修改环境
 
 ## 断点续做
 
-用户发送 `读 .auto_coding/start_coding.md，从断点续做` 时，执行阶段 0 自检后读取 TRACKER.md 断点续做指引，与 git 状态交叉验证后继续执行。
+恢复、锁与存档统一按主引擎 §0、§6、§7 和 `.auto_coding/AGENT_COLLABORATION.md` 执行。先核对 MCP 连接、认证与项目归属；可用时沿用原服务端状态，确实不可用才使用既有 markdown 回退，恢复连接后接回原任务。已知 `project_id` / `task_id` / `session_id` 时先恢复，不重建会话或拆单。
+
+快照保留用户关键原话及出处、确认边界、否决路线、验收与已有验证记录。Git 状态只核对文件事实，不覆盖需求、架构或授权。checkpoint 不要求 commit / push；提交、推送、发版分别按用户授权执行，未授权不妨碍保存断点。法律条款确认、用户空间接管等真实安全要求仍须满足。
 
 ## 多智能体并发说明
 
-使用 `--worker <agent-id>` 时，通过 `.auto_coding/DISPATCH.md` 文件锁协调多个 Cursor 窗口/IDE 并发执行。agent-id 建议使用 `cursor-1`、`cursor-2` 等加以区分。
+使用 `--worker <agent-id>` 时，按主引擎 §6 使用当前后端的任务锁；markdown 回退才用 `.auto_coding/DISPATCH.md` 单机软锁。恢复已有锁与任务归属，不重复领取。agent-id 建议使用 `cursor-1`、`cursor-2` 等加以区分。

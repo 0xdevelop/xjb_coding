@@ -1,155 +1,81 @@
-# Agent Collaboration Protocol
+# 多智能体协作协议
 
-> Purpose: keep architecture control stable across IDE restarts, network drops,
-> long sessions, and worker-agent context drift.
->
-> Status source: this file is the collaboration contract. Task state still lives
-> in `.auto_coding/tasks/TRACKER.md` or the xjb_code daemon when available.
+本文件约定协作职责；恢复、锁、存档与审批分别遵循 `start_coding.md` §0、§6、§7、§4。任务状态使用当前后端，不在本文件另建账本。宿主安全要求、用户现行授权和已确认项目约定优先，技能和 worker 不扩大任务范围。
 
-## Roles
+## 角色
 
-| Role | Responsibility | May Edit Code |
+| 角色 | 职责 | 代码修改范围 |
 |---|---|---|
-| User | Product / architecture owner; approves red-zone changes | Yes |
-| Controller Agent | Architecture gate, task slicing, worker instruction, diff review, final report | Yes, only when explicitly implementing |
-| Worker Agent | Bounded implementation worker for one assigned task | Yes, only within assigned ownership |
+| 用户 | 产品与架构决策，授权操作 | 用户决定 |
+| controller | 核对约定、分配任务、审查 diff、汇报验收 | 已授权实施范围 |
+| worker | 实施明确分配的任务 | 分配的文件或模块 |
 
-The worker is not an architecture owner. It must not broaden scope, invent new
-contracts, or "make it work first" in core backend paths.
+worker 不自行改变架构、扩展契约或绕过后端约束。内部 subagent 与外部执行者分开管理；给外部执行者发消息、启动其会话或改变协作方向，须符合用户已有授权和宿主要求。
 
-## Session Recovery
+## 会话恢复
 
-At the start of any resumed session, the controller must read:
+1. 读取当前用户与项目指令、已确认架构约定，以及 `start_coding.md` §0、§7、§9。项目的 `_ARCH_INVARIANTS.md`、`_ROADMAP.md` 存在时按需核对，不能把代码观察或旧摘要当用户约定。
+2. 核对 MCP 连接、认证和项目归属。可用时沿用原服务端状态；已知 `project_id` / `task_id` / `session_id` 时先 `session.restore`，不重新建会话、拆单或领取已在执行的任务。确实不可用才走既有 markdown 回退；服务恢复后核对并接回原任务。
+3. 读取原始需求、关键原话及出处、确认边界、否决路线、验收、已有验证记录和授权，再核对实际 diff、任务、锁与在途进程。Git 状态只说明文件事实，不能覆盖需求、架构和授权。
+4. 汇报当前分支与未提交改动、原任务、阻塞项和下一步，继续未完成的一步；恢复上下文本身不要求重复审批或部署模板。
 
-1. project `CLAUDE.md`, if present
-2. `.auto_coding/start_coding.md` section 9
-3. `.auto_coding/requirements/_ARCH_INVARIANTS.md`, if present
-4. `.auto_coding/requirements/_ROADMAP.md`, if present
-5. `.auto_coding/AGENT_COLLABORATION.md`
-6. `git status --short`
+## 委派要求
 
-Then report:
+委派 brief 必须包含：目标、独占文件或模块、范围外内容、用户已确认的架构约定及出处、验证方式和报告格式。中文优先，保留必要的代码标识符，命名与术语遵循目标项目约定。
 
-- current branch / dirty state
-- active task, if known
-- blocked validation, if any
-- next proposed action
+任务按可审查的独立改动划分；5 个文件、300 行是拆分提示，不是强制存档、重新审批或机械拆单的门槛。不能仅为满足数量限制切断同一完整变更。
 
-## Delegation Rules
+## worker 边界
 
-The controller may delegate implementation to a worker only after writing a
-bounded execution brief with:
+先检查 brief 与已有决定、授权。下列操作不在授权范围内时，停止该操作并报告 controller，不重复询问已明确授权的事项：
 
-- task goal
-- owned files or modules
-- files / modules explicitly out of scope
-- architecture red lines involved
-- validation commands
-- expected final report format
+- 跨仓写入、版本变更、发版或部署
+- 依赖或工具链变更
+- 对外 API、schema、proto、事件载荷等契约语义变更
+- 直接修改生成代码
+- 数据库、缓存、topic、bucket 等存储命名归属变更
+- 项目现有构造器之外的新存储 key 规则
+- 用户、会话、实体 ID 等长生命周期身份字段语义变更
+- subagent 或外部执行者的协作方向变更
 
-Worker tasks should normally stay within 5 files and 300 changed lines. If that
-is not realistic, split the task before implementation.
+禁止削弱测试来掩盖实现失败；按已确认契约修订测试不在此限。发现代码与用户约定冲突时，说明两者及出处，不自行把代码现状改写为约定。
 
-## Worker Hard Boundaries
+## 环境与安全边界
 
-Workers must stop and report instead of acting when a task touches:
+以下操作服从宿主要求和当前用户、目标项目约定；没有所需授权时不能执行：
 
-- cross-repo writes outside the assigned repository
-- version constants or release changelogs
-- dependency or toolchain changes
-- wire-contract semantic changes (`.proto`, API schema, event payloads)
-- generated code direct edits
-- storage namespace ownership changes (DB / cache key prefixes, topics, buckets)
-- new storage key patterns not represented in the project's key builder
-- semantics of long-lived identity fields (user / session / entity ID meaning)
-- sub-agent or external-agent control flow direction
-- tests changed only to hide an implementation failure
+- 修改 shell profile、全局 Git / SSH 配置、`.env*`、IDE 运行配置、CI 凭证或配置
+- 设置持久环境变量、修改 `PATH`、下载安装二进制
+- 安装软件或依赖、升级工具链、改写依赖清单与 lockfile
+- 修改系统服务、启动项或用户设备设置
 
-## Environment And Installation Stop Rules
+读取配置时避免输出凭证。既有脚本先核对其实际影响，不能因“项目已有”就视为所有副作用已获授权。法律条款确认、用户空间接管、外部消息和权限要求仍须满足；存档或减少重复确认不替代这些要求。临时目录、结果页留存及进程生命周期遵循当前用户和目标项目约定。
 
-Workers must stop and ask before:
+## 审查与验证
 
-- editing shell profiles or global config: `~/.zshrc`, `~/.bashrc`,
-  `~/.profile`, `~/.gitconfig`, `~/.ssh/config`
-- editing project env files: `.env*`, IDE launch configs, CI secrets/config
-- setting persistent environment variables
-- running package/system installers: `brew install`, `brew upgrade`, `apt`,
-  `pip install`, `npm install`, `pnpm install`, `bun install`
-- running dependency mutation commands: `go get`, `go mod tidy`, `cargo add`,
-  lockfile rewrites
-- downloading binaries or modifying `PATH`
-- changing system services, launch agents, systemd units, login items
+controller 必须读取实际 diff、相关调用关系和验证结果，不能仅凭 worker 摘要验收。负面断言（缺失、未迁移、无引用等）须自行复核相关实现与引用后才能转述。
 
-Allowed without approval:
+按 `start_coding.md` §3 和目标项目既定标准审查。规则文档检查引用、冲突和入口一致性；局部代码验证新增及受影响范围；收口完成必要真实业务验收。适用前提未变的历史通过记录可以复用；不为凑门禁新增无意义测试，不把局部修改扩成历史全流程重跑。工具链全绿只证明对应工程检查。
 
-- temporary env vars scoped to one displayed command
-- running existing project scripts that do not mutate dependencies or global
-  config
-- reading config files
+| 标签 | 含义 |
+|---|---|
+| `OK` | 本批适用检查通过；最终验收另据项目标准判断 |
+| `MUST FIX` | 正确性、构建、安全、归属或契约存在明确问题 |
+| `RISK` | 存在需用户决定且尚无决定或授权的问题 |
+| `STOP` | 越过授权边界，停止受影响操作 |
 
-## Review Gate
+外部服务不可用时记录具体步骤、错误和验证缺口，执行仍有意义的局部检查；环境故障与代码故障分开记录，不能把编译错误称为环境故障。
 
-Every worker result must be reviewed by the controller before the user treats it
-as accepted.
+### 动效偏好
 
-Review runs against the four-layer gate model in `start_coding.md` §3
-(L1 engineering / L2 architecture / L3 business / L4 project extension).
-An all-green toolchain run only satisfies L1 and never means "accepted".
+页面或 Web 动效缺失时，先只读核对当前系统的减少动态效果选项、页面收到的 `matchMedia('(prefers-reduced-motion: reduce)').matches`、浏览器覆盖项，以及页面自身暂停设置和 CSS / JavaScript 条件，再判断是否属于实现缺陷。DevTools 的 `No emulation` 跟随系统，并非强制开启动效。
 
-Review result labels:
+尊重用户的辅助功能偏好，不擅自修改系统或浏览器全局设置；视觉动效暂停不代表后端任务或业务进度停止。
 
-- `OK`: all applicable gate layers pass; safe to proceed.
-- `MUST FIX`: L1/L2 failure — correctness, build, security, ownership, or contract issue.
-- `RISK`: requires user architecture decision.
-- `STOP`: worker crossed a hard boundary; pause implementation.
+## 存档与交接
 
-The controller reviews the actual working tree, not only the worker summary.
-Negative claims in worker reports ("missing", "not migrated", "dead code")
-must be re-verified against real files before being repeated to the user.
+实质批次结束和上下文交接按主引擎 §7 保存断点。快照保留关键原话及出处、确认边界、否决路线、验收、已有验证记录、授权、原项目 / 任务 / 会话 ID、已完成项、实际 diff、在途操作和下一步。
 
-## Validation Policy
+checkpoint 与 Git 操作解耦；提交、推送、发版分别按用户授权执行，未授权不妨碍存档。提交说明采用用户语言与仓库惯例，简短陈述事实。
 
-Use the target project's declared validation commands. If a required external
-service is unavailable, report the exact command and failure, then run the
-narrowest build or package test that still proves the changed code compiles.
-
-Environment failures must be separated from code failures. A compile error is
-never an environment failure.
-
-### Motion Preferences
-
-When UI or Web animations are absent by default, especially when another machine
-shows them, check operating-system motion preferences before attributing the
-behavior to hardware performance or rewriting animation code:
-
-- On macOS, first inspect **Reduce motion** in Accessibility settings. Find the
-  actual location for the installed OS version.
-- On Windows, Linux, or other systems, first inspect the corresponding animation,
-  reduced-motion, or desktop accessibility settings.
-- Check what the page actually receives with
-  `matchMedia('(prefers-reduced-motion: reduce)').matches`, then inspect browser
-  overrides or DevTools media emulation. **No emulation** follows the system;
-  it does not force animations on.
-- Next inspect page-specific motion/pause controls and CSS/JavaScript conditions.
-  Record the observed preferences separately from implementation defects; both
-  can contribute to missing motion.
-
-Respect the user's accessibility preferences. Do not change system or browser
-global settings without authorization, and do not confuse paused visual effects
-with backend task execution or business progress.
-
-## Handoff Format
-
-Controller final reports should include:
-
-- what changed or what was reviewed
-- whether worker output is accepted
-- validation result
-- remaining risks / next action
-
-Worker final reports must include:
-
-- files changed
-- summary of behavior change
-- validation commands and results
-- known limitations
+controller 报告修改或审查内容、worker 结果是否接受、验证结果及剩余缺口。worker 报告修改文件、行为变化、验证命令与结果、已知限制。

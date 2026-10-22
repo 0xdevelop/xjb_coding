@@ -25,14 +25,13 @@ version: 0.0.35
 
 ---
 
-## 零、自动初始化指令（AI 读取本文件后立即执行）
+## 零、读取、初始化与续做
 
-> **本节是给 AI 的行动指令**，不是给人看的说明文档。
-> AI 读取本 SKILL.md 后，**必须先完整执行本节的初始化流程**，再做任何其他事情。
+读取本文件用于了解、审计或修改 Skill 时，不部署到目标项目。技能服从宿主安全要求、用户现行指令与授权、已确认的项目约定；不能以通用规则扩大任务范围。
 
 ### 触发条件
 
-用户发送以下任意消息时，AI 执行初始化：
+用户发送以下消息时，先核对目标项目、已有状态与 MCP，再判断是否需要初始化：
 
 - `使用 xjb_coding`
 - `初始化 xjb_coding`
@@ -40,7 +39,9 @@ version: 0.0.35
 - `安装 xjb_coding`
 - 或：用户要求"用这个 skill 开始编码"、"启用自驱编码"等含义相近的表达
 
-### 初始化执行步骤（AI 必须按序完成，不可跳过）
+续做或已知 `project_id` / `task_id` / `session_id` 时，按主引擎 §0 / §7 恢复原状态，不重新部署、创建会话或拆单。安装插件不等于授权修改任意目标项目。
+
+### 初始化执行步骤（仅在用户要求首次启用且确需部署时）
 
 ```
 INIT-1. 定位 Skill 源目录
@@ -52,15 +53,18 @@ INIT-2. 定位目标项目根目录
   → 未指定则检测当前工作目录（pwd）
   → 仍无法判断则询问用户："请告知项目根目录路径"（唯一需要问的情况）
   → 记为 $PROJECT_ROOT
+  → 任何部署/写入前先按主引擎 §0 核对 MCP 连接、认证、项目归属与已有任务/会话
+  → 发现原状态则结束 INIT 分支并按 §7 恢复，不因本地没有 .auto_coding/ 而重新初始化
 
 INIT-3. 检查 .auto_coding/ 是否已存在
   → 若 $PROJECT_ROOT/.auto_coding/ 已存在：
-      询问用户："检测到项目已有 .auto_coding/ 目录，是否覆盖？(y/n)"
-      用户回复 n → 跳过 INIT-4，直接到 INIT-5
-      用户回复 y → 继续 INIT-4
+      保留全部现有状态，核对项目绑定、任务和会话，按主引擎恢复
+      不整目录覆盖；缺少必要规则时，仅在已授权范围内补入缺失规则文件
+      更新已存在规则须先对比并保留项目定制，不重复初始化
 
 INIT-4. 复制 .auto_coding/ 工作目录
-  → 将 $SKILL_DIR/.auto_coding/ 完整复制到 $PROJECT_ROOT/.auto_coding/
+  → 仅在目标目录不存在且本次已授权部署时复制
+  → 将 $SKILL_DIR/.auto_coding/ 复制到 $PROJECT_ROOT/.auto_coding/
   → 保留目录结构，包含所有子目录和模板文件
   → 输出："✅ 已复制 .auto_coding/ 到项目根目录"
 
@@ -73,25 +77,25 @@ INIT-5. 配置 .gitignore
   → 输出："✅ 已更新 .gitignore"
 
 INIT-6. 检测当前 AI 工具并复制对应配置文件
-  → 按以下规则判断工具类型，并执行对应操作：
+  → 按实际宿主选择配置；已有规则先对比，仅合并缺少的 xjb_coding 引用：
 
   | 检测条件 | 判断工具 | 执行操作 |
   |---------|---------|---------|
-  | 存在 $PROJECT_ROOT/CLAUDE.md 或运行环境标识为 claude-code | Claude Code | 将 $SKILL_DIR/CLAUDE.md 复制到 $PROJECT_ROOT/CLAUDE.md（已有则追加内容，不覆盖） |
-  | 存在 $PROJECT_ROOT/.cursor/ 目录 | Cursor | 创建 $PROJECT_ROOT/.cursor/rules/ 目录（若不存在），复制 $SKILL_DIR/cursor_rule.mdc 到该目录 |
-  | 存在 $PROJECT_ROOT/.windsurfrules 或 .windsurf/ 目录 | Windsurf | 将 $SKILL_DIR/.windsurfrules 复制到 $PROJECT_ROOT/.windsurfrules |
+  | 当前宿主为 Claude Code | Claude Code | 缺失时用 $SKILL_DIR/CLAUDE.md；已有则保留原文并去重合并入口引用 |
+  | 当前宿主为 Cursor | Cursor | 缺失时部署 $SKILL_DIR/cursor_rule.mdc；已有则对比合并，不覆盖项目规则 |
+  | 当前宿主为 Windsurf | Windsurf | 缺失时用 $SKILL_DIR/.windsurfrules；已有则保留原文并去重合并入口引用 |
   | 以上都不满足 | 未知工具 | 跳过，在 INIT-7 提示用户手动配置 |
 
   → 输出："✅ 已复制 [工具名] 配置文件" 或 "⚠️ 未检测到工具类型，跳过配置文件复制"
 
-INIT-7. 检测 xjb_code MCP daemon（可选增强后端）
+INIT-7. 汇总部署前已核对的 xjb_code MCP 状态（可选增强后端）
   → 检查宿主 MCP 连接状态及已发现的 xjb_code 工具列表；不使用领取任务等业务操作探活
   → 已连接且工具列表可用 → 调用 auth.jwt_token.check 核对身份；成功 → 标记 MCP_AVAILABLE=true
   → 返回 error_code=10004 → 凭证缺失 / 错误 / 已吊销：提示用户在 xjb_code Dashboard 签发 API key 并写入宿主配置，标记 MCP_AVAILABLE=false
   → 未配置 / 连接失败 / 无法发现工具 → 标记 MCP_AVAILABLE=false，区分地址、网络和认证问题
   → daemon 不是必需；MCP 模式下任务并发、断点续做、远程审批更可靠
 
-INIT-8. 输出初始化完成摘要
+INIT-8. 输出本次实际完成摘要（跳过、复用、失败逐项说明，不把示例打勾当作已完成）
   → 格式：
     ---
     🎉 xjb_coding 初始化完成
@@ -121,9 +125,9 @@ INIT-8. 输出初始化完成摘要
       读 .auto_coding/start_coding.md
     ---
 
-INIT-9. 询问是否立即启动
-  → "是否现在立即开始？直接回复'开始'或发送触发词即可。"
-  → 等待用户指令，不自动进入编码流程
+INIT-9. 按用户已选择的模式继续
+  → 已明确提供开发要求与授权时进入该流程，不重复询问
+  → 仅要求安装或初始化时，到此结束；--refine / --task_plan 仍在对应阶段停止
 ```
 
 ### 初始化注意事项
@@ -156,9 +160,9 @@ INIT-9. 询问是否立即启动
 | 参数 | 行为 | 何时用 |
 |------|------|--------|
 | （无参数） | **全自动**：细化需求 → 拆任务 → 编码，一气呵成 | 直接开干 |
-| `--refine` | 只细化需求，输出到 `requirements/details/`，**停止** | 需求碎片化或术语混乱 |
-| `--task_plan` | 接续已细化需求做任务分解，写 TRACKER，**不写代码，停止** | 需要人工确认任务列表 |
-| `--worker <agent-id>` | 多智能体并行开发：领取任务 → 独立分支编码 → 合并 → 循环 | 多 IDE / 多会话并发 |
+| `--refine` | 只细化需求，保存到当前状态后端（markdown 用 `requirements/details/`），**停止** | 需求碎片化或术语混乱 |
+| `--task_plan` | 接续已细化需求做任务分解，写入当前状态后端，**不写代码，停止** | 需要人工确认任务列表 |
+| `--worker <agent-id>` | 多智能体并行开发：恢复或领取授权任务，按项目既定隔离与集成方式推进 | 多 IDE / 多会话并发 |
 | `--tick [N]` | **准 runloop**：恢复状态 → 领至多 N 任务（默认 1）→ 四层门禁 → 写状态 → 结束本轮 | 外部循环驱动（宿主定时循环 / cron / headless CLI） |
 
 **主流程递进**：`--refine` → `--task_plan` → `--worker`，无参数是三者完整串联；`--tick` 是同一主流程的有界切片，供外部循环反复触发。
@@ -188,29 +192,29 @@ controller / worker 协作规则（角色、委派 brief、worker 硬边界、�
 | Codex | `$xjb-coding` 或触发词 | Codex sub-agent；父 agent 保持 controller，用 `update_plan` 做可见计划，worker 验收后即关闭 | MCP key 写 `~/.codex/config.toml` 的 `http_headers` |
 | Hermes Agent | `hermes skills install` 后按描述匹配 | 宿主自身的子任务机制 | MCP 按 Hermes 配置文档加 url 与 Authorization 头 |
 
-任何宿主都不得让 worker 在开工后扩大范围；没有 xjb_code MCP 时统一回退 `TRACKER.md` 软锁。
+任何宿主都不得让 worker 在开工后扩大范围；MCP 可用且已认证时使用原服务端状态，确实不可用才用 `tasks/TRACKER.md` 记录状态、`DISPATCH.md` 协调单机软锁。恢复、锁和存档分别以主引擎 §0 / §6 / §7 为准，各宿主不另定协议。
 
 ## 二、安装 / 使用步骤
 
 ### 方式 A：Plugin 宿主安装
 
-参见仓库 README 的 Claude Code / Codex plugin 安装流程。安装后发送触发词（见 §一），AI 自动执行本文件 §零 的 INIT 流程把 `.auto_coding/` 部署到目标项目。
+参见仓库 README 的 Claude Code / Codex plugin 安装流程。安装后发送触发词（见 §一），先按 §零 区分首次启用与续做；已有项目复用原状态。
 
 ### 方式 B：其他 AI 工具（手动）
 
 1. clone 本仓库到本地
 2. 在 AI 工具中告知它读取 SKILL.md：路径 `skills/xjb-coding/SKILL.md`
-3. 发送触发词（如 `使用 xjb_coding`），AI 执行 INIT 流程
+3. 发送触发词（如 `使用 xjb_coding`），AI 先核对首次启用或续做；确需部署且已授权才执行 INIT
 
-完全不通过 AI 触发的兜底：
+完全不通过 AI 触发、且目标目录尚不存在时的兜底：
 
 ```bash
-cp -r skills/xjb-coding/.auto_coding/ /your/project/root/
+test ! -e /your/project/root/.auto_coding && cp -R skills/xjb-coding/.auto_coding /your/project/root/.auto_coding
 ```
 
 然后在目标项目按 §一 发送触发词进入编码流程。
 
-> `.auto_coding/start_coding.md` 是**唯一必须存在**的文件。
+> 主引擎可从本次加载的 Skill 目录读取，不要求为读取或 MCP 续做部署到目标项目。
 > `requirements/` 目录及其内容完全可选——可以没有、可以只有一句话、也可以是完整文档，AI 都能处理。
 
 ---
@@ -220,7 +224,9 @@ cp -r skills/xjb-coding/.auto_coding/ /your/project/root/
 ```
 your-project/
 ├── .auto_coding/                    ← Skill 本体（复制到项目根目录）
-│   ├── start_coding.md              ← 主引擎文件（不可修改主体）
+│   ├── start_coding.md              ← 主引擎规则，升级时保留项目定制
+│   ├── AGENT_COLLABORATION.md        ← 同一协作协议，各宿主引用
+│   ├── DISPATCH.md                   ← markdown 回退的单机软锁，MCP 模式不用
 │   ├── requirements/                ← 需求文件（可选；MCP 模式下用 requirement.* 工具，下面文件作起点输入）
 │   │   ├── 0_<主题>.<ext>           ← 原始需求（md/pdf/png/jpg 均可）
 │   │   ├── v<版本>_<主题>.<ext>     ← 版本迭代需求
@@ -229,7 +235,6 @@ your-project/
 │   │       └── <topic>_details.md
 │   └── tasks/                       ← 仅 markdown 回退模式使用；MCP 模式状态在 SQLite
 │       ├── TRACKER.md               ← markdown 回退：进度真相源
-│       ├── DISPATCH.md              ← markdown 回退：单机软锁兜底（MCP 模式用 DB 行锁，不用此文件）
 │       └── [层级]/                  ← 各层任务文件
 │           └── TASK-XXX.md
 ├── .gitignore                       ← 需包含 .auto_coding/ 排除规则
@@ -288,12 +293,12 @@ your-project/
 
 - **自动识别项目语言**（Go/Rust/TS/JS/Python/Java/Kotlin/C++/C#）并加载对应工具链命令
 - **需求管理**：MCP 工具 `requirement.add` / `refine` / `detect_drift`，markdown 模式支持 md/pdf/png/jpg 格式
-- **任务拆解**：按依赖（`task.assign`）和优先级（P0~P3）拆，每任务 ≤5 文件、≤300 行
-- **TDD 自驱编码**：红→绿→重构，**四层质量门禁**（L1 工程 / L2 架构 / L3 业务 / L4 业务专项扩展，类继承逐层收严）全过才 `task.complete`；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集
+- **任务拆解**：按依赖（`task.assign`）、优先级（P0~P3）和可独立验收的边界拆分，不以文件数代替范围判断
+- **增量验证与最终验收**：代码按需红→绿→重构；四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 业务专项扩展）按任务类型验证，复用前提未变的历史证据，最终收口满足项目既定验收；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集
 - **准 runloop**：`--tick [N]` 把主流程切成幂等有界工作单元，任何外部循环（宿主定时循环 / cron / headless CLI / 编排器）都能驱动；卡住不阻塞，标 blocked 继续
 - **多智能体并发**：MCP 模式用 DB 行级锁 `task.lock`（强一致），markdown 回退用 DISPATCH.md 软锁（单机兜底）
 - **上下文保护**：`session.checkpoint` 写 L3 memory，新会话 `session.restore` 续做
-- **卡住 / 决策点（happy 风格）**：`request.approval(prompt, options)` 阻塞等用户从 web/手机响应；同一错误 3 次失败自动触发；非交互场景自动降级不死等
+- **卡住 / 决策点（happy 风格）**：先查已有授权；仅实质越界或缺少用户必要决定时用 `request.approval(prompt, options)`；非交互场景记录阻塞，不以超时代替同意
 - **观测与响应**：Web dashboard `:12101`——项目空间总览、完工徽章（任务清零+无失败+无待批+需求闭合）、待批一键响应、SSE 实时刷新
 - **动态 skills 路由**：daemon 侧 `skills.route(role, tags, project_id)` 按适配度返回 DB 化规则单元供注入系统提示词；`skills.feedback` 计分优胜劣汰（§0 状态后端契约的规则集方向落地）
 - **零预装接入**：daemon 声明 MCP prompts capability，`workflow_guide` prompt 返回接入引导 + 动态路由规则（与 skills.route 同源）；默认引导 skills 由 daemon 启动种子写入（insert-if-missing，用户改动永不被覆盖）
@@ -304,14 +309,14 @@ your-project/
 
 ---
 
-## 七、快速参考：全局硬约束
+## 七、快速参考：通用质量约束
 
-以下约束**所有项目强制生效，不可覆盖**：
+以下是通用基线，按宿主安全要求、用户现行授权与已确认项目约定适用，不自行扩大范围：
 
-- ❌ 禁止使用 Docker 进行测试或构建
+- 构建与测试使用项目既定工具和环境；不擅自安装或改环境
 - ❌ 禁止 `git add -A` 或 `git add .`（只精确 add 本任务涉及的文件）
 - ❌ 禁止跳过四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 专项全过才能标记 ✅；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集，不等于完成）
-- ❌ 禁止擅自修改架构（先标注 ❌ 并说明原因，等用户确认）
+- ❌ 禁止擅自修改架构（先查已有决定与授权；未明确的实质变化才询问）
 - ❌ 禁止将 `.auto_coding/` 下任何文件加入 git
 
 ---
@@ -331,4 +336,4 @@ your-project/
 
 ---
 
-> **禁止修改**：`start_coding.md` 主体内容（阶段 0-3、质量门禁、Git 规范），项目定制仅在 `start_coding.md` 末尾"项目特定约定区"内进行。
+> 目标项目的定制优先记入 `start_coding.md` 末尾“项目特定约定区”，便于升级时对比保留；此安排不赋予 Skill 高于用户或项目约定的优先级。本仓技能源文件可在用户授权下维护。

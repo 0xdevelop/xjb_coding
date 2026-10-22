@@ -1,54 +1,36 @@
 #!/usr/bin/env bash
 # Report which real-browser layer is available; never install, launch, or modify anything.
 set -eu
-platform=$(uname -s)
-ego_skill_dir="${EGO_SKILLS_DIR:-$HOME/.local/share/ego/ego-skills}"
-claude_link="$HOME/.claude/skills/ego-browser"
-layer=""
+printf 'platform: %s\n' "$(uname -s)"
 
-printf 'platform: %s\n' "$platform"
-
-if [[ "$platform" == "Darwin" ]]; then
-    if command -v ego-browser >/dev/null 2>&1; then
-        printf 'ego-browser: %s\n' "$(command -v ego-browser)"
-        if version_output=$(ego-browser --version 2>&1); then
-            printf '%s\n' "$version_output" | sed 's/^/  /'
-            layer="ego-browser"
+if command -v ego-browser >/dev/null 2>&1; then
+    printf 'ego-browser: %s\n' "$(command -v ego-browser)"
+    if browser_version=$(ego-browser --version 2>&1); then
+        printf '%s\n' "$browser_version"
+        if browser_guide=$(ego-browser skill 2>&1); then
+            case "$browser_guide" in
+                *'[ego-browser:skill] end of guide'*)
+                    printf 'layer: ego-browser\n'
+                    printf 'Run ego-browser skill and read the complete guide before browser actions.\n'
+                    printf 'CLI and guide checks do not prove browser connectivity or task capabilities.\n'
+                    exit 0
+                    ;;
+                *) printf 'ego-browser skill: missing end-of-guide marker.\n' >&2 ;;
+            esac
         else
-            printf 'ego-browser --version failed; the App may need onboarding or an upgrade.\n' >&2
+            printf 'ego-browser skill failed; follow the official installation or upgrade guidance.\n' >&2
         fi
     else
-        printf 'ego-browser: not on PATH (expected ~/.local/bin/ego-browser after ego lite onboarding).\n' >&2
-    fi
-    if [[ -f "$ego_skill_dir/SKILL.md" ]]; then
-        printf 'official skill: %s\n' "$ego_skill_dir"
-        for f in references/api.md references/install.md references/clearing-state.md; do
-            if [[ -f "$ego_skill_dir/$f" ]]; then printf '  %s\n' "$f"; else printf '  missing %s\n' "$f" >&2; fi
-        done
-    else
-        printf 'official skill: missing %s/SKILL.md\n' "$ego_skill_dir" >&2
-        layer=""
-    fi
-    if [[ -L "$claude_link" ]]; then
-        printf 'claude link: %s -> %s\n' "$claude_link" "$(readlink "$claude_link")"
-    elif [[ -d "$claude_link" ]]; then
-        printf 'claude link: %s is a directory copy, not a link; it can drift from the official skill.\n' "$claude_link" >&2
-    else
-        printf 'claude link: absent (Claude Code loads the official skill through ~/.claude/skills/ego-browser).\n' >&2
+        printf 'ego-browser --version failed.\n' >&2
     fi
 else
-    printf 'ego lite ships for macOS only; use the host Playwright MCP on this platform.\n' >&2
+    printf 'ego-browser: not on PATH.\n' >&2
 fi
 
-if [[ -z "$layer" ]]; then
-    cat >&2 <<'HELP'
+cat >&2 <<'HELP'
 No ego-browser layer. Next: check the host tool list for a Playwright MCP (browser_navigate / browser_snapshot ...).
-If that is missing too, stop and report; install only with user approval:
-  macOS: sh ~/.local/share/ego/ego-skills/scripts/install.sh  (or download from https://lite.ego.app/)
-  then finish ego lite onboarding in the App so the ego-browser command is registered.
-Read this Skill's references/ego-browser.md for host wiring and upgrade rules.
+If that is missing too, stop and report the gap. Do not install, upgrade, or change the environment without authorization.
+Read the current official ego-browser skill's references/install.md or https://lite.ego.app/ for the actual platform.
+Read this Skill's references/ego-browser.md for discovery and upgrade rules.
 HELP
-    exit 2
-fi
-printf 'layer: %s\n' "$layer"
-printf 'This confirms the CLI and skill files exist; it does not prove the App is running or a task space can be created.\n'
+exit 2
