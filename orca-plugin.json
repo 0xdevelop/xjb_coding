@@ -3,7 +3,7 @@
   "id": "xjb-coding",
   "publisher": "0xdevelop",
   "name": "xjb_coding",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "安装 xjb_coding Skills，并提供填写读取提示的命令。所有 agent 沿用现有 Skill 规则；MCP 使用 agent 已有配置。",
   "author": { "name": "0xdevelop" },
   "repository": "https://github.com/0xdevelop/xjb_coding",

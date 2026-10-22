@@ -1,6 +1,6 @@
 {
   "name": "xjb-coding",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "Agent Skills for coding workflows, multi-user multi-agent collaboration via the xjb_code backend, Bruno API and workflow tests, real-browser Web debugging (ego-browser first on macOS), Web prototypes, requirement planning prototypes, editable draw.io and Archify interactive diagrams, Blender + Three.js, and local ComfyUI workflows. One skill set shared by Codex, Claude Code, and Hermes.",
   "author": {
     "name": "0xdevelop"
