@@ -5,11 +5,13 @@ description: Use 0xdevelop/shell_tools for Ubuntu 20.04+ server setup, software 
 
 # Ubuntu shell_tools
 
+本页仓库链接供人工浏览；执行时优先从本次加载的插件目录读取 URL 中 `blob/latest/` 后的同路径文件，不依赖固定安装目录或线上正文。单独安装时，URL 中 `skills/ubuntu-shell-tools/` 对应当前 Skill 目录。
+
 脚本唯一来源是 [0xdevelop/shell_tools](https://github.com/0xdevelop/shell_tools)。本 Skill 提供选择、获取和执行约定，不复制脚本或维护一份容易过期的工具清单。
 
 ## 获取本次版本
 
-在**当前任务项目根目录**运行本 Skill 的 [scripts/fetch.sh](scripts/fetch.sh)，用实际 Skill 安装路径替换下方占位路径：
+在**当前任务项目根目录**运行本 Skill 的 [scripts/fetch.sh](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/ubuntu-shell-tools/scripts/fetch.sh)，用实际 Skill 安装路径替换下方占位路径：
 
 ```bash
 bash /absolute/path/to/ubuntu-shell-tools/scripts/fetch.sh

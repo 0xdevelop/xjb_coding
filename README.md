@@ -10,21 +10,23 @@
 
 | Skill | 领域 | 支持的工作 |
 | --- | --- | --- |
-| [xjb-coding](skills/xjb-coding/SKILL.md) | 软件开发 | 项目初始化、需求细化、任务分解、编码、四层质量门禁、断点续做 |
-| [bruno-api-tests](skills/bruno-api-tests/SKILL.md) | 接口与业务流程测试 | 关联 Bruno 官方 skills 与文档，生成完整集合、接通参数和文件，由 Agent 验证全新导入及真实场景 |
-| [sketch-to-prototype](skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
-| [planning-prototype](skills/planning-prototype/SKILL.md) | 需求规划原型 | 把一个需求做成可落码的自包含 HTML：两端界面对照、调用链与传参、各端 check 项、路径差异；综合 / 产品 / 技术三个视角同源生成；开工前按八项清单交互问询补齐必备项 |
-| [blender-threejs](skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
-| [comfyui-workflow](skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
-| [xjb-extends-jetbrains](skills/xjb-extends-jetbrains/SKILL.md) | JetBrains IDE 调试 | 独立管理官方知识库引用、`.run` 集成、Run/Debug 与项目窗口边界，覆盖 Windows / macOS / Linux |
-| [web-browser-debug](skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 选定真浏览器执行层：macOS 优先官方 ego-browser（ego lite），回退宿主 Playwright MCP；统一截图、证据与任务空间约定 |
-| [ubuntu-shell-tools](skills/ubuntu-shell-tools/SKILL.md) | Ubuntu 20.04+ 运维 | 使用时获取 shell_tools 最新 main，检查并使用服务器配置、软件安装、网络诊断和 SSH 等脚本 |
-| [archify](skills/archify/SKILL.md) | 交互图表 | 从描述、Mermaid 或源码证据生成独立 HTML：架构、流程、时序、数据流、状态、ER、类、树、时间线与执行瀑布图 |
-| [drawio](skills/drawio/SKILL.md) | 可编辑图表 | 随包提供 draw.io 官方 Skill 与 XML / Mermaid 参考，生成和修改原生 `.drawio`，通过已有 Desktop CLI 导出 PNG/SVG/PDF |
+| [xjb-coding](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/SKILL.md) | 软件开发 | 项目初始化、需求细化、任务分解、编码、四层质量门禁、断点续做 |
+| [bruno-api-tests](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/bruno-api-tests/SKILL.md) | 接口与业务流程测试 | 关联 Bruno 官方 skills 与文档，生成完整集合、接通参数和文件，由 Agent 验证全新导入及真实场景 |
+| [sketch-to-prototype](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
+| [planning-prototype](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/planning-prototype/SKILL.md) | 需求规划原型 | 把一个需求做成可落码的自包含 HTML：两端界面对照、调用链与传参、各端 check 项、路径差异；综合 / 产品 / 技术三个视角同源生成；开工前按八项清单交互问询补齐必备项 |
+| [blender-threejs](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/SKILL.md) | 3D 资产与 Web 展示 | Blender 集合导出 GLB，接入 Three.js 材质、动画、粒子景深、缩放、重组与交互并在浏览器验收 |
+| [comfyui-workflow](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
+| [xjb-extends-jetbrains](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-extends-jetbrains/SKILL.md) | JetBrains IDE 调试 | 独立管理官方知识库引用、`.run` 集成、Run/Debug 与项目窗口边界，覆盖 Windows / macOS / Linux |
+| [web-browser-debug](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 选定真浏览器执行层：macOS 优先官方 ego-browser（ego lite），回退宿主 Playwright MCP；统一截图、证据与任务空间约定 |
+| [ubuntu-shell-tools](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/ubuntu-shell-tools/SKILL.md) | Ubuntu 20.04+ 运维 | 使用时获取 shell_tools 最新 main，检查并使用服务器配置、软件安装、网络诊断和 SSH 等脚本 |
+| [archify](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/archify/SKILL.md) | 交互图表 | 从描述、Mermaid 或源码证据生成独立 HTML：架构、流程、时序、数据流、状态、ER、类、树、时间线与执行瀑布图 |
+| [drawio](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/drawio/SKILL.md) | 可编辑图表 | 随包提供 draw.io 官方 Skill 与 XML / Mermaid 参考，生成和修改原生 `.drawio`，通过已有 Desktop CLI 导出 PNG/SVG/PDF |
 
 自驱编码流程不绑定单一编程语言。原型与 3D 页面默认面向桌面 Web，用户指定其他平台时按实际需求处理。普通 2D Web 任务不需要加载 Blender + Three.js Skill。
 
 ## 安装与更新
+
+Skill、参考资料和脚本随插件一起安装、更新，用户无需逐个安装 Skill 或修改资料路径。README 与公开 Skill 入口的仓库链接使用 HTTPS，供人在插件预览中直接打开；Agent 执行时优先从宿主实际加载的插件目录读取 URL 中 `blob/latest/` 后的同路径文件，使用随包版本，不依赖线上正文、用户名、主目录、默认缓存位置或固定版本。单独安装某个 Skill 时，URL 中 `skills/<名称>/` 对应当前 Skill 目录。文档中的 `~/...` 仅标明宿主配置文件等约定位置。
 
 ### Codex
 
@@ -148,7 +150,7 @@ skills:
 读取 sketches/ 下全部草图和说明，输出产品模型、完整 UX 交互和可点击 Web 原型，并在浏览器走通主流程。
 ```
 
-流程为：理解输入 → 产品模型 → UX 设计 → 可点击原型 → 浏览器验证 → 编码交接。阶段与必需产物见 [workflow.yaml](skills/sketch-to-prototype/references/workflow.yaml)。
+流程为：理解输入 → 产品模型 → UX 设计 → 可点击原型 → 浏览器验证 → 编码交接。阶段与必需产物见 [workflow.yaml](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/sketch-to-prototype/references/workflow.yaml)。
 
 默认产物：
 
@@ -172,7 +174,7 @@ review/
 复用现有配置与素材，接好鉴权、前后请求参数、附件和异步状态；由你验证全新导入与真实执行。
 ```
 
-宿主匹配 [bruno-api-tests](skills/bruno-api-tests/SKILL.md)，读取 [本仓库约定](skills/bruno-api-tests/extend/local.md) 及 [官方知识索引](skills/bruno-api-tests/references/official-docs.md)。不初始化额外工作区、创建后端工作流或另造执行器。已有集合按原格式和原入口修改；新集合提供完整文件与确定的 Send / Runner 入口，避免让用户补参数、脚本或附件。
+宿主匹配 [bruno-api-tests](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/bruno-api-tests/SKILL.md)，读取 [本仓库约定](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/bruno-api-tests/extend/local.md) 及 [官方知识索引](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/bruno-api-tests/references/official-docs.md)。不初始化额外工作区、创建后端工作流或另造执行器。已有集合按原格式和原入口修改；新集合提供完整文件与确定的 Send / Runner 入口，避免让用户补参数、脚本或附件。
 
 Agent 在已有授权内复用真实配置、秘密引用和业务输入，核对目标 App / CLI 版本及沙箱。交付前验证目标 App 的全新导入、空运行状态下的真实流程及业务终态，CLI 补充回归；接口清单、静态检查、HTTP 2xx 或 mock 通过均不能作为“导入即用”的依据。确实缺少不可推导的凭证、业务输入、工具或权限时明确说明，不能交付占位集合并宣称可用。Bruno 是用户独立安装的工具，更新插件不修改其配置。
 
@@ -197,7 +199,7 @@ Agent 在已有授权内复用真实配置、秘密引用和业务输入，核�
 使用 blender-threejs，做一个有前后景深的粒子场景，支持平滑缩放和球体、环形之间的连续重组。
 ```
 
-内置 [粒子示例](skills/blender-threejs/assets/particles/) 可直接运行，支持拖动、滚轮、景深滑杆、暂停和静态 GLB 采样；具体启动方法与支持边界见 Skill。
+内置 [粒子示例](https://github.com/0xdevelop/xjb_coding/tree/latest/skills/blender-threejs/assets/particles) 可直接运行，支持拖动、滚轮、景深滑杆、暂停和静态 GLB 采样；具体启动方法与支持边界见 Skill。
 
 ### 本机 ComfyUI 工作流
 
@@ -209,7 +211,7 @@ Agent 在已有授权内复用真实配置、秘密引用和业务输入，核�
 
 `comfyui-workflow` 入口明确加载 `extend/local.md`，再按任务参考随包附带的官方 `Comfy-Org/comfy-skills` 原文。`extend/` 是本项目的目录约定，不依赖宿主提供继承机制。官方原版当前面向 Comfy Cloud，保留为参考文件；插件只暴露本机入口，不注册官方云端命令或 MCP。
 
-优先使用用户独立安装的官方 `comfy-mcp` / `comfy-cli`。运行 Skill 内 `scripts/check_tools.sh` 检查工具；缺失时按 [安装与关联说明](skills/comfyui-workflow/references/local-api.md#官方工具安装与关联) 提示 Agent/用户，不自动安装。可选 Python 标准库辅助脚本支持本机查询、UI 基本检查与按字节保存。没有接入官方工具时不能宣称已关联；基本检查通过不等于实际生成成功。
+优先使用用户独立安装的官方 `comfy-mcp` / `comfy-cli`。运行 Skill 内 `scripts/check_tools.sh` 检查工具；缺失时按 [安装与关联说明](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/comfyui-workflow/references/local-api.md#官方工具安装与关联) 提示 Agent/用户，不自动安装。可选 Python 标准库辅助脚本支持本机查询、UI 基本检查与按字节保存。没有接入官方工具时不能宣称已关联；基本检查通过不等于实际生成成功。
 
 可编辑画布保存在目标项目 `workflows/<用途>/<版本>/workflow.json`，人工调整后保存为下一轮输入。需要程序运行时，再从同版 ComfyUI 画布导出 `workflow.api.json`；环境与实际验证信息记入 `environment.json`。缓存放目标项目 `tmp/comfyui/`。关闭 Agent 后仍可在 ComfyUI 独立反复运行。
 
@@ -219,7 +221,7 @@ Agent 在已有授权内复用真实配置、秘密引用和业务输入，核�
 使用 archify，按当前仓库的真实源码画一张请求调用链图，输出可独立打开的 HTML，保留 JSON 供后续修改。
 ```
 
-来源为 [archify.si](https://archify.si) / [tt-a1i/archify](https://github.com/tt-a1i/archify)。本包通过 [archify Skill](skills/archify/SKILL.md) 加载完整官方运行包和独立的 [本仓库适配](skills/archify/extend/local.md)，无需另装全局 Archify、初始化 submodule 或 npm install；运行需 Node.js 18+。可按描述、Mermaid 或仓库证据生成十种图表；数值统计图、网站实现和需求规划原型使用各自对应工具。
+来源为 [archify.si](https://archify.si) / [tt-a1i/archify](https://github.com/tt-a1i/archify)。本包通过 [archify Skill](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/archify/SKILL.md) 加载完整官方运行包和独立的 [本仓库适配](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/archify/extend/local.md)，无需另装全局 Archify、初始化 submodule 或 npm install；运行需 Node.js 18+。可按描述、Mermaid 或仓库证据生成十种图表；数值统计图、网站实现和需求规划原型使用各自对应工具。
 
 官方 `finalize` 依次执行验证、生成、严格 provenance 检查和内置 Chrome/Chromium 浏览器检查。浏览器缺失或任一门禁失败须报告实际缺口；ego-browser 的人工交互/视觉检查另留证据，不替代官方自动检查回执。CLI 更新提示不授权覆盖随包版本，原文仍由本仓库统一维护。正式 HTML 与 JSON 保存在目标项目，缓存、临时截图与浏览器临时目录放目标项目 `tmp/`。
 
@@ -229,11 +231,11 @@ Agent 在已有授权内复用真实配置、秘密引用和业务输入，核�
 使用 drawio，按当前仓库画一张请求调用链图，保留可逐节点编辑的 .drawio；本机支持时同时导出 PNG。
 ```
 
-通过 [drawio Skill](skills/drawio/SKILL.md) 使用 [draw.io 官方 Skill](https://github.com/jgraph/drawio-mcp/tree/main/plugins/codex/drawio) 和同版参考资料。只安装、更新本聚合包即可加载，无需单独安装官方插件或 MCP。用到转换、布局或导出时才检测本机 Desktop CLI 及版本；缺少能力则说明影响，给出对应系统的官方安装/升级与续做步骤，同时先完成可生成的原生 XML。源文件始终保留，已有图表可继续人工或由 Agent 修改；交互式独立 HTML 图表沿用 Archify。验收区分源文件结构检查、实际导出与视觉/编辑检查，不把未运行的部分报为通过。
+通过 [drawio Skill](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/drawio/SKILL.md) 使用 [draw.io 官方 Skill](https://github.com/jgraph/drawio-mcp/tree/main/plugins/codex/drawio) 和同版参考资料。只安装、更新本聚合包即可加载，无需单独安装官方插件或 MCP。用到转换、布局或导出时才检测本机 Desktop CLI 及版本；缺少能力则说明影响，给出对应系统的官方安装/升级与续做步骤，同时先完成可生成的原生 XML。源文件始终保留，已有图表可继续人工或由 Agent 修改；交互式独立 HTML 图表沿用 Archify。验收区分源文件结构检查、实际导出与视觉/编辑检查，不把未运行的部分报为通过。
 
 ### Web 调试与浏览器验收
 
-Web 类任务的真浏览器验证统一走 [web-browser-debug](skills/web-browser-debug/SKILL.md)：先运行 `scripts/check_tools.sh`，macOS 上有 ego lite 时优先用官方 `ego-browser` Skill（App 随身携带于 `~/.local/share/ego/ego-skills`，本仓库只引用不复制，Claude Code 经 `~/.claude/skills/ego-browser` 符号链接加载，Codex 可链接到 `~/.agents/skills`），否则回退宿主 Playwright MCP，两者都没有时报告缺口、经用户授权再安装。叠加约定：一个目标一个 TaskSpace、联调结束保留结果页、截图落目标项目 `tmp/`、不做 profile 级状态清理。`sketch-to-prototype` 的 UX Review 与 `blender-threejs` 的浏览器验证阶段都由它提供执行层。
+Web 类任务的真浏览器验证统一走 [web-browser-debug](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/web-browser-debug/SKILL.md)：先运行 `scripts/check_tools.sh`，macOS 上有 ego lite 时优先用官方 `ego-browser` Skill（App 随身携带于 `~/.local/share/ego/ego-skills`，本仓库只引用不复制，Claude Code 经 `~/.claude/skills/ego-browser` 符号链接加载，Codex 可链接到 `~/.agents/skills`），否则回退宿主 Playwright MCP，两者都没有时报告缺口、经用户授权再安装。叠加约定：一个目标一个 TaskSpace、联调结束保留结果页、截图落目标项目 `tmp/`、不做 profile 级状态清理。`sketch-to-prototype` 的 UX Review 与 `blender-threejs` 的浏览器验证阶段都由它提供执行层。
 
 ## 连接 xjb_code（可选）
 
@@ -371,9 +373,9 @@ bash scripts/update_upstreams.sh --check
 
 ## 许可证与依赖边界
 
-本仓库自有代码采用 [BSD-3-Clause](LICENSE)。随包引用的 Three.js 文档和 Comfy Skills 原文分别保留 [Three.js MIT](skills/blender-threejs/references/threejs/LICENSE) 与 [Comfy Skills MIT](skills/comfyui-workflow/references/upstream/comfy-skills/LICENSE)，来源及 commit 见各自的 `SOURCE.json`。
+本仓库自有代码采用 [BSD-3-Clause](https://github.com/0xdevelop/xjb_coding/blob/latest/LICENSE)。随包引用的 Three.js 文档和 Comfy Skills 原文分别保留 [Three.js MIT](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/LICENSE) 与 [Comfy Skills MIT](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/comfyui-workflow/references/upstream/comfy-skills/LICENSE)，来源及 commit 见各自的 `SOURCE.json`。
 
-Archify 自有代码保留 [MIT LICENSE](skills/archify/references/.upstream/archify/archify/LICENSE)。其品牌图标和嵌入字体分别适用 [第三方说明](skills/archify/references/.upstream/archify/archify/THIRD_PARTY_NOTICES.md) 中的各自许可与商标条款（包括部分图标的非商业/相同方式共享条件及字体 OFL），不能将所有素材统一视为 MIT。
+Archify 自有代码保留 [MIT LICENSE](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/archify/references/.upstream/archify/archify/LICENSE)。其品牌图标和嵌入字体分别适用 [第三方说明](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/archify/references/.upstream/archify/archify/THIRD_PARTY_NOTICES.md) 中的各自许可与商标条款（包括部分图标的非商业/相同方式共享条件及字体 OFL），不能将所有素材统一视为 MIT。
 
 以下是用户单独安装的外部工具，不复制、链接其代码或随本仓库打包二进制；本仓库仅提供操作指引及标准接口调用：
 

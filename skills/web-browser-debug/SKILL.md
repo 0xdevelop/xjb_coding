@@ -10,6 +10,8 @@ metadata:
 
 # Web Browser Debug
 
+本页仓库链接供人工浏览；执行时优先从本次加载的插件目录读取 URL 中 `blob/latest/` 后的同路径文件，不依赖固定安装目录或线上正文。单独安装时，URL 中 `skills/web-browser-debug/` 对应当前 Skill 目录。
+
 为 Web 类任务（页面联调、端到端主流程验证、UI 验收、截图取证）选定并驱动**真浏览器**执行层。本 Skill 只负责「用哪一层、怎么复用官方规则、验收留什么证据」；页面 API 的权威来源是官方 ego-browser Skill 原文，本仓库不复制、不改写它。
 
 兼容目标为当前 Codex、Claude Code、Hermes Agent 的 Agent Skills 接口。先运行 `scripts/check_tools.sh` 得到本机事实，再按下表选层；不要凭命令同名或历史记忆断定工具可用。
@@ -24,7 +26,7 @@ metadata:
 
 ego lite 不是 MCP 服务：`ego-browser` 是 App 注册到 `~/.local/bin` 的 CLI，脚本经 `ego-browser nodejs` 的 heredoc 在内嵌 Node 中执行，只暴露官方列出的 TaskSpace / Page API。不要把它当 Playwright 写，也不要为它注册 MCP 条目。
 
-选定层 1 后，**读官方原文再动手**：位置、加载方式、版本核对与升级见 [references/ego-browser.md](references/ego-browser.md)。官方 Skill 随 ego lite 升级而变化，本仓库不固定其快照；每次会话以本机当前版本为准。
+选定层 1 后，**读官方原文再动手**：位置、加载方式、版本核对与升级见 [references/ego-browser.md](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/web-browser-debug/references/ego-browser.md)。官方 Skill 随 ego lite 升级而变化，本仓库不固定其快照；每次会话以本机当前版本为准。
 
 ## 本仓库扩展约定（叠加在官方规则之上，用户拍板）
 
@@ -36,9 +38,9 @@ ego lite 不是 MCP 服务：`ego-browser` 是 App 注册到 `~/.local/bin` 的 
 4. **验收证据按流程留**：每条主流程至少一份最终状态快照或截图 + 关键断言（URL、可见元素、控制台无错误）；用 `page.evaluate` 取控制台错误、资源失败、`renderer.info` 等运行时事实，不凭构建通过宣称页面可用。
 5. **不清空浏览器 profile 级状态**：清 cookie / cache 前先读官方 `references/clearing-state.md`；只用单 origin 级命令。
 6. **多端事件链验证**（SSE / WebSocket / 流式渲染）：后端日志与浏览器控制台双对照，漏一处即视为未通过。
-7. **后台联调**：启动方式遵循目标仓库约定；涉及 JetBrains IDE 时，按需使用独立的 [xjb-extends-jetbrains](../xjb-extends-jetbrains/SKILL.md) Skill 处理运行配置、调试和窗口操作。本 Skill 负责浏览器页面验证。
+7. **后台联调**：启动方式遵循目标仓库约定；涉及 JetBrains IDE 时，按需使用独立的 [xjb-extends-jetbrains](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-extends-jetbrains/SKILL.md) Skill 处理运行配置、调试和窗口操作。本 Skill 负责浏览器页面验证。
 
-动效默认缺失或跨电脑表现不同时，先执行通用 Agent 约束中的[动效偏好排查](../xjb-coding/.auto_coding/AGENT_COLLABORATION.md#motion-preferences)，再判断页面实现问题。
+动效默认缺失或跨电脑表现不同时，先执行通用 Agent 约束中的[动效偏好排查](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/.auto_coding/AGENT_COLLABORATION.md#motion-preferences)，再判断页面实现问题。
 
 ## 联调硬标准：界面不算数，数据流转对了才算（用户拍板，不可省）
 

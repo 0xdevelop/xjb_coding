@@ -10,9 +10,11 @@ metadata:
 
 # xjb-extends-jetbrains
 
+本页仓库链接供人工浏览；执行时优先从本次加载的插件目录读取 URL 中 `blob/latest/` 后的同路径文件，不依赖固定安装目录或线上正文。单独安装时，URL 中 `skills/xjb-extends-jetbrains/` 对应当前 Skill 目录。
+
 ## 官方知识来源
 
-先读取 [官方知识库入口](references/official-docs.md)，再按当前 IDE 产品、版本、操作系统和 Keymap 打开对应官方说明。GoLand 链接只用于 GoLand；其他产品从官方文档首页选择，不猜测跨产品快捷键或配置行为。
+先读取 [官方知识库入口](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-extends-jetbrains/references/official-docs.md)，再按当前 IDE 产品、版本、操作系统和 Keymap 打开对应官方说明。GoLand 链接只用于 GoLand；其他产品从官方文档首页选择，不猜测跨产品快捷键或配置行为。
 
 官方已有的操作说明只引用，不复制手册，不另造教程或维护快捷键表。只加载本次运行、调试或配置问题涉及的说明；链接由仓库现有上游检查流程维护。
 

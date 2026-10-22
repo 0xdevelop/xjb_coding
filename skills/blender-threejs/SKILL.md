@@ -7,26 +7,28 @@ metadata:
 
 # Blender + Three.js
 
+本页仓库链接供人工浏览；执行时优先从本次加载的插件目录读取 URL 中 `blob/latest/` 后的同路径文件，不依赖固定安装目录或线上正文。单独安装时，URL 中 `skills/blender-threejs/` 对应当前 Skill 目录。
+
 完成 Blender 资产到 Three.js 页面中的真实使用流程。沿用目标项目的技术栈、目录、命名和验收要求，默认面向桌面 Web。已有 GLB 时直接从加载与验证开始，不要求重新建模。
 
 ## 边界与来源
 
 - 本 Skill 属于 `xjb_coding`。Blender 是外部已安装工具；Three.js 是目标项目依赖，用现有包管理器和 lockfile 固定版本。不要把 Blender 本体、额外渲染框架或模型生成服务加入 plugin。
 - 宿主中立：优先使用可用的 Blender CLI 或现有 MCP。没有 MCP 时可用 CLI 完成同一流程；不要把工作流规则搬进 `xjb_code`，也不要为该流程新增后端接口。
-- 按需阅读 [Blender 导出与 Three.js 接入](references/blender.md) 和下表中的官方 API 文档。文档由 submodule 原样生成，[SOURCE.json](references/threejs/SOURCE.json) 记录来源 commit、版本和文件哈希；不直接编辑生成文件。
+- 按需阅读 [Blender 导出与 Three.js 接入](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/blender.md) 和下表中的官方 API 文档。文档由 submodule 原样生成，[SOURCE.json](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/SOURCE.json) 记录来源 commit、版本和文件哈希；不直接编辑生成文件。
 - 文档对应固定版本，不代表目标项目也必须升级。先检查项目实际 `three` 版本；若 API 不同，以该版本源码及官方文档为准。官方文档中的示例服务、额外插件和可选解码器不等于本任务的依赖或授权。
 
 | 当前问题 | 按需读取 |
 | --- | --- |
-| GLB 加载、压缩扩展、失败回调 | [GLTFLoader](references/threejs/GLTFLoader.html.md) |
-| 动画推进、暂停与重播 | [AnimationMixer](references/threejs/AnimationMixer.html.md)、[AnimationAction](references/threejs/AnimationAction.html.md) |
-| 帧时间、后台标签页恢复 | [Timer](references/threejs/Timer.html.md) |
-| 色彩空间、UV、纹理释放 | [Texture](references/threejs/Texture.html.md) |
-| 旋转、缩放、相机控制 | [OrbitControls](references/threejs/OrbitControls.html.md) |
-| 粒子绘制、形态重组、粒子景深 | [Points](references/threejs/Points.html.md)、[BufferGeometry](references/threejs/BufferGeometry.html.md)、[ShaderMaterial](references/threejs/ShaderMaterial.html.md) |
-| GLB 静态网格表面采样 | [MeshSurfaceSampler](references/threejs/MeshSurfaceSampler.html.md) |
+| GLB 加载、压缩扩展、失败回调 | [GLTFLoader](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/GLTFLoader.html.md) |
+| 动画推进、暂停与重播 | [AnimationMixer](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/AnimationMixer.html.md)、[AnimationAction](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/AnimationAction.html.md) |
+| 帧时间、后台标签页恢复 | [Timer](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/Timer.html.md) |
+| 色彩空间、UV、纹理释放 | [Texture](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/Texture.html.md) |
+| 旋转、缩放、相机控制 | [OrbitControls](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/OrbitControls.html.md) |
+| 粒子绘制、形态重组、粒子景深 | [Points](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/Points.html.md)、[BufferGeometry](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/BufferGeometry.html.md)、[ShaderMaterial](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/ShaderMaterial.html.md) |
+| GLB 静态网格表面采样 | [MeshSurfaceSampler](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/MeshSurfaceSampler.html.md) |
 
-遇到 `.html` 相对链接时，先查 [SOURCE.json](references/threejs/SOURCE.json) 的 `references`：`bundled` 条目的 `local` 指向同 commit 的本地 `.html.md` 文件，按需读取。原文链接不被重写；`depth_limit`、`outside_scope` 或 `external` 条目没有离线收录，再按实际需要查询官方来源并核对版本。不要把附带的次级引用当作完整 Three.js 知识库。
+遇到 `.html` 相对链接时，先查 [SOURCE.json](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/blender-threejs/references/threejs/SOURCE.json) 的 `references`：`bundled` 条目的 `local` 指向同 commit 的本地 `.html.md` 文件，按需读取。原文链接不被重写；`depth_limit`、`outside_scope` 或 `external` 条目没有离线收录，再按实际需要查询官方来源并核对版本。不要把附带的次级引用当作完整 Three.js 知识库。
 
 ## 执行
 
@@ -51,7 +53,7 @@ blender --factory-startup --background /absolute/path/asset.blend --python-exit-
 
 ## 粒子场景
 
-用户要求粒子、景深、缩放或重组时，可从 [assets/particles/](assets/particles/) 的可运行示例开始，再按目标场景修改。它只依赖固定版本 Three.js，包含球体、环形、散开、GLB 静态网格采样、连续重组、拖动旋转、平滑滚轮缩放、景深调节及播放/暂停。无需 Blender 即可运行内置形态。
+用户要求粒子、景深、缩放或重组时，可从 [assets/particles/](https://github.com/0xdevelop/xjb_coding/tree/latest/skills/blender-threejs/assets/particles/) 的可运行示例开始，再按目标场景修改。它只依赖固定版本 Three.js，包含球体、环形、散开、GLB 静态网格采样、连续重组、拖动旋转、平滑滚轮缩放、景深调节及播放/暂停。无需 Blender 即可运行内置形态。
 
 将完整示例复制到目标项目的合适目录，首次安装依赖后启动本地服务：
 

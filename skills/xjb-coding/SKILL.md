@@ -6,6 +6,8 @@ version: 0.0.34
 
 # xjb_coding — AI 自驱编码作战手册 (SKILL)
 
+本页仓库链接供人工浏览；执行时优先从本次加载的插件目录读取 URL 中 `blob/latest/` 后的同路径文件，不依赖固定安装目录或线上正文。单独安装时，URL 中 `skills/xjb-coding/` 对应当前 Skill 目录。
+
 > **SkillName**：`xjb_coding`
 > **Version**：v0.0.34
 > **适用工具**：Claude Code · Codex · Cursor · Trae · Windsurf · Copilot Chat · Cline · 任意支持系统提示词或 MCP 的 AI 编码助手
@@ -18,8 +20,8 @@ version: 0.0.34
 - 本 skill 不做 telemetry，不上传仓库、diff、prompt、任务状态。
 - `xjb_code` 是用户自部署的通用 MCP Streamable HTTP 后端，不接 LLM；它与本 skill 独立存在，配合使用效果更佳。
 - 没有连通 MCP 时，必须回退到本地 Skills / markdown 模式，不得阻塞初始化。
-- 项目绑定先核对当前仓库和服务端权限，见 [项目识别与共享范围](references/projects.md)。公司项目面向单公司实例账号共享；个人项目仅活跃成员可读，新建默认 private，不回退 `default`。仓库标识不限 GitHub，自定义平台或其他版本管理工具按同一规则规范化。
-- JetBrains IDE 调试使用独立的 [xjb-extends-jetbrains](../xjb-extends-jetbrains/SKILL.md) Skill：只引用官方知识库，复用仓库 `.run/` 配置并按实际 OS / Keymap 操作。
+- 项目绑定先核对当前仓库和服务端权限，见 [项目识别与共享范围](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/references/projects.md)。公司项目面向单公司实例账号共享；个人项目仅活跃成员可读，新建默认 private，不回退 `default`。仓库标识不限 GitHub，自定义平台或其他版本管理工具按同一规则规范化。
+- JetBrains IDE 调试使用独立的 [xjb-extends-jetbrains](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-extends-jetbrains/SKILL.md) Skill：只引用官方知识库，复用仓库 `.run/` 配置并按实际 OS / Keymap 操作。
 
 ---
 
@@ -161,7 +163,7 @@ INIT-9. 询问是否立即启动
 
 **主流程递进**：`--refine` → `--task_plan` → `--worker`，无参数是三者完整串联；`--tick` 是同一主流程的有界切片，供外部循环反复触发。
 
-需要 Dashboard 定期任务、微信 ClawBot 状态汇报或手机下发目标时，读取 [Runloop 接单与续做](references/runloop.md)，使用 `xjb_code runloop` 原生 Go 执行端。收到执行端的 `run_id` 和结果文件路径时按该契约推进，不重复初始化或领取同一轮次。
+需要 Dashboard 定期任务、微信 ClawBot 状态汇报或手机下发目标时，读取 [Runloop 接单与续做](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/references/runloop.md)，使用 `xjb_code runloop` 原生 Go 执行端。收到执行端的 `run_id` 和结果文件路径时按该契约推进，不重复初始化或领取同一轮次。
 
 ---
 

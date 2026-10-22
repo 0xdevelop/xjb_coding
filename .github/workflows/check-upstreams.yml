@@ -22,7 +22,7 @@ jobs:
         run: bash scripts/update_upstreams.sh --check
       - name: Verify local edit protection and text processing
         run: bash scripts/tests/test_upstreams.sh
-      - name: Verify Orca plugin loading and failure paths
-        run: node --test scripts/tests/test_orca_plugin.mjs
+      - name: Verify plugin loading and portable document links
+        run: node --test scripts/tests/test_orca_plugin.mjs scripts/tests/test_plugin_links.mjs
       - name: Verify standalone Archify package and delivery protection
         run: node --test scripts/tests/test_archify.mjs
