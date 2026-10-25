@@ -1,6 +1,6 @@
 {
   "name": "xjb-coding",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "多宿主 Agent Skills：自驱编码、可选 xjb_code 协同、Bruno 测试、真浏览器调试、原型、图表、Blender + Three.js、本机 ComfyUI。安装与升级以本 Git 仓库为准。",
   "author": {
     "name": "0xdevelop"

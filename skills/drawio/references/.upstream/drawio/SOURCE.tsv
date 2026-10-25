@@ -2,10 +2,10 @@ file	LICENSE	006e61a1b8c97620d75ceacc283de7a363d78da7da9a5b92203324c40feb7232	LI
 file	plugins/codex/drawio/skills/drawio/SKILL.md	60e1fd54b577f41ba3297f492d22dc5d6ed94fac95c173b79e1bc549ec2629e4	plugins/codex/drawio/skills/drawio/SKILL.md
 file	shared/mermaid-reference.md	ac7af3fe47a817c902b11efd85737080bfcc93ac0f2dc8b7b5b381a5ba32eeaf	shared/mermaid-reference.md
 file	shared/mxfile.xsd	905db85d4e8ebec0e91518cdd62982e0afb3f09ebdcaf9e6b1952957a606639a	shared/mxfile.xsd
-file	shared/style-reference.md	d58967e07b5af817511ac2c7fabf41deeb3c9c54fc20c866d1860a0879b0a2ce	shared/style-reference.md
+file	shared/style-reference.md	42d6779c099da25d5694aca6462e9e5ee301d8d287abaf711f2c7148b995e2d4	shared/style-reference.md
 file	shared/xml-essentials.md	6cbc4cf0ea882bb41e76bab66f2e8f09b6cb574719e1bc88267dd85387bf3e37	shared/xml-essentials.md
 file	shared/xml-reference.md	fc6534fff5c7e60dc9d029c4d90ae2b676495c947ab83a5f1096737cab91429f	shared/xml-reference.md
-meta	commit	05c17479ec84157266cb36017dbd50a908e9c8ac
+meta	commit	3a74f709e48d1dc1eb0e3ef6ae2f46c1d8d988a0
 meta	license	Apache
 meta	reference_depth	1
 meta	repository	https://github.com/jgraph/drawio-mcp.git
@@ -16,7 +16,9 @@ ref	plugins/codex/drawio/skills/drawio/SKILL.md	https://raw.githubusercontent.co
 ref	plugins/codex/drawio/skills/drawio/SKILL.md	https://raw.githubusercontent.com/jgraph/drawio-mcp/main/shared/xml-essentials.md	-	external	-
 ref	plugins/codex/drawio/skills/drawio/SKILL.md	https://raw.githubusercontent.com/jgraph/drawio-mcp/main/shared/xml-reference.md	-	external	-
 ref	shared/mermaid-reference.md	https://github.com/jgraph/drawio/discussions/5643	-	external	-
+ref	shared/style-reference.md	https://`	-	external	-
 ref	shared/style-reference.md	https://github.com/jgraph/drawio-mcp/blob/main/shared/mxfile.xsd	-	external	-
+ref	shared/style-reference.md	https://www.drawio.com/docs/manual/pages/style-rules/	-	external	-
 ref	shared/style-reference.md	https://www.drawio.com/docs/reference/diagram-generation/	-	external	-
 ref	shared/style-reference.md	https://www.drawio.com/docs/reference/json-layout-specification	-	external	-
 ref	shared/xml-reference.md	https://github.com/jgraph/drawio-mcp/blob/main/shared/mxfile.xsd	-	external	-

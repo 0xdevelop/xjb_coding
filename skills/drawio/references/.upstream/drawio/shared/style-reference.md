@@ -88,7 +88,7 @@ These shapes are defined in the mxGraph core library:
 | `rhombus` | Diamond | Use `perimeter=rhombusPerimeter` |
 | `triangle` | Triangle | Use `perimeter=trianglePerimeter` |
 | `hexagon` | Hexagon | Use `perimeter=hexagonPerimeter2` |
-| `cloud` | Cloud | |
+| `cloud` | Cloud | Use `perimeter=cloudPerimeter` |
 | `cylinder` | 3D Cylinder | |
 | `line` | Horizontal line | |
 | `arrow` | Block arrow | |
@@ -230,6 +230,16 @@ Major libraries:
 | `strokeOpacity` | `0`–`100` | `100` | Stroke opacity only |
 | `glass` | `0`, `1` | `0` | Glass/shine overlay effect |
 | `shadow` | `0`, `1` | `0` | Drop shadow (also controlled globally on mxGraphModel) |
+| `multiple` | `0`, `1` | `0` | Paints copies of a vertex stacked behind it, for example to show several instances. Connectors end on the outline of the stack instead of crossing the copies. The label and the selection stay on the front shape. Ignored on edges |
+| `multipleCount` | `1`–`10` | `2` | With `multiple=1`: number of copies behind the shape |
+| `multipleDx` | number | `8` | With `multiple=1`: horizontal offset of each copy from the one in front of it, in pixels on the page (also for rotated and flipped shapes) |
+| `multipleDy` | number | `-8` | With `multiple=1`: vertical offset of each copy from the one in front of it, in pixels on the page (negative values go up) |
+
+From version 32.4.5 onwards:
+
+| Property | Values | Default | Description |
+|---|---|---|---|
+| `opacityGroup` | `0`, `1` | `0` | Applies `opacity` to the shape as a whole, so that overlapping parts (the line under a filled arrow head, the stroke over the fill) do not get darker. Set together with the opacity in the _Style_ tab |
 
 ### 4.2 Shape Geometry
 
@@ -237,8 +247,8 @@ Major libraries:
 |---|---|---|---|
 | `shape` | see Shape Types above | `label` | Shape type |
 | `perimeter` | see Perimeters below | `rectanglePerimeter` | Connection point calculation |
-| `rounded` | `0`, `1` | `0` | Round rectangle corners |
-| `arcSize` | number | — | Corner radius for rounded shapes (0–50, as percentage) |
+| `rounded` | `0`, `1` | `0` | Round the corners of rectangles, polygons (e.g. `rhombus`, `triangle`, `hexagon`) and shapes with curved sides (`document`, `tape`, `dataStorage`, `or`, `xor`). On curved sides the rounding follows the tangent of the curve |
+| `arcSize` | number | — | Corner size for rounded shapes. Rectangle-based shapes (e.g. `rectangle`, `label`, `process`): the radius is `arcSize` percent of the shorter side (0–50, default `15`), or `arcSize / 2` pixels with `absoluteArcSize=1`. Other shapes (polygons, `document`, `tape`, `dataStorage`, `or`, `xor`): the radius is `arcSize / 2` pixels (default `20`), at most half of each side |
 | `aspect` | `variable`, `fixed` | `variable` | `fixed` preserves width/height ratio |
 | `direction` | `north`, `south`, `east`, `west` | — | Rotate shape by 90° increments |
 | `flipH` | `0`, `1` | `0` | Flip horizontally |
@@ -250,7 +260,9 @@ From version 31.7.1 onwards:
 
 | Property | Values | Default | Description |
 |---|---|---|---|
-| `roundedPerimeter` | `0`, `1` | `0` | With `rounded=1` on rectangles and labels, perimeter connection points and floating edges end on the rounded outline instead of the bounding box. Corner connection points sit at 45° on the arc. Ignored by other shapes |
+| `roundedPerimeter` | `0`, `1` | `0` | With `rounded=1` on rectangles and labels, perimeter connection points and floating edges end on the rounded outline instead of the bounding box. Corner connection points sit at 45° on the arc. Other shapes: see below |
+
+From version 32.4.5 onwards, `roundedPerimeter` also applies to `process` and `internalStorage`, and to `triangle`, `rhombus`, `hexagon`, `parallelogram`, `trapezoid` and `step` with their default perimeter, where connectors end on the rounded corners as painted. Other shapes ignore it. The _Rounded_ option has set the key on all shapes since version 31.7.1, so connectors on these shapes move onto the rounded corners in diagrams saved since then.
 
 ### 4.3 Text and Labels
 
@@ -266,7 +278,7 @@ From version 31.7.1 onwards:
 | `verticalAlign` | `top`, `middle`, `bottom` | `middle` | Vertical text alignment |
 | `labelPosition` | `left`, `center`, `right` | `center` | Horizontal label position relative to shape |
 | `verticalLabelPosition` | `top`, `middle`, `bottom` | `middle` | Vertical label position relative to shape |
-| `labelPerimeter` | `0`, `1` | `0` | On a vertex whose label is outside the shape, centered on one side (`verticalLabelPosition=top` or `bottom` with `labelPosition=center`, or `labelPosition=left` or `right` with `verticalLabelPosition=middle`): edges that would cross the label end at its outline instead (plus the perimeter spacing), and a fixed connection point on that side moves to the far edge of the label. Ignored on rotated and flipped shapes. Library shapes with an outside label have it, and the _Position_ control in the _Text_ tab sets it; set it on generated vertices with outside labels, for example icons with `verticalLabelPosition=bottom` |
+| `labelPerimeter` | `0`, `1` | `0` | On a shape whose label is outside its outline, centred on one side (`verticalLabelPosition=top` or `bottom` with `labelPosition=center`, or `labelPosition=left` or `right` with `verticalLabelPosition=middle`), connectors that would cross the label end at its outline instead (plus the perimeter spacing), and a fixed connection point on that side moves to the far edge of the label. Ignored on rotated and flipped shapes. Automatically set on library shapes with an outside label, and when the _Position_ in the _Text_ tab is changed to an outside position. Set it on generated vertices with outside labels, for example icons with `verticalLabelPosition=bottom` |
 | `overflow` | `visible`, `hidden`, `fill`, `width` | — | Text overflow handling |
 | `spacing` | number | `2` | General padding in pixels |
 | `spacingTop` | number | `0` | Top padding |
@@ -274,13 +286,14 @@ From version 31.7.1 onwards:
 | `spacingLeft` | number | `0` | Left padding |
 | `spacingRight` | number | `0` | Right padding |
 | `textOpacity` | `0`–`100` | `100` | Text opacity |
-| `labelBackgroundColor` | `#RRGGBB`, `none`, `default` | — | Background behind text (useful for edge labels) |
-| `defaultLabelBackgroundColor` | `page` | — | With `labelBackgroundColor=default`: no background, the label box is cut out of the shape and of the parent edge, so the page shows behind the label (_Transparent_ in the _Background_ list of draw.io's Text tab). `gap` has the same effect. draw.io sets it on new edges and edge labels |
-| `labelPlacement` | `auto` | — | On an edge or an edge label: the label stays horizontal and sits just above horizontal segments, below the line when something is in the way above, and on the line (with the gap) on vertical and diagonal segments. It keeps clear of bends and arrowheads; a label in the middle of the edge that doesn't fit its segment moves to the nearest segment that does. Placed again when the route changes. draw.io releases after 32.5.5; older viewers ignore it |
+| `labelPlacement` | `auto` | — | On a connector or a connector label: the label stays horizontal and sits just above horizontal segments, or below when something is in the way, and on the line (with a label gap) on vertical and diagonal segments. It avoids bends and arrowheads, and a label that doesn't fit its segment moves to the nearest longer segment. Placed again when the route changes. A label with an offset maintains that offset and only moves to the side appropriate for its segment. Not applied to vertical text (`horizontal=0`). draw.io releases after 32.5.5; older viewers ignore it |
+| `labelBackgroundColor` | `#RRGGBB`, `none`, `default` | — | Background behind text (useful for edge labels). Shown as _None_ (`none`) or _Solid_ (a colour) in the _Background_ list of the _Text_ tab |
+| `defaultLabelBackgroundColor` | `page` | — | With `labelBackgroundColor=default`: no background, the label box is cut out of the shape and of the parent edge, so the page and the cells behind the label stay visible. `gap` has the same effect. The default edge style sets it, so new edges and edge labels use it. Shown as _Transparent_ in the _Background_ list of the _Text_ tab, which offers it for edges and their label cells |
+| `inheritText` | `1`, comma-separated keys | — | On a label cell of an edge: the text styles that the label takes from the edge, `1` for all of `fontFamily` (with `fontSource`), `fontSize`, `fontColor`, `fontStyle`, `textOpacity`, `labelBorderColor`, `labelBorderWidth`, `labelBackgroundColor`, `defaultLabelBackgroundColor` and `labelPadding`. The label also stores the values of the edge in these keys for applications that don't support `inheritText`. Setting one of these keys on the label removes it from the list. The value `inherit` of one of these keys also takes it from the edge. New double-click labels and the label cells of the edge templates use `inheritText=1`; _Use Connector Style_ in the _Text_ tab sets it again. Ignored before version 32.6.0 |
 | `labelBorderColor` | `#RRGGBB`, `none` | — | Border around label |
 | `labelWidth` | number | — | Fixed label width |
 | `textDirection` | `default`, `ltr`, `rtl` | `default` | Text direction |
-| `horizontal` | `0`, `1` | `1` | `0` for vertical text |
+| `horizontal` | `0`, `1` | `1` | `0` for vertical text. For swimlanes and table rows, it also sets the side of the title region; combine `horizontal=1;direction=north` for a title on the left with horizontal text (table rows from version 32.5.0) |
 
 ### 4.4 Edge / Connector Properties
 
@@ -301,6 +314,12 @@ From version 31.7.1 onwards:
 | `jumpSize` | number | `6` | Jump width at crossings |
 | `jumpLayers` | `0`, `1` | `1` | `0` only adds jumps for crossings with edges in the same layer as this edge |
 | `followTerminals` | `0`, `1` | `0` | Waypoints move with the terminals when these are moved, resized or arranged: orthogonal edges keep axis-parallel segments, other edges keep each waypoint's relative position along and distance from the line between the terminal centres. No effect with `libavoidRouting=1` |
+
+From version 32.4.5 onwards:
+
+| Property | Values | Default | Description |
+|---|---|---|---|
+| `libavoidSpacing` | number | `16` | With `libavoidRouting=1`: distance between the edge and the shapes it routes around (_Spacing_ in the _Line_ section of the _Style_ tab) |
 
 ### 4.5 Arrow Markers
 
@@ -456,9 +475,31 @@ From version 32.3.1 onwards, `flowLayout`, `treeLayout` and `organicLayout` run 
 | `cloneable` | `0`, `1` | `1` | Allow cloning |
 | `foldable` | `0`, `1` | — | Allow fold/collapse |
 | `connectable` | `0`, `1` | `1` | Allow connections |
-| `newEdgeStyle` | URL-encoded JSON style | — | Style of new connectors drawn from this shape. Set it with _Set as Default for New Connections_ on a connector from this shape, and remove it with _Clear Default for New Connections_ on the shape |
+| `newEdgeStyle` | URL-encoded JSON style | — | Style of new connectors drawn from this shape. Set it with _Use for New Connections from Source_ (_Set New Connection Default_ before version 32.4.5) on a connector from this shape, and remove it with _Clear Style for New Connections_ (_Clear New Connection Default_ before version 32.4.5) on the shape |
 | `pointerEvents` | `0`, `1` | `1` | Enable mouse events |
 | `autosize` | `0`, `1` | `0` | Auto-size to fit content |
+
+### 4.11 Data Properties
+
+Values in the style of a cell can come from its data, and from the [style rules](https://www.drawio.com/docs/manual/pages/style-rules/) of the page.
+
+| Property | Values | Default | Description |
+|---|---|---|---|
+| `stylePlaceholders` | `0`, `1` | `0` | `1` replaces placeholders such as `%color%` in the values of the keys in the table below with the data of the cell, its ancestors and the page, like placeholders in labels. Each value is checked for its key: keys whose value is not valid after the placeholders are replaced are removed, numbers are limited to the range of the key. Placeholders in other keys are not replaced. The CSV import keeps these placeholders in styles with `stylePlaceholders=1`, so the styles follow later changes of the data. Example: `fillColor=%color%;stylePlaceholders=1;` |
+| `styleRules` | `0`, `1` | `1` | `0`: the style rules of the page don't change the cell, for example the shapes of a legend that _Insert Legend_ adds |
+
+Keys that placeholders and style rules can set:
+
+| Keys | Values |
+|---|---|
+| `fillColor`, `gradientColor`, `strokeColor`, `fontColor`, `labelBackgroundColor`, `labelBorderColor`, `swimlaneFillColor` | `#hex`, `rgb()`, `rgba()`, `hsl()` or `hsla()` with numbers, a colour name, `light-dark()` of two colours, `none` or `default` |
+| `opacity`, `fillOpacity`, `strokeOpacity`, `textOpacity` | `0` to `100` |
+| `strokeWidth` | `0` to `100` |
+| `fontSize` | `1` to `500` |
+| `fontStyle` | `0` to `15`, rounded |
+| `rotation` | `-360` to `360` |
+| `dashed`, `rounded`, `shadow` | `0`, `1` |
+| `image` | `https://` URL without quotes, spaces, `;` or parentheses, up to 2048 characters. An image without placeholders, for example a `data:` URI that contains `%`, is kept as it is |
 
 ---
 
@@ -505,6 +546,7 @@ The perimeter determines how connection points are calculated on a shape's borde
 | `backbonePerimeter` | Backbone/bus shapes |
 | `centerPerimeter` | Single center point |
 | `stepPerimeter` | Step/chevron shapes |
+| `cloudPerimeter` | Clouds: connectors end on the outline of the cloud as drawn (without it, `ellipse;shape=cloud` uses the ellipse) |
 
 **Important:** When using non-rectangular shapes, always set the matching perimeter. Otherwise edges will connect to the rectangular bounding box instead of the visible shape border.
 
@@ -765,6 +807,19 @@ Edge labels are usually encoded in the edge cell's `value`. The label position i
 - `x` on geometry: position along edge (-1 to 1, where 0 = center, -1 = near source, 1 = near target)
 - `y` on geometry: perpendicular offset in pixels
 - With `labelOnCurve=1` on a curved edge, `x` and `y` are measured along and perpendicular to the painted curve instead of the line through the waypoints
+
+### Edge with Label Cells
+
+More labels are vertex children of the edge with a relative geometry, `connectable="0"` and the `edgeLabel` style. With `inheritText=1` they take the text styles of the edge (see 4.3 Text and Labels):
+
+```xml
+<mxCell id="l1" value="1" style="edgeLabel;html=1;align=left;verticalAlign=bottom;resizable=0;inheritText=1;"
+        vertex="1" connectable="0" parent="e3">
+  <mxGeometry x="-1" relative="1" as="geometry" />
+</mxCell>
+```
+
+- `x` on geometry: position along the edge (-1 to 1), `y`: perpendicular offset, `offset`: an extra offset in pixels
 
 ### Unconnected Edge (Floating)
 
