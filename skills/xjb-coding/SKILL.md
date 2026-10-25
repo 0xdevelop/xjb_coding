@@ -9,8 +9,9 @@ version: 0.0.36
 本页仓库链接供人工浏览；执行时优先从本次加载的插件目录读取 URL 中 `blob/latest/` 后的同路径文件，不依赖固定安装目录或线上正文。单独安装时，URL 中 `skills/xjb-coding/` 对应当前 Skill 目录。
 
 > **SkillName**：`xjb_coding`
-> **Version**：v0.0.36
 > **适用工具**：Claude Code · Codex · Cursor · Trae · Windsurf · Copilot Chat · Cline · 任意支持系统提示词或 MCP 的 AI 编码助手
+>
+> **Version**：v0.0.36
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 
 > **宿主中立**：本 skill 默认可独立运行；`xjb_code` MCP 后端是可选增强。Claude Code / Codex / Cursor 等只是不同宿主前端。
@@ -114,6 +115,8 @@ INIT-8. 输出本次实际完成摘要（跳过、复用、失败逐项说明，
         Claude Code：用户级 ~/.claude/settings.json →
           pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url；
           key 走 /plugin 配置对话框的 mcp_api_key（sensitive，存钥匙串）。
+        Cursor：插件 Configure 里填 XJB_CODE_MCP_URL、XJB_CODE_API_KEY；
+          仓库只声明 .mcp.cursor.json 的占位符。不把地址写进 ~/.cursor/mcp.json 再留一份。
         Claude 的插件 mcp_url 未设置时取本机默认值；其他 marketplace 使用实际插件 ID。
         不要在 settings.json 顶层写 mcpServers，也不要把 pluginConfigs 写到项目 settings。
         若 ~/.claude.json 已有独立 xjb-code 条目，先迁移 URL 并核对认证字段，再移除旧条目，

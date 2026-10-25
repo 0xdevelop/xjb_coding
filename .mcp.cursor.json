@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "xjb-code": {
+      "url": "${XJB_CODE_MCP_URL}",
+      "headers": {
+        "Authorization": "Bearer ${XJB_CODE_API_KEY}"
+      }
+    }
+  }
+}

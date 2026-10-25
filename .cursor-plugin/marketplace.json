@@ -1,0 +1,15 @@
+{
+  "name": "xjb-coding-cursor-marketplace",
+  "owner": {
+    "name": "0xdevelop"
+  },
+  "metadata": {
+    "description": "0xdevelop's Cursor skills marketplace"
+  },
+  "plugins": [
+    {
+      "name": "xjb-coding",
+      "source": "."
+    }
+  ]
+}

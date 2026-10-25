@@ -2,18 +2,12 @@
 
 set -e
 
-VersionFile=./skills/xjb-coding/SKILL.md
-SyncFile=./skills/xjb-coding/.auto_coding/start_coding.md
-PluginJsonFile=./.claude-plugin/plugin.json
-CodexPluginJsonFile=./.codex-plugin/plugin.json
-OrcaPluginJsonFile=./orca-plugin.json
+PublicFile=./agents.public.json
 
-# SKILL.md 顶部样式：
-#   > **SkillName**：`xjb_coding`
-#   > **Version**：v0.0.1
-# 中文冒号「：」 + backtick 包裹 SkillName + 裸 vX.X.X 包裹 Version。
-ProductName=$(grep -E '^> \*\*SkillName\*\*：' "$VersionFile" | head -1 | sed -E 's/.*`([^`]+)`.*/\1/')
-CURRENT_VERSION=$(grep -E '^> \*\*Version\*\*：' "$VersionFile" | head -1 | sed -E 's/.*：(v[0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+# 版本与公共字段只从 agents.public.json 读。各宿主清单由 scripts/sync_public_infos.sh 按各自格式写入。
+ProductName=$(sed -n 's/^  "displayName": "\([^"]*\)".*/\1/p' "$PublicFile" | head -1)
+PUBLIC_VERSION=$(sed -n 's/^  "version": "\([0-9][0-9.]*\)".*/\1/p' "$PublicFile" | head -1)
+CURRENT_VERSION="v${PUBLIC_VERSION}"
 
 NEXT_VERSION=""
 
@@ -109,32 +103,11 @@ function git_handle_ready() {
 
     local plain_version="${NEXT_VERSION#v}"
 
-    # SKILL.md：`> **Version**：vX.X.X` （中文冒号，无引号）
-    sed -i -e "s/^\(> \*\*Version\*\*：\)v[0-9.]*/\1${NEXT_VERSION}/" "$VersionFile"
-
-    # SKILL.md YAML frontmatter：`version: X.X.X`（hermes skills 必需字段）
-    sed -i -e "s/^version: [0-9.]*/version: ${plain_version}/" "$VersionFile"
-
-    # start_coding.md：`> **版本**：vX.X.X <任意后缀>`（后缀无关，只替换版本号本身；
-    # 旧模式硬编码「 通用版」后缀，footer 改文案后 sed 静默不匹配，曾致版本停在 v0.0.10）
-    if [ -f "$SyncFile" ]; then
-        sed -i -e "s/^\(> \*\*版本\*\*：\)v[0-9.]*/\1${NEXT_VERSION}/" "$SyncFile"
-    fi
-
-    # plugin.json：`"version": "X.X.X"` —— Claude Code / Codex plugin 更新检测的字段（无 v 前缀）
-    if [ -f "$PluginJsonFile" ]; then
-        sed -i -e "s/\"version\": \"[0-9.]*\"/\"version\": \"${plain_version}\"/" "$PluginJsonFile"
-    fi
-    if [ -f "$CodexPluginJsonFile" ]; then
-        sed -i -e "s/\"version\": \"[^\"]*\"/\"version\": \"${plain_version}\"/" "$CodexPluginJsonFile"
-    fi
-    if [ -f "$OrcaPluginJsonFile" ]; then
-        sed -i -e "s/\"version\": \"[^\"]*\"/\"version\": \"${plain_version}\"/" "$OrcaPluginJsonFile"
-    fi
-
+    sed -i -e "s/^  \"version\": \"[0-9.]*\"/  \"version\": \"${plain_version}\"/" "$PublicFile"
     if [[ $OS_TYPE == "Darwin" ]]; then
-        rm -f "${VersionFile}-e" "${SyncFile}-e" "${PluginJsonFile}-e" "${CodexPluginJsonFile}-e" "${OrcaPluginJsonFile}-e" 2>/dev/null || true
+        rm -f "${PublicFile}-e" 2>/dev/null || true
     fi
+    bash scripts/sync_public_infos.sh
 }
 
 function find_prev_release_commit() {

@@ -1,19 +1,16 @@
 {
   "name": "xjb-coding",
   "version": "0.0.36",
-  "description": "Agent Skills for coding workflows, multi-user multi-agent collaboration via the xjb_code backend, Bruno API and workflow tests, real-browser Web debugging (ego-browser first when available), Web prototypes, requirement planning prototypes, editable draw.io and Archify interactive diagrams, Blender + Three.js, and local ComfyUI workflows. One skill set shared by Codex, Claude Code, and Hermes.",
+  "description": "Agent Skills for coding workflows, multi-user multi-agent collaboration via the xjb_code backend, Bruno API and workflow tests, real-browser Web debugging, Web prototypes, diagrams, Blender + Three.js, and local ComfyUI workflows.",
   "author": {
     "name": "0xdevelop"
   },
-  "homepage": "https://github.com/0xdevelop/xjb_coding",
-  "repository": "https://github.com/0xdevelop/xjb_coding",
-  "license": "BSD-3-Clause",
   "skills": "./skills/",
   "mcpServers": "./.mcp.codex.json",
   "interface": {
     "displayName": "xjb_coding",
     "shortDescription": "编码、Bruno 测试、draw.io 图表",
-    "longDescription": "xjb_coding packages the workflow Skills a coding agent needs end to end: refine requirements, split tasks, code with TDD behind four quality gates, checkpoint and resume across sessions, and coordinate several agents through the optional xjb_code backend (per-user API keys, shared task board, human approvals). It also covers Bruno API and workflow tests with official references and real import validation, real-browser Web debugging that selects the official ego-browser (ego lite) skill or host Playwright MCP by current capabilities, sketch-to-prototype Web UX, single-file requirement planning prototypes (two-end screen comparison, call chain with parameters, per-end hardening), editable draw.io diagrams with bundled official guidance, Archify interactive standalone HTML diagrams, Blender + Three.js assets, and editable local ComfyUI workflows with official references and local extensions. Bruno, draw.io Desktop for exports, Comfy CLI/MCP and ego lite are external tools; missing tools produce setup instructions. Source and docs: https://github.com/0xdevelop/xjb_coding",
+    "longDescription": "xjb_coding packages the workflow Skills a coding agent needs end to end: refine requirements, split tasks, code with TDD behind four quality gates, checkpoint and resume across sessions, and coordinate several agents through the optional xjb_code backend. Source and docs: https://github.com/0xdevelop/xjb_coding",
     "developerName": "0xdevelop",
     "category": "Productivity",
     "capabilities": [

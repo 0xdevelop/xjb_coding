@@ -1,0 +1,27 @@
+{
+  "name": "xjb-coding",
+  "version": "0.0.36",
+  "description": "多宿主 Agent Skills：自驱编码、可选 xjb_code 协同、Bruno 测试、真浏览器调试、原型、图表、Blender + Three.js、本机 ComfyUI。安装与升级以本 Git 仓库为准。",
+  "author": {
+    "name": "0xdevelop"
+  },
+  "skills": "./skills/",
+  "rules": "./skills/xjb-coding/cursor_rule.mdc",
+  "mcpServers": "./.mcp.cursor.json",
+  "variables": {
+    "type": "object",
+    "properties": {
+      "XJB_CODE_MCP_URL": {
+        "type": "string",
+        "title": "xjb_code MCP URL",
+        "description": "xjb_code 服务完整地址。本机使用默认值；私有部署改为实际可访问地址。",
+        "default": "http://127.0.0.1:12100/"
+      },
+      "XJB_CODE_API_KEY": {
+        "type": "string",
+        "title": "xjb_code API key",
+        "description": "Dashboard「账号与 key」签发的用户级凭证，xjbk_ 前缀。同一用户的所有 agent 共用。留空时只能调用公开方法。"
+      }
+    }
+  }
+}

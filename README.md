@@ -1,10 +1,10 @@
 # xjb_coding
 
-面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、Bruno 接口与流程测试、真浏览器 Web 调试（按实际能力优先官方 ego-browser）、草图生成 Web 原型、draw.io 可编辑图表、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，三类宿主共用。
+面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、Bruno 接口与流程测试、真浏览器 Web 调试（按实际能力优先官方 ego-browser）、草图生成 Web 原型、draw.io 可编辑图表、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，Codex、Claude Code、Cursor、Hermes 共用。
 
 安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号一把 API key，同一用户的所有 agent 共用；公司项目全实例可读、个人项目仅成员可读，编辑限记录归属人或管理员；看板实时显示任务、待批决策点与工具调用统计。
 
-兼容目标是当前 Codex、Claude Code、Hermes Agent；按各宿主的官方入口加载完整 Skill 目录，不依赖宿主专有继承机制。人工保存的工作流始终可以重新打开并作为下一轮输入，更新插件或切换宿主不会迁移、覆盖这些业务文件。每次发版区分入口校验、宿主实测和生成结果验收，不承诺未经验证的未来版本。
+兼容目标是当前 Codex、Claude Code、Cursor、Hermes Agent；按各宿主的官方入口加载完整 Skill 目录，不依赖宿主专有继承机制。人工保存的工作流始终可以重新打开并作为下一轮输入，更新插件或切换宿主不会迁移、覆盖这些业务文件。每次发版区分入口校验、宿主实测和生成结果验收，不承诺未经验证的未来版本。
 
 ## 支持的 Skills 与领域
 
@@ -27,6 +27,8 @@
 读取、审计 Skill 不会部署到目标项目；首次启用才按授权初始化，已有项目先恢复原项目、任务与会话，不覆盖状态或重复追加宿主规则。各宿主共用主引擎的恢复、锁与存档协议，MCP 可用且已认证时沿用服务端状态，确实不可用才用既有 markdown 回退。断点保存与提交、推送、发版解耦，各项 Git 操作分别遵守用户授权。验证按改动范围增量执行，最终验收仍满足项目既定标准；技能不能覆盖宿主安全要求、用户现行授权与已确认项目约定。
 
 ## 安装与更新
+
+各宿主只读自己的清单。公共字段（名称、版本、作者、仓库、MCP 默认地址）只写在 `agents.public.json`，由 `scripts/sync_public_infos.sh` 按各宿主格式写入对应键。`git_tag.sh` 先改这份 version，再调同步。Claude 的 Git marketplace 清单不写 `version`，更新跟随仓库提交。工作流正文是 `skills/xjb-coding/SKILL.md`。
 
 Skill、参考资料和脚本随插件一起安装、更新，用户无需逐个安装 Skill 或修改资料路径。README 与公开 Skill 入口的仓库链接使用 HTTPS，供人在插件预览中直接打开；Agent 执行时优先从宿主实际加载的插件目录读取 URL 中 `blob/latest/` 后的同路径文件，使用随包版本，不依赖线上正文、用户名、主目录、默认缓存位置或固定版本。单独安装某个 Skill 时，URL 中 `skills/<名称>/` 对应当前 Skill 目录。文档中的 `~/...` 仅标明宿主配置文件等约定位置。
 
@@ -66,6 +68,18 @@ codex plugin list
 /plugin update xjb-coding@xjb-coding-marketplace
 /reload-plugins
 ```
+
+### Cursor
+
+仓库根的 `.cursor-plugin/marketplace.json` 是 Cursor 的源索引，`.cursor-plugin/plugin.json` 是 Cursor 自己读的插件描述。安装源是 GitHub 上的本仓库，不使用某台机器的 `~/.cursor/skills` 符号链接，也不使用 Claude 插件缓存里的版本目录。发布脚本同步这份清单的 `version`。
+
+团队：Dashboard → Plugins & MCPs → Team Marketplaces → Import from Repo，粘贴 `https://github.com/0xdevelop/xjb_coding`。Marketplace Settings 里打开 Auto Refresh，并给该仓库装上 Cursor GitHub App。成员在 Customize 里安装 `xjb-coding`，范围选用户。推送到被跟踪的分支后由 Auto Refresh 重新索引，最多约 10 分钟一批；正在跑的对话仍用启动时的版本，新开对话才读到新版本。
+
+本机试装把仓库拷进 `~/.cursor/plugins/local/`，不要用指向仓库外的符号链接。官方 Marketplace 上架仍要单独提交审核；审核通过前，以上述 Git 导入为准。
+
+地址和 key 不写进仓库。Cursor 在插件 Configure 里填 `XJB_CODE_MCP_URL` 和 `XJB_CODE_API_KEY`，对应 `.mcp.cursor.json` 的占位符。
+
+官方依据：[Plugins](https://cursor.com/docs/plugins)、[Plugins reference](https://cursor.com/docs/reference/plugins)。
 
 ### Orca
 
@@ -283,6 +297,8 @@ Claude Code：在用户级 `~/.claude/settings.json` 中合并地址；key 是 `
 
 这是 Claude 官方 `userConfig` / `pluginConfigs` 机制：插件声明 `mcp_url` 与 `mcp_api_key`，MCP 配置引用 `${user_config.mcp_url}` 和 `headers.Authorization = "Bearer ${user_config.mcp_api_key}"`。设置写在用户目录，不能放到项目 `.claude/settings.json`；如果从其他 marketplace 安装，键名使用实际的 `插件名@marketplace名`。Codex 和 Claude 使用各自的 MCP 配置文件，避免把一种宿主的占位符交给另一种宿主解析。
 
+Cursor：`.mcp.cursor.json` 只放 `${XJB_CODE_MCP_URL}` 和 `${XJB_CODE_API_KEY}`。值在已安装插件的 Configure 里填写，不写进仓库，也不要写进 `~/.cursor/mcp.json` 再复制一份。插件注册的服务名是 `plugin-xjb-coding-xjb-code`。
+
 先前通过 `claude mcp add --scope user` 添加的独立服务存放在 `~/.claude.json` 的顶层 `mcpServers.xjb-code`，直接在 `settings.json` 顶层写 `mcpServers` 无效。迁移到插件配置时，先复制原 URL 到上述 `mcp_url`；若旧条目还带认证或其他字段，先确认插件配置能够保留这些行为，再移除旧条目。仅 URL 的旧条目迁移后可运行 `claude mcp remove --scope user xjb-code`，防止以后改地址时加载两条连接。不要移除其他 MCP 服务。
 
 修改后重启宿主；Codex 新开任务加载更新后的插件。保留其他配置，不编辑插件缓存。`127.0.0.1` 指运行客户端的电脑，独立服务器必须通过可达地址、代理或隧道连接。
@@ -340,11 +356,14 @@ Bruno 官方 skills 与文档通过 `skills/bruno-api-tests/references/official-
 ## 仓库结构与发版
 
 ```text
+agents.public.json               各宿主共用的名称、版本、作者、仓库与 MCP 默认地址
 .claude-plugin/                  Claude Code manifest / marketplace
 .codex-plugin/                   Codex manifest
+.cursor-plugin/                  Cursor manifest / marketplace
 .agents/plugins/                 Codex marketplace
 .mcp.codex.json                  Codex MCP 默认地址
 .mcp.claude.json                 Claude MCP 用户配置引用
+.mcp.cursor.json                 Cursor MCP 变量占位
 skills/
   xjb-coding/                    自驱编码
   bruno-api-tests/               Bruno 官方知识关联、完整集合生成与真实导入验收
@@ -359,9 +378,10 @@ skills/
 vendor/three.js/                 固定版本的官方 submodule
 scripts/
   claude_worker_bridge.sh        可选 Claude worker 桥接
+  sync_public_infos.sh           把 agents.public.json 写入各宿主清单
   update_upstreams.sh            一键更新与校验官方来源、submodule 和次级引用
   upstream_text.awk              文本引用提取与 TSV 到 JSON 输出
-git_tag.sh                       版本同步、changelog、提交与标签推送
+git_tag.sh                       改公共 version、调同步、changelog、提交与标签推送
 ```
 
 先校验改动并提交功能，再在干净的工作区发版：
