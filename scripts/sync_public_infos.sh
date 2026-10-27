@@ -109,7 +109,21 @@ replace_once ./orca-plugin.json \
     '^  "author": \{ "name": "[^"]*" \}' \
     "s#^  \"author\": { \"name\": \"[^\"]*\" }#  \"author\": { \"name\": \"${Author}\" }#"
 
-# Hermes 读 SKILL.md frontmatter 的 name / version，以及页眉 SkillName / Version
+# Hermes / Agent Plugins v1：根级声明式清单，不自动连接 MCP。
+replace_once ./plugin.json \
+    '^  "name": "[^"]*"' \
+    "s#^  \"name\": \"[^\"]*\"#  \"name\": \"${Name}\"#"
+replace_once ./plugin.json \
+    '^  "version": "[^"]*"' \
+    "s#^  \"version\": \"[^\"]*\"#  \"version\": \"${Version}\"#"
+replace_once ./plugin.json \
+    '^  "author": \{ "name": "[^"]*" \}' \
+    "s#^  \"author\": { \"name\": \"[^\"]*\" }#  \"author\": { \"name\": \"${Author}\" }#"
+replace_once ./plugin.json \
+    '^  "repository": "[^"]*"' \
+    "s#^  \"repository\": \"[^\"]*\"#  \"repository\": \"${Repository}\"#"
+
+# 独立 Skill 入口：frontmatter 的 name / version，以及页眉 SkillName / Version
 replace_once ./skills/xjb-coding/SKILL.md \
     '^name: ' \
     "s#^name: .*#name: ${Name}#"
@@ -140,6 +154,7 @@ if [ "$(uname -s)" = "Darwin" ]; then
         ./.codex-plugin/plugin.json-e \
         ./.cursor-plugin/plugin.json-e \
         ./orca-plugin.json-e \
+        ./plugin.json-e \
         ./skills/xjb-coding/SKILL.md-e \
         ./skills/xjb-coding/.auto_coding/start_coding.md-e \
         ./.mcp.codex.json-e \

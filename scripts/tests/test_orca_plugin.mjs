@@ -57,10 +57,13 @@ test('源索引与原生插件身份对应，版本沿用现有 plugin', async (
   const manifest = await json('../../orca-plugin.json');
   const codex = await json('../../.codex-plugin/plugin.json');
   const claude = await json('../../.claude-plugin/plugin.json');
+  const shared = await json('../../agents.public.json');
   assert.equal(marketplace.plugins[0].id, `${manifest.publisher}.${manifest.id}`);
   assert.equal(marketplace.plugins[0].source.ref, 'latest');
   assert.equal(manifest.version, codex.version);
-  assert.equal(manifest.version, claude.version);
+  assert.equal(manifest.version, shared.version);
+  assert.equal(claude.name, shared.name);
+  assert.equal(Object.hasOwn(claude, 'version'), false);
   await readFile(new URL(`../../${manifest.main}`, import.meta.url), 'utf8');
   assert.deepEqual(manifest.capabilities.map(item => item.kind).sort(), ['terminal:send', 'workspace:read']);
 });

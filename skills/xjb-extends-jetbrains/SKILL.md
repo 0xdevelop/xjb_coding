@@ -3,9 +3,6 @@ name: xjb-extends-jetbrains
 description: Use JetBrains official documentation to run and debug projects in GoLand, IntelliJ IDEA, WebStorm, PyCharm, and other JetBrains IDEs on Windows, macOS, and Linux. Use for IDE Run/Debug configurations, shared .run files, keymaps, and controlling the correct project window; browser page debugging uses web-browser-debug.
 metadata:
   version: "0.1.0"
-  hermes:
-    category: development
-    tags: [jetbrains, ide, debug]
 ---
 
 # xjb-extends-jetbrains
