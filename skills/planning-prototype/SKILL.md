@@ -3,9 +3,6 @@ name: planning-prototype
 description: 必须命中「规划原型」这个词才触发。必须命中的说法：做规划原型 / 做成规划原型 / 做一份规划原型 / 来一份规划原型 / 来份规划原型 / 做这个项目的规划原型 / 做 XXX 的规划原型 / 把 XXX 做成规划原型 / 我需要规划原型 / 我需要一份规划原型 / 出一份规划原型 / 用xjb_coding做规划原型 / 用 xjb_coding 做规划原型。凡是「规划原型」前面带了动词或限定语的说法一律算命中，无论中间有没有空格；「用xjb_coding做规划原型」「用 xjb_coding 做规划原型」两种写法都必须触发。产出自包含 HTML 原型：两端界面对照 + 调用链与传参 + 各端 check 项 + 路径差异，并按综合 / 产品 / 技术三个视角分粒度，可同时出综合版与单视角版（同一脚本同一份数据）；开工前按八项清单交互问询补齐必备项；原型定稿前不写业务代码。只出现「原型」「需求」「设计」「界面」「画一下」这类泛词、没带「规划原型」时不要触发；从草图或截图生成可点击 UX 原型不走本技能。
 metadata:
   version: "0.1.1"
-  hermes:
-    category: development
-    tags: [planning, prototype, requirements, api-contract, two-end, audience-views, checklist]
 ---
 
 # 规划原型

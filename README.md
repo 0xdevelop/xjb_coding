@@ -91,7 +91,33 @@ Orca 当前没有原生 Skills / MCP 贡献点。该提示命令在工作区只�
 
 官方接口依据：[原生插件示例](https://github.com/stablyai/orca/tree/main/examples/plugins/hello-orca)、[plugin manifest](https://github.com/stablyai/orca/blob/main/src/shared/plugins/plugin-manifest.ts)、[marketplace](https://github.com/stablyai/orca/blob/main/src/shared/plugins/plugin-marketplace.ts)。原生安装、命令加载和后端协同分别验收，不能以插件出现在列表代替任务协同验证。
 
-### Hermes Agent / 其他 Agent Skills 宿主
+### Hermes Agent
+
+支持 Agent Plugins v1 的 Hermes 可通过根级 `plugin.json` 安装整个 Skills 包；不需要 Python 注册脚本，也不需要挂载工作区 checkout。清单的名称、版本、作者与仓库地址继续由 `agents.public.json` 和 `scripts/sync_public_infos.sh` 统一同步，`git_tag.sh` 发版时自动执行，不单独维护 Hermes 版本。
+
+首次通过 GitHub SSH 安装：
+
+```bash
+hermes plugins install git@github.com:0xdevelop/xjb_coding.git --no-enable
+hermes plugins list
+```
+
+按安装输出或列表里的实际插件 ID 启用、检查与更新，不硬编码宿主生成的命名空间：
+
+```bash
+hermes plugins enable <实际插件ID>
+hermes plugins doctor <实际插件ID> --ci
+hermes plugins check-updates
+hermes plugins update <实际插件ID>
+```
+
+这里安装仓库根目录，跟随默认分支；完整 SSH 地址保留为更新来源，`owner/repo` 简写在 Hermes 中使用 HTTPS。`--ref` 是固定完整提交 SHA，不是 `latest` 分支/标签选择器，固定后不会随普通更新漂移。安装或更新后新开 Hermes 会话，确认全部直属 `skills/*/SKILL.md` 都出现在技能列表并可读取；仅下载成功、插件出现在列表不算加载验收。
+
+首次使用前在实际运行 Hermes 的账号下核对 GitHub SSH 认证和主机指纹。扫描出现 `caution` 时审阅 findings 并按宿主提示明确确认；`dangerous` 不放行。若旧版 Web 只显示安装失败而没有扫描确认信息，先用终端查看原因，不关闭安全扫描、不盲目 `--force`。安装 Skill 不会安装 Blender、ComfyUI、模型或浏览器；重型工具另做硬件与依赖预检。包内不带根级 `mcp.json`，可选 `xjb_code` 沿用户已有配置独立接入。
+
+旧的单 Skill Hub 安装和整包插件是两套来源。先验收整包，再按原安装标识迁移需要替换的旧项，避免重复技能；不要先删除已有可用技能。外部 checkout 的更新由 checkout 自身负责，不是 `hermes plugins update` 管理的安装。宿主入口依据见 [Hermes 官方插件文档](https://hermes-agent.nousresearch.com/docs/user-guide/features/plugins)。
+
+### 其他 Agent Skills 宿主 / 按需单独安装
 
 可按需安装单个 Skill，或把本仓库 `skills/` 加入宿主的外部 Skills 路径。例如：
 
@@ -357,6 +383,7 @@ Bruno 官方 skills 与文档通过 `skills/bruno-api-tests/references/official-
 
 ```text
 agents.public.json               各宿主共用的名称、版本、作者、仓库与 MCP 默认地址
+plugin.json                      Hermes / Agent Plugins v1 整包清单（由 sync_public_infos.sh 写入）
 .claude-plugin/                  Claude Code manifest / marketplace
 .codex-plugin/                   Codex manifest
 .cursor-plugin/                  Cursor manifest / marketplace

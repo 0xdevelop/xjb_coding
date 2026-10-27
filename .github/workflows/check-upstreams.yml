@@ -23,6 +23,6 @@ jobs:
       - name: Verify local edit protection and text processing
         run: bash scripts/tests/test_upstreams.sh
       - name: Verify plugin loading and portable document links
-        run: node --test scripts/tests/test_orca_plugin.mjs scripts/tests/test_plugin_links.mjs
+        run: node --test scripts/tests/test_orca_plugin.mjs scripts/tests/test_plugin_links.mjs scripts/tests/test_hermes_plugin.mjs
       - name: Verify standalone Archify package and delivery protection
         run: node --test scripts/tests/test_archify.mjs

@@ -3,9 +3,6 @@ name: web-browser-debug
 description: "为 Web 调试、端到端检查和 UI 验收选择真实浏览器。优先按当前官方 ego-browser 指南探测能力，不可用时回退宿主 Playwright MCP；两者均不可用则报告缺口。写入动作按已确认契约核对实际经过的服务和数据层，界面成功不能代替数据验收。"
 metadata:
   version: "0.2.0"
-  hermes:
-    category: development
-    tags: [web, browser, debug, e2e, ego-browser]
 ---
 
 # Web 浏览器调试

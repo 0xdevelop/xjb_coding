@@ -3,9 +3,6 @@ name: sketch-to-prototype
 description: Turn sketches into code-ready clickable UX prototypes.
 metadata:
   version: "0.1.0"
-  hermes:
-    category: productivity
-    tags: [product, ux, prototype, sketches]
 ---
 
 # Sketch to Prototype
