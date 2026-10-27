@@ -30,6 +30,14 @@ version: 0.0.37
 
 读取本文件用于了解、审计或修改 Skill 时，不部署到目标项目。技能服从宿主安全要求、用户现行指令与授权、已确认的项目约定；不能以通用规则扩大任务范围。
 
+### xjb_code 怎么连
+
+Claude Code、Codex、Cursor、Windsurf、Trae、Hermes 以及其他宿主用同一条规则。`xjb_code` 是用户自己的服务，不是云登录。插件继续为各宿主注册连接；`http://127.0.0.1:12100/` 只在服务进程和这个客户端在同一台机器、并且端口在听时有效。不要拆掉某个宿主的注册，也不要用这一台机器的地址去盖另一台机器。
+
+用户已经在该宿主自己的配置里写了地址和密钥时，用那一条：Codex 的 `config.toml`、Claude 的 `pluginConfigs`、Cursor 的 Configure 或 `mcp.json`、以及其他宿主的 MCP 配置。这条连得上，就不要改用另一条连不上的注册。
+
+连不上、命名空间失败，或工具列表里只剩宿主的 `mcp_auth`：地址没有连上。禁止调用 `mcp_auth`，禁止走宿主 Authenticate。`error_code=10004` 才是密钥问题，去用户自己的 Dashboard 重新签发。没有可用地址时留在本地 Skill。
+
 ### 触发条件
 
 用户发送以下消息时，先核对目标项目、已有状态与 MCP，再判断是否需要初始化：
@@ -108,21 +116,10 @@ INIT-8. 输出本次实际完成摘要（跳过、复用、失败逐项说明，
     xjb_code MCP daemon：
       （若 MCP_AVAILABLE）✅ 已连接 → 工作流由 daemon 驱动（强一致 / 多 agent / web UI）
       （若不可用）⚠️ 未连接 → 当前回退到 markdown 模式（功能受限）。
-        插件默认连接 http://127.0.0.1:12100/；先核对用户部署地址，不擅自启动本机服务。
-        凭证：登录 xjb_code Dashboard（http://<host>:12101/）→「API key」面板签发一把 key。
-        Codex：~/.codex/config.toml → [mcp_servers.xjb-code] → url +
-          http_headers = { Authorization = "Bearer xjbk_..." }（或 bearer_token_env_var）。
-        Claude Code：用户级 ~/.claude/settings.json →
-          pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url；
-          key 走 /plugin 配置对话框的 mcp_api_key（sensitive，存钥匙串）。
-        Cursor：插件 Configure 里填 XJB_CODE_MCP_URL、XJB_CODE_API_KEY；
-          仓库只声明 .mcp.cursor.json 的占位符。不把地址写进 ~/.cursor/mcp.json 再留一份。
-        Claude 的插件 mcp_url 未设置时取本机默认值；其他 marketplace 使用实际插件 ID。
-        不要在 settings.json 顶层写 mcpServers，也不要把 pluginConfigs 写到项目 settings。
-        若 ~/.claude.json 已有独立 xjb-code 条目，先迁移 URL 并核对认证字段，再移除旧条目，
-        避免后续修改插件地址时重复连接；没有安装插件时才通过宿主 CLI 单独添加 MCP。
-        保留已有认证字段及其他服务；不要编辑插件缓存。通过宿主 /mcp 确认连接和工具列表。
-        工具可见不等于已认证：受保护方法返回 error_code=10004 即凭证问题；不要走宿主 MCP OAuth。
+        各宿主同一条规则，见上文「xjb_code 怎么连」。本机进程在听才用 127.0.0.1:12100。
+        该宿主已经写好的私有地址连得上就用那一条，不要拆掉其他宿主的注册。
+        连不上或只剩 mcp_auth：地址没连上。禁止调用 mcp_auth，禁止走宿主 Authenticate。
+        error_code=10004 才重新签发 key。没有可用地址时保持本地 Skill。
 
     下一步：在此工具中输入触发词开始编码：
       读 .auto_coding/start_coding.md

@@ -77,7 +77,7 @@ codex plugin list
 
 本机试装把仓库拷进 `~/.cursor/plugins/local/`，不要用指向仓库外的符号链接。官方 Marketplace 上架仍要单独提交审核；审核通过前，以上述 Git 导入为准。
 
-地址和 key 不写进仓库。Cursor 在插件 Configure 里填 `XJB_CODE_MCP_URL` 和 `XJB_CODE_API_KEY`，对应 `.mcp.cursor.json` 的占位符。
+地址和 key 不写进仓库正文。Cursor 与 Claude、Codex 一样保留插件注册；同一台机器上的地址是 `http://127.0.0.1:12100/`。Configure 的 `XJB_CODE_MCP_URL`、`XJB_CODE_API_KEY`，或 `~/.cursor/mcp.json` 里已经写好的私有地址，连得上就用那一条。连不上的注册不覆盖它，也不要因此走宿主登录。不要改 Codex、Claude 已经写好的配置。
 
 官方依据：[Plugins](https://cursor.com/docs/plugins)、[Plugins reference](https://cursor.com/docs/reference/plugins)。
 
@@ -109,7 +109,7 @@ hermes skills install 0xdevelop/xjb_coding/skills/archify
 hermes skills install 0xdevelop/xjb_coding/skills/drawio
 ```
 
-单独分发 Skill 时保留其完整目录，包括 `references/` 和 `scripts/`。没有 Skills 加载机制的宿主，可直接读取对应 `SKILL.md`。
+单独分发 Skill 时保留其完整目录，包括 `references/` 和 `scripts/`。没有 Skills 加载机制的宿主，可直接读取对应 `SKILL.md`。Hermes 与其他宿主连接 `xjb_code` 的规则和 Codex、Claude Code、Cursor 相同，见 `skills/xjb-coding/SKILL.md`「xjb_code 怎么连」：本机地址只在端口在听时有效，已经写好的私有地址优先，连不上不走宿主登录，也不改其他宿主的配置。
 
 已有本地 checkout（包括私有仓库）时，也可在 Hermes 的 `~/.hermes/config.yaml` 合并以下配置，路径替换为实际目录：
 
@@ -265,7 +265,7 @@ cd xjb_code
 go run .
 ```
 
-插件自动注册 `xjb-code`，默认地址为 `http://127.0.0.1:12100/`。本机使用无需改地址；私有部署时修改下面的用户级配置，升级插件不会覆盖用户值。保留服务要求的完整路径。
+插件继续为 Codex、Claude Code、Cursor 注册 `xjb-code`。同一台机器上的地址是 `http://127.0.0.1:12100/`，端口在听才算连上。用户在自己的宿主配置里写了私有地址和密钥后，用那一条；升级插件不覆盖用户值。局域网或公司内部署写实际可达地址。连不上是地址问题，不是宿主登录。没有可用地址时 Skill 仍可用。各宿主的注册都保留，不因为改一个宿主就拆掉另一个。
 
 ### 用户体系与凭证
 
@@ -297,13 +297,13 @@ Claude Code：在用户级 `~/.claude/settings.json` 中合并地址；key 是 `
 
 这是 Claude 官方 `userConfig` / `pluginConfigs` 机制：插件声明 `mcp_url` 与 `mcp_api_key`，MCP 配置引用 `${user_config.mcp_url}` 和 `headers.Authorization = "Bearer ${user_config.mcp_api_key}"`。设置写在用户目录，不能放到项目 `.claude/settings.json`；如果从其他 marketplace 安装，键名使用实际的 `插件名@marketplace名`。Codex 和 Claude 使用各自的 MCP 配置文件，避免把一种宿主的占位符交给另一种宿主解析。
 
-Cursor：`.mcp.cursor.json` 只放 `${XJB_CODE_MCP_URL}` 和 `${XJB_CODE_API_KEY}`。值在已安装插件的 Configure 里填写，不写进仓库，也不要写进 `~/.cursor/mcp.json` 再复制一份。插件注册的服务名是 `plugin-xjb-coding-xjb-code`。
+Cursor：`.mcp.cursor.json` 使用 `${XJB_CODE_MCP_URL}` 和 `${XJB_CODE_API_KEY}`。未改 Configure 时，同一台机器的地址是 `http://127.0.0.1:12100/`。Configure 或 `~/.cursor/mcp.json` 里已经写好私有 URL 和 `Authorization`、并且连得上时，用那一条。插件注册名 `plugin-xjb-coding-xjb-code` 没有连上时，不要用它覆盖已写好的配置，也不要调用宿主的 `mcp_auth`。这条限制同样适用于 Claude 和 Codex：连不上就改地址或密钥，不走宿主登录，也不改写其他宿主已经写好的配置。
 
 先前通过 `claude mcp add --scope user` 添加的独立服务存放在 `~/.claude.json` 的顶层 `mcpServers.xjb-code`，直接在 `settings.json` 顶层写 `mcpServers` 无效。迁移到插件配置时，先复制原 URL 到上述 `mcp_url`；若旧条目还带认证或其他字段，先确认插件配置能够保留这些行为，再移除旧条目。仅 URL 的旧条目迁移后可运行 `claude mcp remove --scope user xjb-code`，防止以后改地址时加载两条连接。不要移除其他 MCP 服务。
 
 修改后重启宿主；Codex 新开任务加载更新后的插件。保留其他配置，不编辑插件缓存。`127.0.0.1` 指运行客户端的电脑，独立服务器必须通过可达地址、代理或隧道连接。
 
-通过两端 `/mcp` 确认连接和工具列表，再执行所需业务。连接失败与业务认证失败分开诊断：`initialize` / `tools/list` 与 `test` 不需要凭证，连接不上是地址、`bind_address` 或网络问题；受保护方法返回 `error_code=10004 permission denied` 才是凭证缺失、错误或已吊销，这时去 Dashboard 重新签发 key 并更新宿主配置。这不是宿主的 MCP OAuth 流程，不要走 Authenticate 按钮。
+通过两端 `/mcp` 确认连接和工具列表，再执行所需业务。连接失败与业务认证失败分开诊断：`initialize` / `tools/list` 与 `test` 不需要凭证，连接不上是地址、`bind_address` 或网络问题。命名空间失败，或工具列表里只剩宿主的 `mcp_auth`，同样是地址没有连上。禁止调用 `mcp_auth`，禁止走 Authenticate。受保护方法返回 `error_code=10004 permission denied` 才是凭证缺失、错误或已吊销，这时去用户自己的 Dashboard 重新签发 key 并更新宿主配置。
 
 配置行为以 [Codex 官方 MCP 文档](https://developers.openai.com/codex/mcp)、[Claude Code 插件用户配置](https://code.claude.com/docs/en/plugins-reference#user-configuration) 和 [Claude Code 官方 MCP 文档](https://code.claude.com/docs/en/mcp) 为准。
 

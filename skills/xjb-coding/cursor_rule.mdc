@@ -8,3 +8,11 @@ alwaysApply: true
 本文件只做 Cursor 规则入口。工作流、约束和验收读已安装插件里的 `skills/xjb-coding/SKILL.md`。
 
 当用户在 Chat 或 Composer 中输入 `读 .auto_coding/start_coding.md` 时，读取该文件，按用户指定范围和模式执行。读取、审计和续做不触发部署、覆盖已有状态或重复追加宿主规则。
+
+## xjb_code 连接
+
+与 Claude Code、Codex、Windsurf、Trae、Hermes 相同，正文在 `SKILL.md`「xjb_code 怎么连」。`xjb_code` 是用户自己的服务。插件注册保留。`http://127.0.0.1:12100/` 只在服务进程和这个客户端在同一台机器且端口在听时有效。
+
+Cursor 里已经写好的地址和 `Authorization`（Configure 或 `mcp.json`）连得上时，用那一条。连不上的 `plugin-xjb-coding-xjb-code` 不覆盖它，也不覆盖其他宿主自己的配置。
+
+命名空间为 error、needsAuth，或工具列表里只剩 `mcp_auth`：地址没有连上。禁止调用 `mcp_auth`，禁止走宿主 Authenticate。没有可用地址时留在本地 Skill。

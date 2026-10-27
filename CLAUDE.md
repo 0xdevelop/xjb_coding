@@ -2,6 +2,8 @@
 
 > 本文件是 xjb_coding 仓库自身的 Claude Code 开发指令。给目标项目用的模板见 `skills/xjb-coding/CLAUDE.md`。
 
+连接 `xjb_code` 时与 Codex、Cursor、Windsurf、Trae、Hermes 用同一条规则，正文在 `skills/xjb-coding/SKILL.md`「xjb_code 怎么连」。各宿主的插件注册都保留。不要把某一个宿主的地址或登录方式写成全体的默认。
+
 ## 自驱编码模式
 
 本项目使用 **xjb_coding** Skill。用户要求执行以下流程时，按 `.auto_coding/start_coding.md` 核对状态与授权后继续；读取、审计技能源文件不触发部署：
