@@ -4,11 +4,11 @@ set -eu
 missing=0
 
 if ! command -v node >/dev/null 2>&1; then
-    printf 'Cursor 委派先决：不满足，缺少 Node.js ≥ 22.13。继续当前任务；按用户既有方式安装：https://nodejs.org/en/download\n'
+    printf 'Cursor 委派先决：不满足，缺少 Node.js ≥ 22.13。本次不派发；主 agent 继续当前实现，不等待用户回复。安装：https://nodejs.org/en/download\n'
     exit 2
 fi
 if ! node -e 'const [major, minor] = process.versions.node.split(".").map(Number); process.exit(major > 22 || major === 22 && minor >= 13 ? 0 : 1)' 2>/dev/null; then
-    printf 'Cursor 委派先决：不满足，Node.js 需 ≥ 22.13。继续当前任务；按用户既有方式更新：https://nodejs.org/en/download\n'
+    printf 'Cursor 委派先决：不满足，Node.js 需 ≥ 22.13。本次不派发；主 agent 继续当前实现，不等待用户回复。更新：https://nodejs.org/en/download\n'
     exit 2
 fi
 printf 'Node.js：%s\n' "$(node --version)"
@@ -98,7 +98,7 @@ process.stdin.on("end", () => {
 fi
 
 if [[ $missing != 0 ]]; then
-    printf 'Cursor 委派先决：不满足或未核实。已提醒，继续当前任务，不等待用户回复；本次不启用 acpx 委派。\n'
+    printf 'Cursor 委派先决：不满足或未核实。已提醒，本次不派发；主 agent 继续当前实现，不等待用户回复。\n'
     exit 2
 fi
-printf 'Cursor 委派先决：检查通过。已提醒，继续当前任务；实际 ACP 连接、模型额度、任务权限及验收仍待派发时核实。\n'
+printf 'Cursor 委派先决：检查通过。已提醒；接下来按任务 brief 派发，不等待用户回复。\n'

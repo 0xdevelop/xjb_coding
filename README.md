@@ -11,7 +11,7 @@
 | Skill | 领域 | 支持的工作 |
 | --- | --- | --- |
 | [xjb-coding](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/SKILL.md) | 软件开发 | 项目初始化、需求细化、任务分解、编码、四层质量门禁、断点续做 |
-| [cursor-delegation](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/cursor-delegation/SKILL.md) | Cursor 任务委派 | 检查 acpx、Cursor CLI 与 ACP 认证，把边界明确的实现交给独立 Cursor 会话 |
+| [cursor-delegation](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/cursor-delegation/SKILL.md) | Cursor 任务委派 | 把有界实现委派给独立 Cursor 会话；配套脚本检查 acpx / CLI / 认证，主 agent 收回验收 |
 | [bruno-api-tests](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/bruno-api-tests/SKILL.md) | 接口与业务流程测试 | 关联 Bruno 官方 skills 与文档，生成完整集合、接通参数和文件，由 Agent 验证全新导入及真实场景 |
 | [sketch-to-prototype](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
 | [planning-prototype](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/planning-prototype/SKILL.md) | 需求规划原型 | 把一个需求做成可落码的自包含 HTML：两端界面对照、调用链与传参、各端 check 项、路径差异；综合 / 产品 / 技术三个视角同源生成；开工前按八项清单交互问询补齐必备项 |
@@ -19,7 +19,7 @@
 | [comfyui-workflow](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/comfyui-workflow/SKILL.md) | 本机生成工作流 | 官方 Comfy Skills 原文 + 本机扩展，查询模型/节点、设计和保存可人工优化的 ComfyUI 画布 |
 | [xjb-extends-jetbrains](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-extends-jetbrains/SKILL.md) | JetBrains IDE 调试 | 独立管理官方知识库引用、`.run` 集成、Run/Debug 与项目窗口边界，覆盖 Windows / macOS / Linux |
 | [web-browser-debug](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/web-browser-debug/SKILL.md) | Web 调试与验收 | 按当前官方指南与实际能力选择 ego-browser（ego lite）或宿主 Playwright MCP；按确认契约与实际链路验收 |
-| [ubuntu-shell-tools](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/ubuntu-shell-tools/SKILL.md) | Ubuntu 20.04+ 运维 | 使用时获取 shell_tools 最新 main，检查并使用服务器配置、软件安装、网络诊断和 SSH 等脚本 |
+| [ubuntu-shell-tools](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/ubuntu-shell-tools/SKILL.md) | Ubuntu 20.04+ 运维 | 使用时获取 shell_tools 当次 main；其他 Skill 装软件也优先用当次已有安装脚本 |
 | [archify](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/archify/SKILL.md) | 交互图表 | 从描述、Mermaid 或源码证据生成独立 HTML：架构、流程、时序、数据流、状态、ER、类、树、时间线与执行瀑布图 |
 | [drawio](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/drawio/SKILL.md) | 可编辑图表 | 随包提供 draw.io 官方 Skill 与 XML / Mermaid 参考，生成和修改原生 `.drawio`，通过已有 Desktop CLI 导出 PNG/SVG/PDF |
 
@@ -154,7 +154,7 @@ skills:
 - 安装 plugin 即包含上述 Skills；直接描述相关任务即可由宿主匹配，也可以点名 Skill。
 - Bruno 测试由 `bruno-api-tests` 入口按任务读取官方 skills 和当前文档；维护沿原上游链接检查，用户更新插件后按原宿主加载方式使用，不需要另装官方 skills、运行维护脚本或同步后端。
 - draw.io 官方 Skill、XML / Mermaid 参考和许可随本聚合包分发，沿现有上游快照机制更新，不需要另加 draw.io 插件市场或插件。原生 `.drawio` 生成不依赖 Desktop；Mermaid 转换、自动布局和图片/PDF 导出复用本机 draw.io Desktop。
-- `ubuntu-shell-tools` 每次开始工具任务时，将 [shell_tools](https://github.com/0xdevelop/shell_tools) 最新 `main` 浅克隆到当前项目 `tmp/shell-tools/` 的独立目录，记录 commit，检查后按任务执行；上游脚本更新无需等待插件发版。获取失败明确报错，不自动执行旧副本。Skill 规则自身更新仍随插件发布，Ubuntu 各版本的适用性按选中脚本和目标机器核实。
+- `ubuntu-shell-tools` 每次工具任务浅克隆 [shell_tools](https://github.com/0xdevelop/shell_tools) 当次 `main` 到当前项目 `tmp/shell-tools/`，记录并沿用该 commit，不复制到插件或注册 Git submodule。其他 Skill 在 Ubuntu 上安装软件时先核对当次已有安装脚本，没有再走官方入口。上游脚本更新无需等待插件发版。获取失败明确报错，不自动执行旧副本。Skill 规则自身更新仍随插件发布，Ubuntu 各版本的适用性按选中脚本和目标机器核实。
 - Blender + Three.js Skill 以十份 Three.js 官方 API 文档为入口，并附带固定版本的同仓库次级引用，覆盖 GLB 加载、动画、计时、纹理、相机控制、粒子与网格采样。资料按问题读取，不要求用户下载官方源码或初始化 submodule。
 - 未收录内容或与目标项目版本不同的 API，再核对相应版本的官方资料。附带文档不等于完整离线知识库。
 - Blender 本体需在本机安装，Blender MCP 可选；Three.js 是目标项目依赖，使用该项目的包管理器与 lockfile。安装 plugin 不会自动安装这些运行工具。
@@ -395,7 +395,7 @@ plugin.json                      Hermes / Agent Plugins v1 整包清单（由 sy
 .mcp.cursor.json                 Cursor MCP 变量占位
 skills/
   xjb-coding/                    自驱编码
-  cursor-delegation/             Cursor CLI / ACP 委派先决检查
+  cursor-delegation/             Cursor 委派技能；配套检查与一次派发脚本
   bruno-api-tests/               Bruno 官方知识关联、完整集合生成与真实导入验收
   sketch-to-prototype/           草图生成 Web 原型
   planning-prototype/            需求规划原型（两端界面、调用链、check 项）
@@ -403,7 +403,7 @@ skills/
   comfyui-workflow/              官方 Comfy Skills 原版、本机 extend 和查询/保存脚本
   xjb-extends-jetbrains/         独立 JetBrains IDE 调试、官方知识库引用与跨平台约定
   web-browser-debug/             真浏览器执行层选择（ego-browser 优先）、官方 Skill 引用与检查脚本
-  ubuntu-shell-tools/            Ubuntu 运维脚本选择与使用时获取最新 shell_tools
+  ubuntu-shell-tools/            Ubuntu 运维；获取并沿用 shell_tools 当次 commit
   archify/                       Archify 官方完整运行包、交互图表入口与本仓库适配
 vendor/three.js/                 固定版本的官方 submodule
 scripts/

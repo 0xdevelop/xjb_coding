@@ -23,6 +23,7 @@ version: 0.0.38
 - 没有连通 MCP 时，必须回退到本地 Skills / markdown 模式，不得阻塞初始化。
 - 项目绑定先核对当前仓库和服务端权限，见 [项目识别与共享范围](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/references/projects.md)。公司项目面向单公司实例账号共享；个人项目仅活跃成员可读，新建默认 private，不回退 `default`。仓库标识不限 GitHub，自定义平台或其他版本管理工具按同一规则规范化。
 - JetBrains IDE 调试使用独立的 [xjb-extends-jetbrains](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-extends-jetbrains/SKILL.md) Skill：只引用官方知识库，复用仓库 `.run/` 配置并按实际 OS / Keymap 操作。
+- Ubuntu 上安装软件：优先独立 [ubuntu-shell-tools](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/ubuntu-shell-tools/SKILL.md)，用当次获取的 [shell_tools](https://github.com/0xdevelop/shell_tools) 已有安装脚本；没有对应脚本才用该软件官方入口。不把上游脚本复制进本仓或其他 Skill。
 
 ---
 
@@ -173,7 +174,7 @@ INIT-9. 按用户已选择的模式继续
 
 ### Cursor 独立任务委派（可选）
 
-遇到契约、范围和验收明确的实现任务，按需使用独立 [cursor-delegation](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/cursor-delegation/SKILL.md)：检查 acpx、Cursor CLI 与认证，满足与否都简短提醒后继续当前工作，不等待回复；缺项仅影响该委派路径。该技能也供未进入本工作流的其他主 agent 使用，不另建项目或任务账本，安装与实际执行继续服从原授权。
+遇到契约、范围和验收明确的实现任务，按需使用独立 [cursor-delegation](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/cursor-delegation/SKILL.md) 做委派：主 agent 保留需求与架构，把该切片交给独立 Cursor 会话实现，再收回 diff 与验证。派发前用其配套脚本检查 acpx、Cursor CLI 与认证；不通过则提醒后主 agent 自己做这一片，不等待回复。缺项只关本次委派。该技能也供未进入本工作流的其他主 agent 使用，不另建项目或任务账本，安装与实际执行继续服从原授权。
 
 ### Codex 驱动 Claude Code worker（可选）
 
