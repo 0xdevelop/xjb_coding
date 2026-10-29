@@ -204,7 +204,7 @@ file	archify/scripts/generate-validators.mjs	f6ec68d16b8b2a8a1c55b3e5cbb121a8557
 file	archify/scripts/render-examples.mjs	c2c99c4153cf21f0526cf3f041c1d81716017be182d404173f8961fa494e8c8c	archify/scripts/render-examples.mjs
 file	archify/scripts/update-contract.mjs	b6eb5e18ebea770c0a0c2cf2ba45d122d85abe61e94b9a5426602a9f84910b31	archify/scripts/update-contract.mjs
 file	archify/skill-release.json	1ea25551e0359e547267d40e83812ffd1a7bdf7398826b65f2a2fcf1a11ba596	archify/skill-release.json
-meta	commit	81c6be8d87090670c45d08a8f97f9d29c5af0bec
+meta	commit	d6059331abbddb49bca380ff46dca8ce33158b04
 meta	license	Apache
 meta	reference_depth	1
 meta	repository	https://github.com/tt-a1i/archify.git

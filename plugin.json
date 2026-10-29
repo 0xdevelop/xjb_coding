@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "xjb-coding",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "Host-neutral xjb_coding skills bundle; optional MCP configured separately.",
   "author": { "name": "0xdevelop" },
   "repository": "https://github.com/0xdevelop/xjb_coding"

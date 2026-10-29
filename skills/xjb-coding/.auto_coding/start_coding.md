@@ -475,7 +475,7 @@ git -C ~/.claude/plugins/repos/xjb-coding-marketplace show v0.0.9:plugins/xjb-co
 
 ---
 
-> **版本**：v0.0.38 (Skills-first, MCP-enhanced)
+> **版本**：v0.0.39 (Skills-first, MCP-enhanced)
 > **适用语言**：Go · Rust · TypeScript · JavaScript · Python · Java · Kotlin · C++ · C#
 > **架构**：Skills / markdown 默认可用；[xjb_code MCP daemon](https://github.com/0xdevelop/xjb_code) 可作为可选增强后端；Claude Code / Codex / Cursor / 其他 MCP 客户端作为前端
 > **使用方式**：按 SKILL.md §零 核对首次启用或续做；已有状态直接恢复，不覆盖目录。如 MCP 可用且已认证则使用原服务端状态
