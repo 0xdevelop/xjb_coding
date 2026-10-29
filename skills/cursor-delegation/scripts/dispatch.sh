@@ -15,6 +15,15 @@ usage() {
     exit 1
 }
 
+cursor_absolute_path() {
+    local cursor_path=$1
+    case "$cursor_path" in
+        [A-Za-z]:[\\/]*) printf '%s\n' "${cursor_path//\\//}" ;;
+        /*) printf '%s\n' "$cursor_path" ;;
+        *) printf '%s/%s\n' "$PWD" "$cursor_path" ;;
+    esac
+}
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --cwd)
@@ -42,12 +51,10 @@ done
 for seconds in "$INIT_TIMEOUT" "$TASK_TIMEOUT"; do
     [[ $seconds =~ ^[0-9]+([.][0-9]+)?$ && $seconds == *[1-9]* ]] || usage
 done
+ROOT="$(cursor_absolute_path "$ROOT")"
 [[ -d $ROOT ]] || { printf 'cwd 不是目录: %s\n' "$ROOT" >&2; exit 1; }
 
-case "$TASK" in
-    /*) ;;
-    *) TASK="$PWD/$TASK" ;;
-esac
+TASK="$(cursor_absolute_path "$TASK")"
 [[ -f $TASK ]] || { printf '任务 brief 不存在: %s\n' "$TASK" >&2; exit 1; }
 if [[ $WRITE -eq 1 && -z $POLICY ]]; then
     printf 'Cursor 委派：写任务缺少已确认的 --permission-policy 文件，本次不派发；主 agent 继续其他工作，不等待用户回复。\n'
@@ -55,19 +62,12 @@ if [[ $WRITE -eq 1 && -z $POLICY ]]; then
 fi
 if [[ -n $POLICY ]]; then
     [[ $WRITE -eq 1 ]] || usage
-    case "$POLICY" in
-        /*) ;;
-        *) POLICY="$PWD/$POLICY" ;;
-    esac
+    POLICY="$(cursor_absolute_path "$POLICY")"
     [[ -f $POLICY && -r $POLICY ]] || { printf '权限策略文件不可读，本次不派发: %s\n' "$POLICY" >&2; exit 2; }
 fi
 
 ROOT="$(cd "$ROOT" && pwd)"
-src="${BASH_SOURCE[0]}"
-case "$src" in
-    /*) ;;
-    *) src="$PWD/$src" ;;
-esac
+src="$(cursor_absolute_path "${BASH_SOURCE[0]}")"
 SCRIPT_DIR="${src%/*}"
 if ! "${BASH:-bash}" "$SCRIPT_DIR/check_tools.sh"; then
     printf 'Cursor 委派：先决不满足，本次不派发；主 agent 自己做这一片，不等待用户回复。\n'

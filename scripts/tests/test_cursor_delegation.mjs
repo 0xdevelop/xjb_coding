@@ -31,7 +31,7 @@ function isDispatchCall(call) {
   return text.includes('sessions ensure') || (text.includes('cursor -s ') && text.includes(' -f '));
 }
 
-function withFakeCli(runScript, { omit = [], responses = {}, dispatchResponses = {}, policy = { autoApprove: ['read_file', 'edit_file'], defaultAction: 'deny' }, extraArgv = [] } = {}) {
+function withFakeCli(runScript, { omit = [], responses = {}, dispatchResponses = {}, policy = { autoApprove: ['read_file', 'edit_file'], defaultAction: 'deny' }, nativeScriptPath = false, extraArgv = [] } = {}) {
   const parent = path.join(root, 'tmp');
   mkdirSync(parent, { recursive: true });
   const work = mkdtempSync(path.join(parent, 'cursor delegation-'));
@@ -53,7 +53,7 @@ function withFakeCli(runScript, { omit = [], responses = {}, dispatchResponses =
       dispatchResponses,
       ...responses,
     }));
-    writeFileSync(driver, `import { appendFileSync, readFileSync } from 'node:fs';
+    writeFileSync(driver, `import { appendFileSync, readFileSync, statSync } from 'node:fs';
 const args = process.argv.slice(2);
 appendFileSync(${JSON.stringify(log)}, JSON.stringify(args) + '\\n');
 const key = args.join(' ');
@@ -66,6 +66,9 @@ if (replies[key]) {
 }
 if (args[0] === 'acpx' && (key.includes('sessions ensure') || (key.includes(' cursor ') && key.includes(' -f ')))) {
   const stage = key.includes('sessions ensure') ? 'ensure' : 'prompt';
+  if (!statSync(args[args.indexOf('--cwd') + 1]).isDirectory()) process.exit(96);
+  if (args.includes('--permission-policy')) JSON.parse(readFileSync(args[args.indexOf('--permission-policy') + 1], 'utf8'));
+  if (stage === 'prompt') readFileSync(args[args.indexOf('-f') + 1], 'utf8');
   const reply = replies.dispatchResponses[stage] ?? {};
   if (reply.waitForTimeout) {
     const seconds = Number(args[args.indexOf('--timeout') + 1]);
@@ -92,7 +95,7 @@ if (args[0] === 'acpx' && (key.includes('sessions ensure') || (key.includes(' cu
     const env = { ...process.env };
     for (const key of Object.keys(env)) if (key.toLowerCase() === 'path') delete env[key];
     env.PATH = [bin, ...(windows ? [path.join(process.env.SystemRoot, 'System32')] : ['/usr/bin', '/bin'])].join(path.delimiter);
-    const argv = [runScript.replaceAll('\\', '/'), ...extraArgv];
+    const argv = [nativeScriptPath ? runScript : runScript.replaceAll('\\', '/'), ...(typeof extraArgv === 'function' ? extraArgv(work) : extraArgv)];
     const started = performance.now();
     const run = spawnSync(shell, argv, { cwd: work, env, encoding: 'utf8', timeout: 25_000 });
     assert.ifError(run.error);
@@ -228,6 +231,16 @@ test('无 --write 时只自动批准读，不带 --approve-all', () => {
     assert.equal(call[call.indexOf('--auth-policy') + 1], 'fail');
     assert.ok(Number(call[call.indexOf('--timeout') + 1]) > 0);
   }
+});
+
+test('脚本与任务使用含空格的原生绝对路径时，可读取 brief 和权限策略', () => {
+  const run = withFakeCli(dispatchScript, {
+    nativeScriptPath: true,
+    extraArgv: work => ['--cwd', work, '--task', path.join(work, 'brief.md'), '--session', 'native-path', '--write', '--permission-policy', path.join(work, 'policy.json')],
+  });
+  assert.equal(run.status, 0, run.output);
+  assert.equal(run.calls.filter(isDispatchCall).length, 2, JSON.stringify(run.calls));
+  assert.match(run.output, /会话返回。主 agent 必须/);
 });
 
 test('写任务缺少已确认的策略文件时不创建会话', () => {

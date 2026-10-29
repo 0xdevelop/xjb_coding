@@ -38,7 +38,9 @@ bash /absolute/path/to/cursor-delegation/scripts/dispatch.sh \
 
 会话名在本仓库内可辨；同一切片续做沿用原名，不同任务不共用默认会话。写任务用项目已有隔离方式，记录实际基线并纳入该任务需要的未提交改动。工作树不是系统沙箱；不要仅用 `--cwd` 或提示词宣称写入范围已被强制隔离。
 
-同一任务复用刚核验的结果；依赖、登录、执行机器变化或调用失败时再检查。安装插件不会在后台自动探测。没有 Bash 时按 `check_tools.sh` 里同一组命令在宿主终端逐项核查。宿主无法执行命令时报告未检查，不根据用户电脑推断远程执行机可用。
+同一任务复用刚核验的结果；依赖、登录、执行机器变化或调用失败时再检查。安装插件不会在后台自动探测。Windows 以 [Git for Windows 的 Git Bash](https://gitforwindows.org/) 为前提；缺少时简短告知并继续其他工作，不另写 PowerShell／CMD 委派流程。宿主无法执行命令时报告未检查，不根据用户电脑推断远程执行机可用。
+
+Shell 工具先复用实际 Git Bash 已有命令；普通下载优先使用已有 `curl`，不为缺少 `wget` 增加依赖。确需额外工具时先核对仓内现成入口，再查 [Git for Windows 官方包管理说明](https://gitforwindows.org/package-management.html) 与 MSYS2 官方包源，区分普通安装版和 SDK、匹配架构与运行库；只给缺项建议，不把来源不明的 EXE／DLL 复制进插件或擅自修改用户安装目录。
 
 配套 [scripts/dispatch.sh](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/cursor-delegation/scripts/dispatch.sh) 只串联先决检查与这一次 acpx 调用；`--write` 必须同时给出已确认的策略文件。直接调用 acpx 时沿用同样的超时、认证和非交互策略；只有已确认属于 Cursor 的 `agent` 别名时，加 `--agent 'agent acp'`，查询和取消也沿用。主 agent 仍要自己写 brief、自己验收。
 

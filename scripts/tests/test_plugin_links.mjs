@@ -42,7 +42,7 @@ test('独立安装到不同用户目录后 drawio 的随包资料仍可离线读
   const source = path.join(root, 'skills/drawio');
   for (const profile of ['用户甲/自定义 Skills/新版插件', 'user-b/extensions/1.2.3']) {
     const installed = path.join(work, profile, 'drawio');
-    cpSync(source, installed, { recursive: true });
+    cpSync(source, installed, { recursive: true, filter: () => true });
     let checked = 0;
     for (const href of links(path.join(installed, 'SKILL.md'))) {
       const base = `${prefix}blob/latest/skills/drawio/`;

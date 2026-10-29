@@ -21,7 +21,7 @@ description: Use 0xdevelop/shell_tools for Ubuntu 20.04+ server setup, software 
 bash /absolute/path/to/ubuntu-shell-tools/scripts/fetch.sh
 ```
 
-每次开始新的工具任务时获取远端 `main`，浅克隆到当前项目 `tmp/shell-tools/` 下的新目录，并输出 `source`、`ref`、`commit`、`path`。同一任务后续步骤沿用这次目录和 commit，避免执行中途版本变化。获取脚本只下载，不执行上游脚本、不安装软件、不修改现有 checkout。需要 Bash、Git 和网络；获取失败就报告错误，不能把旧目录说成最新版。用户明确指定本地修改或历史版本时遵从指定来源，并说明它不是远端最新版。
+每次开始新的工具任务时获取远端 `main`，浅克隆到当前项目 `tmp/shell-tools/` 下的新目录，并输出 `source`、`ref`、`commit`、`path`。同一任务后续步骤沿用这次目录和 commit，避免执行中途版本变化。获取脚本只下载，不执行上游脚本、不安装软件、不修改现有 checkout。需要 Bash、Git 和网络；Windows 使用 Git Bash，缺少时报告先决不满足，不用 PowerShell／CMD 重写，也不在 Windows 执行 Ubuntu 安装脚本。获取失败就报告错误，不能把旧目录说成最新版。用户明确指定本地修改或历史版本时遵从指定来源，并说明它不是远端最新版。
 
 `shell_tools/main` 更新后，下次使用会获取更新，不需要等待 `xjb_coding` 发版；Skill 自身的规则变化仍需更新插件。这里的“最新”指本次获取时的远端 `main` commit，不代表最新 Release，也不表示后台持续同步。
 
