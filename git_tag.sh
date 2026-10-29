@@ -115,7 +115,6 @@ function find_prev_release_commit() {
 }
 
 function gen_changelog_if_possible() {
-    local del_version_no="$1"
     local out_dir out_file prev_release_sha range_end range
     out_dir="changelog"
     mkdir -p "${out_dir}"
@@ -182,18 +181,6 @@ function gen_changelog_if_possible() {
     } > "${out_file}"
 
     echo "[changelog] wrote ${out_file}"
-
-    if [ -n "${del_version_no}" ]; then
-        local pre_file="${out_dir}/v${del_version_no}.md"
-        if [ -f "${pre_file}" ]; then
-            if git ls-files --error-unmatch "${pre_file}" >/dev/null 2>&1; then
-                git rm -f "${pre_file}"
-            else
-                rm -f "${pre_file}" 2>/dev/null || true
-            fi
-            echo "[changelog] removed ${pre_file}"
-        fi
-    fi
 }
 
 # run_release_step 记录当前步骤再执行；&& 链中途失败不会触发 set -e，靠它指出停在哪一步。
@@ -205,8 +192,6 @@ function run_release_step() {
 function git_handle_push() {
     local current_version_no=${CURRENT_VERSION//v/}
     local next_version_no=${NEXT_VERSION//v/}
-    local pre_del_version_no=$(get_pre_del_version_no "$current_version_no")
-    echo "Pre Del Version With v"${pre_del_version_no}
 
     # Standalone health gate (B): refuse to cut an aggregation tag if any
     # submodule fails to build/tidy cleanly without go.work support.
@@ -216,9 +201,8 @@ function git_handle_push() {
 
     echo current_version_no: $current_version_no
     echo next_version_no: $next_version_no
-    echo pre_del_version_no: $pre_del_version_no
 
-    if ! { run_release_step gen_changelog_if_possible "${pre_del_version_no}" \
+    if ! { run_release_step gen_changelog_if_possible \
     && run_release_step git add . \
     && run_release_step git commit -m "Release:--: v${next_version_no}_$(date -u +"%Y-%m-%d_%H:%M:%S")"_"UTC" \
     && run_release_step git tag v${next_version_no} \
@@ -240,8 +224,6 @@ function git_handle_push() {
             push_failed_remotes="${push_failed_remotes} ${remote}"
         fi
     done
-    git tag -d v${pre_del_version_no}
-
     if [ -n "${push_failed_remotes}" ]; then
         echo "[git_tag] ERROR: release v${next_version_no} is committed and tagged locally, but push failed for:${push_failed_remotes}" >&2
         echo "[git_tag] retry each failed remote in order, starting from the step that failed:" >&2
