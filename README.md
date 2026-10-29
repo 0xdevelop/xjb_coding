@@ -421,7 +421,7 @@ bash scripts/update_upstreams.sh --check
 ./git_tag.sh
 ```
 
-发版脚本先自动更新引用，上游获取或校验失败即停止，然后同步 plugin 与编码 Skill 版本、生成 changelog 并推送版本标签和 `latest`；GitHub Actions 只校验发布 commit 的固定快照后创建 Release。当前发布流程保留近期版本，并清理旧版本，执行前应核对脚本与工作区状态。
+发版脚本先自动更新引用，上游获取或校验失败即停止，然后同步 plugin 与编码 Skill 版本、生成 changelog 并推送版本标签和 `latest`；GitHub Actions 只校验发布 commit 的固定快照后创建 Release。保留历次 changelog、版本标签和 Release，执行前应核对脚本与工作区状态。
 
 ## 许可证与依赖边界
 
