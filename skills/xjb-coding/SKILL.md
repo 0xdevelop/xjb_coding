@@ -171,6 +171,10 @@ INIT-9. 按用户已选择的模式继续
 
 ---
 
+### Cursor 独立任务委派（可选）
+
+遇到契约、范围和验收明确的实现任务，按需使用独立 [cursor-delegation](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/cursor-delegation/SKILL.md)：检查 acpx、Cursor CLI 与认证，满足与否都简短提醒后继续当前工作，不等待回复；缺项仅影响该委派路径。该技能也供未进入本工作流的其他主 agent 使用，不另建项目或任务账本，安装与实际执行继续服从原授权。
+
 ### Codex 驱动 Claude Code worker（可选）
 
 当 Codex 作为 controller、Claude Code 作为外部 worker 时，使用 bridge 脚本生成受控 prompt、日志和可恢复会话：

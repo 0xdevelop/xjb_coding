@@ -11,6 +11,7 @@
 | Skill | 领域 | 支持的工作 |
 | --- | --- | --- |
 | [xjb-coding](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/SKILL.md) | 软件开发 | 项目初始化、需求细化、任务分解、编码、四层质量门禁、断点续做 |
+| [cursor-delegation](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/cursor-delegation/SKILL.md) | Cursor 任务委派 | 检查 acpx、Cursor CLI 与 ACP 认证，把边界明确的实现交给独立 Cursor 会话 |
 | [bruno-api-tests](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/bruno-api-tests/SKILL.md) | 接口与业务流程测试 | 关联 Bruno 官方 skills 与文档，生成完整集合、接通参数和文件，由 Agent 验证全新导入及真实场景 |
 | [sketch-to-prototype](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/sketch-to-prototype/SKILL.md) | 产品与 Web 原型 | 从草图、截图和零散说明整理产品模型、UX 交互、可点击原型及编码交接 |
 | [planning-prototype](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/planning-prototype/SKILL.md) | 需求规划原型 | 把一个需求做成可落码的自包含 HTML：两端界面对照、调用链与传参、各端 check 项、路径差异；综合 / 产品 / 技术三个视角同源生成；开工前按八项清单交互问询补齐必备项 |
@@ -123,6 +124,7 @@ hermes plugins update <实际插件ID>
 
 ```bash
 hermes skills install 0xdevelop/xjb_coding/skills/xjb-coding
+hermes skills install 0xdevelop/xjb_coding/skills/cursor-delegation
 hermes skills install 0xdevelop/xjb_coding/skills/bruno-api-tests
 hermes skills install 0xdevelop/xjb_coding/skills/sketch-to-prototype
 hermes skills install 0xdevelop/xjb_coding/skills/planning-prototype
@@ -393,6 +395,7 @@ plugin.json                      Hermes / Agent Plugins v1 整包清单（由 sy
 .mcp.cursor.json                 Cursor MCP 变量占位
 skills/
   xjb-coding/                    自驱编码
+  cursor-delegation/             Cursor CLI / ACP 委派先决检查
   bruno-api-tests/               Bruno 官方知识关联、完整集合生成与真实导入验收
   sketch-to-prototype/           草图生成 Web 原型
   planning-prototype/            需求规划原型（两端界面、调用链、check 项）
