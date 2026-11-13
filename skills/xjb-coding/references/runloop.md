@@ -2,10 +2,10 @@
 
 `--tick` 是宿主的一轮有界推进；需要持久化定时调度、Dashboard 下发事项或手机接单时，使用 xjb_code 的原生 Go `runloop` 执行端。服务端保存目标与轮次，本机 CLI 执行工作，Skill 提供步骤和约束。不要另写 Python 调度器或在 Skill 中复制状态库。
 
-先沿用已绑定项目、已配置的服务地址与成员 API key；缺少配置时说明所需信息，由用户维护，不擅自改环境。在已安装并已登录 Codex / Claude Code / Hermes Agent 的机器运行：
+先沿用已绑定项目、已配置的服务地址，以及执行端已经写好的 `Authorization: Bearer`（`xjbk_` API key 或自签 JWT，一次一种）。缺少配置时说明所需信息，由用户维护，不擅自改环境。在已安装并已登录 Codex / Claude Code / Hermes Agent 的机器运行：
 
 ```sh
-# 服务地址与 API key 使用执行端既有配置，不写入仓库或日志。
+# 服务地址与 Bearer 凭证使用执行端既有配置，不写入仓库或日志。
 xjb_code runloop --project /absolute/project --project-id PROJECT_UUID --host codex
 ```
 

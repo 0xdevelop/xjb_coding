@@ -1,5 +1,7 @@
 # AI 自驱编码作战手册 (Skills-first, MCP-enhanced)
 
+> **提交身份**：Git 提交不得出现任何非人类协作者 commit 信息。author、committer、message、trailer 只记录人类用户本人。禁止 `Co-authored-by`、`Signed-off-by`、Made with Cursor、`cursoragent`、Cursor Agent、Claude、Codex 及其他 agent / 工具名、邮箱、会话标识。Cursor 的 `attribution.attributeCommitsToAgent` 与 `attribution.attributePRsToAgent`（`~/.cursor/cli-config.json`，默认开）会自动写入这类信息，两项都关掉。宿主仍自动追加的 trailer 删掉再提交，提交后核对完整 message。已推送历史不擅自改写；要清掉已推送提交里的这类信息，必须用户当次明确说改历史。
+>
 > **触发词**：用户要求按“读 .auto_coding/start_coding.md”执行工作流时进入本规范；引用、审计或读取规则不触发初始化与编码。续做先恢复原状态。
 >
 > **适用顺序**：遵守宿主安全要求、用户现行指令与授权、已确认项目约定；本 Skill 提供通用工作流，不自行扩大范围。冲突时保留用户原话与出处，按有效约定执行；只有缺少必须由用户决定的信息才询问。
@@ -22,31 +24,32 @@
 
 ## 0. 前提：检测 xjb_code daemon（可选增强）
 
-**第一步**：检查宿主 MCP 连接状态和已发现的 xjb_code 工具列表，再调 `auth.jwt_token.check` 核对身份（返回 `user`、`device_id`、`auth_source`）。不使用领取任务等业务操作探活。
+**第一步**：检查宿主 MCP 连接状态和已发现的 xjb_code 工具列表，再调 `auth.jwt_token.check` 核对身份。arguments 为空，凭证用连接上的 `Authorization: Bearer`，不另传 `jwt_token`。xjb_code 当前返回 `user`、`device_id`、`auth_source`（`session` 或 `api_key`）。不使用领取任务等业务操作探活。
 
 | 结果 | 含义 | 后续 |
 |------|------|------|
 | 已连接且 `auth.jwt_token.check` 成功 | daemon 在线且凭证有效 | 跳到 §1 |
-| 已连接但受保护方法返回 `error_code=10004` | 凭证缺失 / 错误 / 已吊销 | 输出接入提示（签发 API key 写入宿主配置）+ 进入 §附录 markdown 回退 |
+| 已连接但受保护方法返回 `error_code=10004` | 凭证缺失 / 错误 / 已吊销 | 输出接入提示（登录 session 签发 key，只写入 Authorization: Bearer）+ 进入 §附录 markdown 回退 |
 | 未配置 / 连接失败 / 无法发现工具 | MCP 当前不可用 | 区分地址、`bind_address` 与网络问题，输出接入提示 + 进入 §附录 markdown 回退 |
 
-身份模型：每个用户一个账号、一把 API key；同一用户的多个 agent 共用该 key，靠 `agent_id` 区分。公司项目（`company`）本实例所有账号可读任务详情与历史记忆，个人项目（`private`）只有活跃成员可读，管理员也不例外；`task.next` 只领本人任务；编辑（lock / complete / fail / respond / refine / heartbeat）仅归属人或管理员；技能目录写操作仅管理员。
+身份模型：每个用户一个账号。agent 共用一把 `xjbk_` API key，与自签 JWT 走同一条 Bearer 门禁，不是两次登录。同一用户的多个 agent 共用该 key，靠 `agent_id` 区分。公司项目（`company`）本实例所有账号可读任务详情与历史记忆，个人项目（`private`）只有活跃成员可读，管理员也不例外；`task.next` 只领本人任务；编辑（lock / complete / fail / respond / refine / heartbeat）仅归属人或管理员；技能目录写操作仅管理员。
 
 **接入提示模板**：
 ```
 ⚠️ xjb_code MCP 当前不可用。先核对用户部署的服务地址，不擅自启动本机服务。
 插件默认连接 http://127.0.0.1:12100/，私有部署修改用户配置：
   Codex：~/.codex/config.toml → [mcp_servers.xjb-code] → url +
-    http_headers = { Authorization = "Bearer xjbk_..." }（或 bearer_token_env_var）。
+    http_headers = { Authorization = "Bearer xjbk_..." }。
+    不要再写 bearer_token_env_var 或其他 token 字段。
   Claude Code：用户级 ~/.claude/settings.json →
     pluginConfigs["xjb-coding@xjb-coding-marketplace"].options.mcp_url；
-    key 走 /plugin 配置对话框的 mcp_api_key（sensitive）。
-凭证来源：登录 xjb_code Dashboard（http://<host>:12101/）→ 右上「API key」弹窗自签，或由管理员在「账号与 key」弹窗建号并代签；明文只显示一次。
+    凭证只走 /plugin 配置对话框的 mcp_api_key（sensitive），由清单写成 Authorization: Bearer。
+凭证来源：登录 session 进 xjb_code Dashboard（http://<host>:12101/）签发。成员在右上入口自签，或由管理员在「账号与 key」代签。明文只显示一次。key 不能再签发 key。前缀是 xjbk_，不要写成 key_。
 Claude 插件的 mcp_url 未设置时取默认值；其他 marketplace 使用实际插件 ID。
 不要在 settings.json 顶层写 mcpServers，或在项目 settings 中写 pluginConfigs。
-旧 ~/.claude.json 中的独立 xjb-code 条目需要先迁移 URL、核对认证字段，再移除，避免重复连接。
+旧 ~/.claude.json 中的独立 xjb-code 条目先迁移 URL。其他认证头或 token 字段不要原样搬过来，只保留这一份 Bearer，再移除旧条目，避免重复连接。
 修改后重启宿主，保留其他配置，不编辑插件缓存。
-通过宿主 /mcp 确认连接和工具列表，业务登录按服务端认证方式处理。
+通过宿主 /mcp 确认连接和工具列表。受保护方法不再单独登录。
 当前回退到 markdown 模式（功能受限，见附录）。
 ```
 

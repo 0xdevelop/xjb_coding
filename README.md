@@ -2,7 +2,7 @@
 
 面向 Codex、Claude Code、Hermes Agent 及其他 Agent Skills 宿主的工作流 Skills 仓库：自驱编码（需求细化 → 拆任务 → TDD → 四层质量门禁 → 断点续做）、多用户多 agent 协同、Bruno 接口与流程测试、真浏览器 Web 调试（按实际能力优先官方 ego-browser）、草图生成 Web 原型、draw.io 可编辑图表、Archify 交互图表、Blender + Three.js 资产接入、本机 ComfyUI 工作流设计。一份 Skills，Codex、Claude Code、Cursor、Hermes 共用。
 
-安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号一把 API key，同一用户的所有 agent 共用；公司项目全实例可读、个人项目仅成员可读，编辑限记录归属人或管理员；看板实时显示任务、待批决策点与工具调用统计。
+安装 plugin 后，宿主根据任务匹配对应 Skill，再按需读取其参考资料和脚本。需要跨会话、跨设备或多 Agent 共享状态时，连接独立部署的 [xjb_code](https://github.com/0xdevelop/xjb_code) 后端：每人一账号；agent 共用一把 `xjbk_` API key，只放在 `Authorization: Bearer`；公司项目全实例可读、个人项目仅成员可读，编辑限记录归属人或管理员；看板实时显示任务、待批决策点与工具调用统计。
 
 兼容目标是当前 Codex、Claude Code、Cursor、Hermes Agent；按各宿主的官方入口加载完整 Skill 目录，不依赖宿主专有继承机制。人工保存的工作流始终可以重新打开并作为下一轮输入，更新插件或切换宿主不会迁移、覆盖这些业务文件。每次发版区分入口校验、宿主实测和生成结果验收，不承诺未经验证的未来版本。
 
@@ -297,16 +297,16 @@ go run .
 
 ### 用户体系与凭证
 
-`xjb_code` 是多用户服务：每人一个账号。管理员登录 Dashboard `http://<host>:12101/`，右上「账号与 key」弹窗里建号，点选该账号即可为其签发一把 `xjbk_` 前缀的用户级 API key 交给本人；成员登录后同一入口只看到本人的 key，可自签。**同一用户的所有 agent（Claude Code、Codex、多台机器）共用这一把 key**，宿主以 HTTP `Authorization: Bearer <key>` 头发送；`agent_id` 只用于区分是哪一个 agent 在干活。授权规则：公司项目（`company`）本实例所有账号可查看任务详情与历史记忆；个人项目（`private`，新建默认）只有活跃成员可查看，管理员也不绕过；编辑只允许记录归属人或管理员；技能目录写操作（`skills.sync` 等）仅管理员。
+调用 `xjb_code` 的受保护方法只走一条门禁，一次只带一种凭证，只放一个位置。MCP 只写 HTTP 头 `Authorization: Bearer <凭证>`。`xjbk_` 前缀是该服务签发的用户级 API key（明文 sha256 查库，不是 JWT 校验）；没有这个前缀的是密码登录签发的自签 JWT。两种各自解开，通过后加载同一个用户。不要把模板前缀 `key_` 写进发给 xjb_code 的请求。工具参数里不要再放 `jwt_token`，也不要加第二套认证头。JSON-RPC、WebSocket、gRPC 在无法带头时，才把同一份凭证放进兼容字段 `arguments.jwt_token`（优先于头；字段名不表示 API key 走 JWT 校验）。浏览器原生 WebSocket 用这个字段。本插件的宿主连接不走兼容字段。
 
-Codex：在 `~/.codex/config.toml` 中添加或修改同名条目，用户配置优先于插件默认值。插件自带的 MCP 定义不能携带请求头，所以 key 必须写在这里（二选一）：
+签发、吊销、删除 API key 只走已登录 session。API key 不能再签发、吊销或删除 key，也不能代替 refresh token，也不能退出 session。管理员登录 Dashboard `http://<host>:12101/`，右上「账号与 key」用 session 建号并代签一把 `xjbk_` key；成员用自己的登录 session 在同一入口自签。明文只显示一次。**同一用户的所有 agent（Claude Code、Codex、多台机器）共用这一把 key**。`agent_id` 只区分是哪一个 agent 在干活。授权规则：公司项目（`company`）本实例所有账号可查看任务详情与历史记忆；个人项目（`private`，新建默认）只有活跃成员可查看，管理员也不绕过；编辑只允许记录归属人或管理员；技能目录写操作（`skills.sync` 等）仅管理员。
+
+Codex：在 `~/.codex/config.toml` 中添加或修改同名条目，用户配置优先于插件默认值。插件自带的 MCP 定义不能携带请求头，所以凭证只写在这一处 `http_headers`：
 
 ```toml
 [mcp_servers.xjb-code]
 url = "http://192.168.167.239:12100/"
 http_headers = { Authorization = "Bearer xjbk_..." }
-# 或者从环境变量读取：
-# bearer_token_env_var = "XJB_CODE_API_KEY"
 ```
 
 Claude Code：在用户级 `~/.claude/settings.json` 中合并地址；key 是 `sensitive` 配置项，通过 `/plugin` 的配置对话框填写（存入系统钥匙串，不落 `settings.json`）：
@@ -325,20 +325,20 @@ Claude Code：在用户级 `~/.claude/settings.json` 中合并地址；key 是 `
 
 这是 Claude 官方 `userConfig` / `pluginConfigs` 机制：插件声明 `mcp_url` 与 `mcp_api_key`，MCP 配置引用 `${user_config.mcp_url}` 和 `headers.Authorization = "Bearer ${user_config.mcp_api_key}"`。设置写在用户目录，不能放到项目 `.claude/settings.json`；如果从其他 marketplace 安装，键名使用实际的 `插件名@marketplace名`。Codex 和 Claude 使用各自的 MCP 配置文件，避免把一种宿主的占位符交给另一种宿主解析。
 
-Cursor：`.mcp.cursor.json` 使用 `${XJB_CODE_MCP_URL}` 和 `${XJB_CODE_API_KEY}`。未改 Configure 时，同一台机器的地址是 `http://127.0.0.1:12100/`。Configure 或 `~/.cursor/mcp.json` 里已经写好私有 URL 和 `Authorization`、并且连得上时，用那一条。插件注册名 `plugin-xjb-coding-xjb-code` 没有连上时，不要用它覆盖已写好的配置，也不要调用宿主的 `mcp_auth`。这条限制同样适用于 Claude 和 Codex：连不上就改地址或密钥，不走宿主登录，也不改写其他宿主已经写好的配置。
+Cursor：`.mcp.cursor.json` 把 `${XJB_CODE_MCP_URL}` 用作地址，把 `${XJB_CODE_API_KEY}` 放进 `Authorization: Bearer`。未改 Configure 时，同一台机器的地址是 `http://127.0.0.1:12100/`。Configure 或 `~/.cursor/mcp.json` 里已经写好私有 URL 和这一份 `Authorization`、并且连得上时，用那一条。插件注册名 `plugin-xjb-coding-xjb-code` 没有连上时，不要用它覆盖已写好的配置，也不要调用宿主的 `mcp_auth`。这条限制同样适用于 Claude 和 Codex：连不上就改地址或密钥，不走宿主登录，也不改写其他宿主已经写好的配置。
 
-先前通过 `claude mcp add --scope user` 添加的独立服务存放在 `~/.claude.json` 的顶层 `mcpServers.xjb-code`，直接在 `settings.json` 顶层写 `mcpServers` 无效。迁移到插件配置时，先复制原 URL 到上述 `mcp_url`；若旧条目还带认证或其他字段，先确认插件配置能够保留这些行为，再移除旧条目。仅 URL 的旧条目迁移后可运行 `claude mcp remove --scope user xjb-code`，防止以后改地址时加载两条连接。不要移除其他 MCP 服务。
+先前通过 `claude mcp add --scope user` 添加的独立服务存放在 `~/.claude.json` 的顶层 `mcpServers.xjb-code`，直接在 `settings.json` 顶层写 `mcpServers` 无效。迁移到插件配置时，先复制原 URL 到上述 `mcp_url`。旧条目里的其他认证头或 token 字段不要原样搬过来，插件只保留这一份 `Authorization: Bearer`。核对后移除旧条目。仅 URL 的旧条目迁移后可运行 `claude mcp remove --scope user xjb-code`，防止以后改地址时加载两条连接。不要移除其他 MCP 服务。
 
 修改后重启宿主；Codex 新开任务加载更新后的插件。保留其他配置，不编辑插件缓存。`127.0.0.1` 指运行客户端的电脑，独立服务器必须通过可达地址、代理或隧道连接。
 
-通过两端 `/mcp` 确认连接和工具列表，再执行所需业务。连接失败与业务认证失败分开诊断：`initialize` / `tools/list` 与 `test` 不需要凭证，连接不上是地址、`bind_address` 或网络问题。命名空间失败，或工具列表里只剩宿主的 `mcp_auth`，同样是地址没有连上。禁止调用 `mcp_auth`，禁止走 Authenticate。受保护方法返回 `error_code=10004 permission denied` 才是凭证缺失、错误或已吊销，这时去用户自己的 Dashboard 重新签发 key 并更新宿主配置。
+通过两端 `/mcp` 确认连接和工具列表，再执行所需业务。受保护方法不再单独登录，凭证就是连接上的这一份 Bearer。连接失败与凭证失败分开诊断：`initialize` / `tools/list` 与 `test` 不需要凭证，连接不上是地址、`bind_address` 或网络问题。命名空间失败，或工具列表里只剩宿主的 `mcp_auth`，同样是地址没有连上。禁止调用 `mcp_auth`，禁止走 Authenticate。受保护方法返回 `error_code=10004 permission denied` 才是凭证缺失、错误或已吊销，这时去用户自己的 Dashboard 用登录 session 重新签发 key，并只更新上述 Bearer 头。
 
 配置行为以 [Codex 官方 MCP 文档](https://developers.openai.com/codex/mcp)、[Claude Code 插件用户配置](https://code.claude.com/docs/en/plugins-reference#user-configuration) 和 [Claude Code 官方 MCP 文档](https://code.claude.com/docs/en/mcp) 为准。
 
 支持 MCP 状态管理的工作流按需使用 `skills.source_status` / `skills.sync`，再通过 `workflow.*`、`requirement.*`、`task.*` 和 `artifact.add` 推进。不要为独立资产导出强制创建后端工作流。
 
 - `xjb_coding` 是 Skills 和 workflow manifest 的唯一第一源，各宿主共享规则；`xjb_code` 保存固定运行快照和状态，不维护另一份可编辑规则。
-- `project_id` 是工作空间；`user_id`、`device_id` 由服务端从凭证得出（API key 对应签发时的设备），不再作为入参传递。
+- `project_id` 是工作空间。调用方不传 `user_id`、`device_id`、`jwt_token`；身份由门禁从这一份 Bearer 写入。
 - MCP 原型流程显式传入 `workflow.start.language`。`workflow.complete` 要求阶段任务完成且必需产物全部 `ready`。
 - 不再使用时，关闭自己启动的后端进程。
 

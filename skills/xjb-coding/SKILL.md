@@ -37,7 +37,9 @@ Claude Code、Codex、Cursor、Windsurf、Trae、Hermes 以及其他宿主用同
 
 用户已经在该宿主自己的配置里写了地址和密钥时，用那一条：Codex 的 `config.toml`、Claude 的 `pluginConfigs`、Cursor 的 Configure 或 `mcp.json`、以及其他宿主的 MCP 配置。这条连得上，就不要改用另一条连不上的注册。
 
-连不上、命名空间失败，或工具列表里只剩宿主的 `mcp_auth`：地址没有连上。禁止调用 `mcp_auth`，禁止走宿主 Authenticate。`error_code=10004` 才是密钥问题，去用户自己的 Dashboard 重新签发。没有可用地址时留在本地 Skill。
+连不上、命名空间失败，或工具列表里只剩宿主的 `mcp_auth`：地址没有连上。禁止调用 `mcp_auth`，禁止走宿主 Authenticate。`error_code=10004` 才是凭证问题，去用户自己的 Dashboard 用登录 session 重新签发。没有可用地址时留在本地 Skill。
+
+凭证只放 HTTP `Authorization: Bearer`。一次只带一种。`xjbk_` 开头是 xjb_code 签发的 API key（不是 JWT 校验），其余是自签 JWT；两种各自解开，通过后是同一个用户。不要写成 `key_`，不要在 MCP 工具参数里再放 `jwt_token`，也不要加第二套认证头。签发、吊销、删除 key 只走登录 session，key 不能再管理 key。
 
 ### 触发条件
 
@@ -100,8 +102,8 @@ INIT-6. 检测当前 AI 工具并复制对应配置文件
 
 INIT-7. 汇总部署前已核对的 xjb_code MCP 状态（可选增强后端）
   → 检查宿主 MCP 连接状态及已发现的 xjb_code 工具列表；不使用领取任务等业务操作探活
-  → 已连接且工具列表可用 → 调用 auth.jwt_token.check 核对身份；成功 → 标记 MCP_AVAILABLE=true
-  → 返回 error_code=10004 → 凭证缺失 / 错误 / 已吊销：提示用户在 xjb_code Dashboard 签发 API key 并写入宿主配置，标记 MCP_AVAILABLE=false
+  → 已连接且工具列表可用 → 调用 auth.jwt_token.check（arguments 为空，凭证用连接上的 Authorization 头）核对身份；成功 → 标记 MCP_AVAILABLE=true
+  → 返回 error_code=10004 → 凭证缺失 / 错误 / 已吊销：提示用户在 xjb_code Dashboard 用登录 session 签发 API key，并只写入宿主的 Authorization: Bearer，标记 MCP_AVAILABLE=false
   → 未配置 / 连接失败 / 无法发现工具 → 标记 MCP_AVAILABLE=false，区分地址、网络和认证问题
   → daemon 不是必需；MCP 模式下任务并发、断点续做、远程审批更可靠
 
@@ -193,9 +195,9 @@ controller / worker 协作规则（角色、委派 brief、worker 硬边界、�
 
 | 宿主 | 调用 | worker 形态 | 备注 |
 | --- | --- | --- | --- |
-| Claude Code | 插件安装后按触发词自动命中 | `Agent` 子代理，或经 bridge 驱动另一个 Claude Code | MCP key 走 `/plugin` 的 `mcp_api_key` |
-| Codex | `$xjb-coding` 或触发词 | Codex sub-agent；父 agent 保持 controller，用 `update_plan` 做可见计划，worker 验收后即关闭 | MCP key 写 `~/.codex/config.toml` 的 `http_headers` |
-| Hermes Agent | `hermes skills install` 后按描述匹配 | 宿主自身的子任务机制 | MCP 按 Hermes 配置文档加 url 与 Authorization 头 |
+| Claude Code | 插件安装后按触发词自动命中 | `Agent` 子代理，或经 bridge 驱动另一个 Claude Code | 凭证只进 `/plugin` 的 `mcp_api_key`，清单写成 `Authorization: Bearer` |
+| Codex | `$xjb-coding` 或触发词 | Codex sub-agent；父 agent 保持 controller，用 `update_plan` 做可见计划，worker 验收后即关闭 | 凭证只写 `~/.codex/config.toml` 的 `http_headers.Authorization` |
+| Hermes Agent | `hermes skills install` 后按描述匹配 | 宿主自身的子任务机制 | 只加 url 与 `Authorization: Bearer` 头 |
 
 任何宿主都不得让 worker 在开工后扩大范围；MCP 可用且已认证时使用原服务端状态，确实不可用才用 `tasks/TRACKER.md` 记录状态、`DISPATCH.md` 协调单机软锁。恢复、锁和存档分别以主引擎 §0 / §6 / §7 为准，各宿主不另定协议。
 

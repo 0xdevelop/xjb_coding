@@ -20,7 +20,7 @@
       "XJB_CODE_API_KEY": {
         "type": "string",
         "title": "xjb_code API key",
-        "description": "Dashboard「账号与 key」签发的用户级凭证，xjbk_ 前缀。同一用户的所有 agent 共用。留空时只能调用公开方法。"
+        "description": "只写入 Authorization: Bearer。xjbk_ 前缀是 API key，没有该前缀则是自签 JWT；一次一种。登录 session 签发，key 不能再签发。留空时只能调用公开方法。"
       }
     }
   }
