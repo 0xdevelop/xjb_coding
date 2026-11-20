@@ -301,7 +301,7 @@ your-project/
 - **自动识别项目语言**（Go/Rust/TS/JS/Python/Java/Kotlin/C++/C#）并加载对应工具链命令
 - **需求管理**：MCP 工具 `requirement.add` / `refine` / `detect_drift`，markdown 模式支持 md/pdf/png/jpg 格式
 - **任务拆解**：按依赖（`task.assign`）、优先级（P0~P3）和可独立验收的边界拆分，不以文件数代替范围判断
-- **增量验证与最终验收**：代码按需红→绿→重构；四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 业务专项扩展）按任务类型验证，复用前提未变的历史证据，最终收口满足项目既定验收；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集
+- **增量验证与最终验收**：代码按需红→绿→重构；四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 业务专项扩展）按任务类型验证，复用前提未变的历史证据，最终收口满足项目既定验收；由 `project_template_go` 实例化或带 GitHub Release 安装与 systemd 服务的项目，L4 必须包含 [产品验收闭环](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/references/product-acceptance.md)；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集
 - **准 runloop**：`--tick [N]` 把主流程切成幂等有界工作单元，任何外部循环（宿主定时循环 / cron / headless CLI / 编排器）都能驱动；卡住不阻塞，标 blocked 继续
 - **多智能体并发**：MCP 模式用 DB 行级锁 `task.lock`（强一致），markdown 回退用 DISPATCH.md 软锁（单机兜底）
 - **上下文保护**：`session.checkpoint` 写 L3 memory，新会话 `session.restore` 续做
@@ -325,6 +325,8 @@ your-project/
 - ❌ 禁止跳过四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 专项全过才能标记 ✅；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集，不等于完成）
 - ❌ 禁止擅自修改架构（先查已有决定与授权；未明确的实质变化才询问）
 - ❌ 禁止将 `.auto_coding/` 下任何文件加入 git
+- ❌ 禁止 force-push（含 `--force` / `--force-with-lease`），提交不得出现协作者（包括 AI / Cursor）
+- 适用时的产品验收闭环（GitHub Release assets 下载 → 官方安装脚本部署到脚本指定目录 → systemd 启动 → 跑完全程得到预期业务结果 → 官方脚本卸载 → 根 `docs/` 实测文档）见 [产品验收闭环](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/references/product-acceptance.md)；该约束由 `start_coding.md` L4 / §9 引用，不是可选建议
 
 ---
 
@@ -340,6 +342,7 @@ your-project/
 | `.windsurfrules` | Windsurf Cascade 规则 | 项目根目录 |
 | `universal_system_prompt.md` | 通用系统提示词 | 任意 AI 工具系统提示词设置 |
 | `gitignore_snippet.txt` | .gitignore 追加片段 | 合并到项目 `.gitignore` |
+| `references/product-acceptance.md` | 可安装产物的产品验收闭环（项目约束） | Skill 目录 `references/`；由 `start_coding.md` L4 / §9 / 完工验收引用 |
 
 ---
 

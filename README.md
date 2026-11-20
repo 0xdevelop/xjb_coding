@@ -176,7 +176,7 @@ skills:
 需求：实现邮箱登录，并验证真实登录主流程。
 ```
 
-流程为：需求细化 → 按依赖拆任务 → 编码与验证 → 工程、架构、业务、专项门禁 → 交付或保存断点。controller / worker 协作规则统一在 `.auto_coding/AGENT_COLLABORATION.md`，Claude Code / Codex / Hermes 只是执行层不同（见 Skill「宿主差异」）。
+流程为：需求细化 → 按依赖拆任务 → 编码与验证 → 工程、架构、业务、专项门禁 → 交付或保存断点。controller / worker 协作规则统一在 `.auto_coding/AGENT_COLLABORATION.md`，Claude Code / Codex / Hermes 只是执行层不同（见 Skill「宿主差异」）。对由 [`project_template_go`](https://github.com/0xdevelop/project_template_go) 实例化，或带 GitHub Release 安装与 systemd 服务的项目，产品验收闭环是强制项目约束，见 [产品验收闭环](skills/xjb-coding/references/product-acceptance.md)；工作流在 `start_coding.md` 的 L4 / §9 引用该约束。
 
 | 模式 | 用法 | 结果 |
 | --- | --- | --- |
