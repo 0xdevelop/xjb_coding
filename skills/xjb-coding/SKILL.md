@@ -191,7 +191,7 @@ scripts/claude_worker_bridge.sh --cwd <project-root> --task <task.md> --mode tmu
 
 ### 宿主差异（同一份 Skill，三类宿主）
 
-controller / worker 协作规则（角色、委派 brief、worker 硬边界、审查标签 OK / MUST FIX / RISK / STOP、恢复顺序）只有一份：`.auto_coding/AGENT_COLLABORATION.md`。各宿主只是执行层不同：
+controller / worker 协作规则（角色、委派 brief、worker 硬边界、审查标签 OK / MUST FIX / RISK / STOP、恢复顺序）只有一份：`.auto_coding/AGENT_COLLABORATION.md`。既有知识、术语与工具的复用规则也写在该文件，不另建原则或调度说明。各宿主只是执行层不同：
 
 | 宿主 | 调用 | worker 形态 | 备注 |
 | --- | --- | --- | --- |
@@ -318,14 +318,16 @@ your-project/
 
 ## 七、快速参考：通用质量约束
 
-以下是通用基线，按宿主安全要求、用户现行授权与已确认项目约定适用，不自行扩大范围：
+以下是通用基线，按宿主安全要求、用户现行授权与已确认项目约定适用，不自行扩大范围。完整约束以 `start_coding.md` 文首「提交身份」与 §8 为准；既有知识与工具复用见 `AGENT_COLLABORATION.md`。
 
 - 构建与测试使用项目既定工具和环境；不擅自安装或改环境
-- ❌ 禁止 `git add -A` 或 `git add .`（只精确 add 本任务涉及的文件）
+- ❌ 禁止 `git add -A` 或 `git add .`（只精确 add 本任务涉及的文件；发版脚本除外）
 - ❌ 禁止跳过四层质量门禁（L1 工程 / L2 架构 / L3 业务 / L4 专项全过才能标记 ✅；BUILD/TEST/FMT_CHK 全绿仅是 L1 子集，不等于完成）
-- ❌ 禁止擅自修改架构（先查已有决定与授权；未明确的实质变化才询问）
+- ❌ 禁止擅自修改架构（先查已有决定与授权；未获授权的实质变化才询问）
 - ❌ 禁止将 `.auto_coding/` 下任何文件加入 git
-- ❌ 禁止 force-push（含 `--force` / `--force-with-lease`），提交不得出现协作者（包括 AI / Cursor）
+- ❌ 禁止削弱有效断言来伪造通过；按已授权契约更新测试须保留需求依据
+- ❌ 禁止提交含硬编码密钥 / 密码 / token 的文件
+- ❌ 禁止 force-push（含 `--force` / `--force-with-lease`），不擅自改写已推送历史；提交不得出现协作者（包括 AI / Cursor），正文见 `start_coding.md` 文首「提交身份」
 - 适用时的产品验收闭环（GitHub Release assets 下载 → 官方安装脚本部署到脚本指定目录 → systemd 启动 → 跑完全程得到预期业务结果 → 官方脚本卸载 → 根 `docs/` 实测文档）见 [产品验收闭环](https://github.com/0xdevelop/xjb_coding/blob/latest/skills/xjb-coding/references/product-acceptance.md)；该约束由 `start_coding.md` L4 / §9 引用，不是可选建议
 
 ---
@@ -336,6 +338,8 @@ your-project/
 |------|------|---------|
 | `SKILL.md` | 本文件，Skill 使用说明 | Skill 根目录 |
 | `.auto_coding/start_coding.md` | 主引擎，AI 读取并执行 | 项目根目录下的 `.auto_coding/` |
+| `.auto_coding/AGENT_COLLABORATION.md` | 各宿主共用的协作协议，含既有知识与工具复用规则 | 项目根目录下的 `.auto_coding/` |
+| `.auto_coding/DISPATCH.md` | markdown 回退的单机软锁；MCP 模式不用 | 项目根目录下的 `.auto_coding/`，不入 git |
 | `CLAUDE.md` | Claude Code 项目指令 | 项目根目录 |
 | `cursor_rule.mdc` | Cursor Rules 配置 | 项目 `.cursor/rules/` |
 | `trae_agent_prompt.md` | Trae Agent 系统提示词 | Trae Agent 设置 |
@@ -343,6 +347,8 @@ your-project/
 | `universal_system_prompt.md` | 通用系统提示词 | 任意 AI 工具系统提示词设置 |
 | `gitignore_snippet.txt` | .gitignore 追加片段 | 合并到项目 `.gitignore` |
 | `references/product-acceptance.md` | 可安装产物的产品验收闭环（项目约束） | Skill 目录 `references/`；由 `start_coding.md` L4 / §9 / 完工验收引用 |
+| `references/projects.md` | 项目识别与共享范围 | Skill 目录 `references/` |
+| `references/runloop.md` | Runloop 接单与续做 | Skill 目录 `references/` |
 
 ---
 
