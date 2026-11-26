@@ -191,7 +191,7 @@ scripts/claude_worker_bridge.sh --cwd <project-root> --task <task.md> --mode tmu
 
 ### 宿主差异（同一份 Skill，三类宿主）
 
-controller / worker 协作规则（角色、委派 brief、worker 硬边界、审查标签 OK / MUST FIX / RISK / STOP、恢复顺序）只有一份：`.auto_coding/AGENT_COLLABORATION.md`。既有知识、术语与工具的复用规则也写在该文件，不另建原则或调度说明。各宿主只是执行层不同：
+controller / worker 协作规则（角色、委派 brief、worker 硬边界、审查标签 OK / MUST FIX / RISK / STOP、恢复顺序）只有一份：`.auto_coding/AGENT_COLLABORATION.md`。既有知识与工具复用、意图与既有演进、对用户的交付和原则底线也写在该文件，不另建原则或调度说明。各宿主只是执行层不同：
 
 | 宿主 | 调用 | worker 形态 | 备注 |
 | --- | --- | --- | --- |
@@ -318,7 +318,7 @@ your-project/
 
 ## 七、快速参考：通用质量约束
 
-以下是通用基线，按宿主安全要求、用户现行授权与已确认项目约定适用，不自行扩大范围。完整约束以 `start_coding.md` 文首「提交身份」与 §8 为准；既有知识与工具复用见 `AGENT_COLLABORATION.md`。
+以下是通用基线，按宿主安全要求、用户现行授权与已确认项目约定适用，不自行扩大范围。完整约束以 `start_coding.md` 文首「提交身份」与 §8 为准；既有知识与工具复用、意图与既有演进、对用户的交付和原则底线见 `AGENT_COLLABORATION.md`。
 
 - 构建与测试使用项目既定工具和环境；不擅自安装或改环境
 - ❌ 禁止 `git add -A` 或 `git add .`（只精确 add 本任务涉及的文件；发版脚本除外）
@@ -338,7 +338,7 @@ your-project/
 |------|------|---------|
 | `SKILL.md` | 本文件，Skill 使用说明 | Skill 根目录 |
 | `.auto_coding/start_coding.md` | 主引擎，AI 读取并执行 | 项目根目录下的 `.auto_coding/` |
-| `.auto_coding/AGENT_COLLABORATION.md` | 各宿主共用的协作协议，含既有知识与工具复用规则 | 项目根目录下的 `.auto_coding/` |
+| `.auto_coding/AGENT_COLLABORATION.md` | 各宿主共用的协作协议，含既有知识与工具复用、意图与既有演进、对用户的交付和原则底线 | 项目根目录下的 `.auto_coding/` |
 | `.auto_coding/DISPATCH.md` | markdown 回退的单机软锁；MCP 模式不用 | 项目根目录下的 `.auto_coding/`，不入 git |
 | `CLAUDE.md` | Claude Code 项目指令 | 项目根目录 |
 | `cursor_rule.mdc` | Cursor Rules 配置 | 项目 `.cursor/rules/` |
